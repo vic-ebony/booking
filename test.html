@@ -3,32 +3,60 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Stylist Card Example</title>
+  <title>Stylist Card with Reviews</title>
   <style>
+    /* 全局設定 */
     body {
       font-family: Arial, sans-serif;
       background-color: #f5f5f5;
       margin: 0;
-      padding: 20px;
+      padding: 10px;
       text-align: center;
     }
     .container {
       display: flex;
       flex-direction: column;
-      gap: 10px;
-      max-width: 800px;
+      gap: 12px;
+      max-width: 600px;
       margin: auto;
     }
+    /* 外層包覆前後卡片 */
+    .card-wrapper {
+      position: relative;
+      width: 100%;
+      /* 高度依照卡片內容自適應 */
+    }
+    /* 兩個卡片皆使用絕對定位，並以 transform 控制顯示位置 */
     .card {
-      display: flex;
       background: white;
       border-radius: 8px;
       box-shadow: 0 2px 5px rgba(0,0,0,0.15);
       overflow: hidden;
       text-align: left;
-      padding: 10px;
+      padding: 12px;
+      display: flex;
+      gap: 12px;
       align-items: flex-start;
-      gap: 8px;
+      width: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      transition: transform 0.3s ease;
+    }
+    /* 前卡：美容師資料卡，初始顯示 */
+    .card.front {
+      transform: translateX(0);
+    }
+    /* 後卡：美容師服務心得，初始隱藏在左側 */
+    .card.back {
+      transform: translateX(-100%);
+    }
+    /* 當外層容器有 .swiped 類別時：前卡往右移出，後卡滑入 */
+    .card-wrapper.swiped .card.front {
+      transform: translateX(100%);
+    }
+    .card-wrapper.swiped .card.back {
+      transform: translateX(0);
     }
     .photo {
       flex-shrink: 0;
@@ -38,18 +66,16 @@
       height: 180px;
       object-fit: cover;
       display: block;
-      border-radius: 6px;
+      border-radius: 8px;
     }
-    /* 右側資訊區以 CSS Grid 排版，分成 5 列 */
+    /* 前卡右側資訊區，原有資訊使用 Grid 排版 */
     .info {
-      padding: 5px;
+      padding: 8px;
       flex-grow: 1;
       display: grid;
-      grid-template-rows: repeat(5, 1fr);
-      height: 180px; /* 固定高度，可根據需求調整 */
-      gap: 2px;
+      grid-template-rows: repeat(5, auto);
+      gap: 6px;
     }
-    /* 第一列：徽章與心得 */
     .header {
       display: flex;
       align-items: center;
@@ -59,7 +85,7 @@
       background: red;
       color: white;
       font-size: 11px;
-      padding: 2px 5px;
+      padding: 3px 6px;
       border-radius: 5px;
       font-weight: bold;
     }
@@ -71,41 +97,40 @@
       background-color: green;
       color: white;
       border-radius: 50%;
-      width: 16px;
-      height: 16px;
+      width: 18px;
+      height: 18px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       font-size: 10px;
-      margin-left: 3px;
+      margin-left: 4px;
     }
-    /* 第二列：名稱 */
     .name {
       font-size: 16px;
       font-weight: bold;
+      margin: 0;
     }
-    /* 第三列：身高 / 體重 / 罩杯 */
     .details {
       font-size: 12px;
       color: #555;
+      margin: 0;
       white-space: nowrap;
     }
-    /* 第四列：檯費與套餐（修改為左對齊） */
     .price-container {
       display: flex;
       flex-direction: column;
-      align-items: flex-start; /* 改為左對齊 */
+      align-items: flex-start;
       gap: 4px;
     }
     .price {
       font-size: 12px;
       color: #555;
+      margin: 0;
       white-space: nowrap;
     }
-    /* 第五列：可約時段 */
     .availability-container {
       text-align: left;
-      padding: 5px;
+      padding: 6px;
       background: #eee;
       border-radius: 4px;
       font-size: 12px;
@@ -113,44 +138,131 @@
     .availability-title {
       font-size: 12px;
       font-weight: bold;
+      margin: 0;
+    }
+    /* 後卡：美容師服務心得頁面 */
+    .reviews-content {
+      padding: 12px;
+    }
+    .reviews-container {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+    .review-item {
+      background: #f8f8f8;
+      padding: 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      line-height: 1.4;
+    }
+    .close-btn {
+      margin-top: 8px;
+      padding: 6px 12px;
+      font-size: 14px;
+      border: none;
+      background: #007bff;
+      color: white;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    /* 手機裝置優化 */
+    @media (max-width: 480px) {
+      .container {
+        max-width: 100%;
+      }
+      .photo img {
+        width: 120px;
+        height: 170px;
+      }
     }
   </style>
 </head>
 <body>
-
   <h2>Stylist Card Example</h2>
   <div class="container">
-    <div class="card">
-      <div class="photo">
-        <img src="https://picsum.photos/130/180" alt="獅子">
+    <div class="card-wrapper" id="cardWrapper">
+      <!-- 前卡：美容師資料卡 -->
+      <div class="card front" id="frontCard">
+        <div class="photo">
+          <img src="https://picsum.photos/130/180" alt="獅子">
+        </div>
+        <div class="info">
+          <!-- 第一列：徽章與心得 -->
+          <div class="header">
+            <span class="badge">NEW</span>
+            <span class="review">⭐ 心得 <span class="count">12</span></span>
+          </div>
+          <!-- 第二列：名稱 -->
+          <div>
+            <div class="name">獅子</div>
+          </div>
+          <!-- 第三列：身高 / 體重 / 罩杯 -->
+          <div>
+            <div class="details">160 / 45 / A</div>
+          </div>
+          <!-- 第四列：檯費與套餐 -->
+          <div class="price-container">
+            <div class="price">💰 3000</div>
+            <div class="price">🍱 5300</div>
+          </div>
+          <!-- 第五列：可約時段 -->
+          <div class="availability-container">
+            <div class="availability-title">可約時段：</div>
+            <div>12-13-14-15-16-17-18-19-20-21-22-23-24-01-02-03-04-05</div>
+          </div>
+        </div>
       </div>
-      <div class="info">
-        <!-- 第一列：徽章與心得 -->
-        <div class="header">
-          <span class="badge">NEW</span>
-          <span class="review">⭐ 心得 <span class="count">12</span></span>
-        </div>
-        <!-- 第二列：名稱 -->
-        <div>
-          <div class="name">獅子</div>
-        </div>
-        <!-- 第三列：身高 / 體重 / 罩杯 -->
-        <div>
-          <div class="details">160 / 45 / A</div>
-        </div>
-        <!-- 第四列：檯費與套餐 -->
-        <div class="price-container">
-          <div class="price">💰 3000</div>
-          <div class="price">🍱 5300</div>
-        </div>
-        <!-- 第五列：可約時段 -->
-        <div class="availability-container">
-          <div class="availability-title">可約時段：</div>
-          <div>12-13-14-15-16-17-18-19-20-21-22-23-24-01-02-03-04-05</div>
+      <!-- 後卡：美容師服務心得 -->
+      <div class="card back">
+        <div class="reviews-content">
+          <h3>美容師服務心得</h3>
+          <div class="reviews-container">
+            <div class="review-item">客人留言 1: 服務非常專業，讓我感到非常滿意！</div>
+            <div class="review-item">客人留言 2: 美容師非常細心，整體體驗很棒。</div>
+            <div class="review-item">客人留言 3: 推薦給所有朋友，下次還會再來！</div>
+            <!-- 可加入更多留言項目 -->
+          </div>
+          <button class="close-btn" id="closeBtn">返回美容師資料卡</button>
         </div>
       </div>
     </div>
   </div>
 
+  <script>
+    // 監聽前卡的 touch 事件，偵測右滑動作
+    (function() {
+      var cardWrapper = document.getElementById('cardWrapper');
+      var frontCard = document.getElementById('frontCard');
+      var startX, startY, startTime;
+      var threshold = 50; // 最小滑動距離（像素）
+      var allowedTime = 300; // 最大滑動時間（毫秒）
+
+      frontCard.addEventListener('touchstart', function(e) {
+        var touchObj = e.changedTouches[0];
+        startX = touchObj.pageX;
+        startY = touchObj.pageY;
+        startTime = new Date().getTime();
+      }, false);
+
+      frontCard.addEventListener('touchend', function(e) {
+        var touchObj = e.changedTouches[0];
+        var distX = touchObj.pageX - startX;
+        var distY = touchObj.pageY - startY;
+        var elapsedTime = new Date().getTime() - startTime;
+        // 判斷是否為右滑：水平距離大於 threshold，垂直距離較小，且滑動時間合理
+        if (elapsedTime <= allowedTime && distX >= threshold && Math.abs(distY) < 100) {
+          cardWrapper.classList.add('swiped');
+        }
+      }, false);
+
+      // 返回按鈕移除 .swiped 類別，回到前卡視圖
+      document.getElementById('closeBtn').addEventListener('click', function() {
+        cardWrapper.classList.remove('swiped');
+      });
+    })();
+  </script>
 </body>
 </html>

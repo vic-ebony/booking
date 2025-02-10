@@ -3,195 +3,180 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>美容師卡片佈局</title>
+  <title>動物卡片橫向滑動 - 縮小一半，字體放大</title>
   <style>
     /* 全局設定 */
     body {
       font-family: Arial, sans-serif;
       background-color: #f5f5f5;
       margin: 0;
-      padding: 10px;
+      padding: 5px;
       text-align: center;
     }
-    .container {
-      max-width: 600px;
-      margin: auto;
+    h2 {
+      margin-bottom: 10px;
+      font-size: 16px;
     }
+    /* 外層橫向滑動容器 */
+    .scroll-container {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 5px;
+    }
+    /* 卡片樣式：垂直排列，固定寬度 */
     .card {
       display: flex;
+      flex-direction: column;
       background: white;
-      border-radius: 8px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+      border-radius: 4px;
+      box-shadow: 0 1px 2.5px rgba(0,0,0,0.15);
       overflow: hidden;
       text-align: left;
-      margin: 12px 0;
-    }
-    /* 左側：照片，固定於最左側 */
-    .photo {
+      width: 140px; /* 固定卡片寬度 */
       flex-shrink: 0;
     }
-    .photo img {
-      width: 130px;
-      height: 180px;
-      object-fit: cover;
-      display: block;
+    /* 上方資訊區：與卡片同寬 */
+    .info {
+      padding: 6px; /* 原 12px 縮小一半 */
+      width: 100%;
+      box-sizing: border-box;
     }
-    /* 右側區塊 */
-    .right-area {
-      flex-grow: 1;
-      padding: 12px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-    /* 上半部：分成兩欄 */
-    .top-row {
-      display: flex;
-      gap: 12px;
-    }
-    /* 左邊：美容師資料區 */
-    .data-area {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-    .name {
-      font-size: 16px;
+    .info .name {
+      font-size: 12px; /* 放大後 */
       font-weight: bold;
-      margin: 0;
+      margin: 0 0 3px 0;
     }
-    .details {
-      font-size: 12px;
+    .info .details {
+      font-size: 10px;
       color: #555;
-      margin: 0;
+      margin: 0 0 3px 0;
+      white-space: nowrap;
+    }
+    .price-container {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      margin-bottom: 3px;
     }
     .price {
-      font-size: 12px;
+      font-size: 10px; /* 放大後 */
       color: #555;
       margin: 0;
       white-space: nowrap;
+      /* 使用支援 Emoji 的字型堆疊 */
+      font-family: "Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", "Segoe UI Symbol", sans-serif;
     }
-    /* 右邊：美容師介紹 */
-    .intro-area {
-      flex: 1;
-      border-left: 1px solid #ddd;
-      padding-left: 12px;
-      display: flex;
-      align-items: center;
-    }
-    .intro-area p {
-      font-size: 12px;
-      color: #333;
-      margin: 0;
-    }
-    /* 下半部：可約時段 */
-    .bottom-row {
+    .availability-container {
       background: #eee;
-      padding: 6px 12px;
-      border-radius: 4px;
-      font-size: 12px;
+      padding: 3px 6px;
+      border-radius: 2px;
+      font-size: 10px; /* 放大後 */
       text-align: left;
     }
-    .bottom-row .availability-title {
+    .availability-title {
       font-weight: bold;
-      margin-bottom: 4px;
+      margin-bottom: 2px;
+      font-size: 10px;
+    }
+    /* 下方照片區：與上方資訊區同寬 */
+    .photo {
+      width: 100%;
+    }
+    .photo img {
+      width: 100%;
+      height: 200px;  /* 目前設定為 200px 高，可根據需求調整 */
+      object-fit: cover;
+      display: block;
     }
     /* 響應式調整 */
     @media (max-width:480px) {
       .card {
-        flex-direction: row;
-      }
-      .top-row {
-        flex-direction: row;
-        gap: 8px;
-      }
-      .photo img {
-        width: 120px;
-        height: 170px;
+        width: 130px;
       }
     }
   </style>
 </head>
 <body>
-  <h2>美容師卡片佈局</h2>
-  <div class="container">
+  <h2>動物卡片橫向滑動 - 縮小一半，字體放大</h2>
+  <div class="scroll-container">
     <!-- 卡片 1 -->
     <div class="card">
-      <!-- 左側：照片 -->
-      <div class="photo">
-        <img src="https://picsum.photos/130/180?random=1" alt="美容師照片">
+      <div class="info">
+        <div class="name">獅子</div>
+        <div class="details">100 / 100 / 1</div>
+        <div class="price-container">
+          <div class="price">💰 3000</div>
+          <div class="price">🍱 5300</div>
+        </div>
+        <div class="availability-container">
+          <div class="availability-title">活動時段：</div>
+          <div>
+            12-13-14-15-16-17<br>
+            18-19-20-21-22-23<br>
+            24-01-02-03-04-05
+          </div>
+        </div>
       </div>
-      <!-- 右側：資訊區 -->
-      <div class="right-area">
-        <!-- 上半部：分成兩欄 -->
-        <div class="top-row">
-          <!-- 左邊：美容師資料區 -->
-          <div class="data-area">
-            <div class="name">獅子</div>
-            <div class="details">160 / 45 / A</div>
-            <!-- 分兩行顯示檯費與套餐 -->
-            <div class="price">💰 3000</div>
-            <div class="price">🍱 5300</div>
-          </div>
-          <!-- 右邊：美容師介紹 -->
-          <div class="intro-area">
-            <p>美容師介紹：擁有多年經驗，專精臉部護理與造型設計，致力於打造專屬於您的美麗風格。</p>
-          </div>
-        </div>
-        <!-- 下半部：可約時段 -->
-        <div class="bottom-row">
-          <div class="availability-title">可約時段：</div>
-          <div>12-13-14-15-16-17-18-19-20-21-22-23-24-01-02-03-04-05</div>
-        </div>
+      <div class="photo">
+        <img src="https://picsum.photos/280/400?random=1" alt="動物照片">
       </div>
     </div>
     <!-- 卡片 2 -->
     <div class="card">
-      <div class="photo">
-        <img src="https://picsum.photos/130/180?random=2" alt="美容師照片">
+      <div class="info">
+        <div class="name">老虎</div>
+        <div class="details">100 / 100 / 1</div>
+        <div class="price-container">
+          <div class="price">💰 3200</div>
+          <div class="price">🍱 5500</div>
+        </div>
+        <div class="availability-container">
+          <div class="availability-title">活動時段：</div>
+          <div>
+            12-13-14-15-16-17<br>
+            18-19-20-21-22-23<br>
+            24-01-02-03-04-05
+          </div>
+        </div>
       </div>
-      <div class="right-area">
-        <div class="top-row">
-          <div class="data-area">
-            <div class="name">老虎</div>
-            <div class="details">165 / 50 / B</div>
-            <div class="price">💰 3200</div>
-            <div class="price">🍱 5500</div>
-          </div>
-          <div class="intro-area">
-            <p>美容師介紹：注重細節，打造個性造型，讓每位顧客展現獨特魅力。</p>
-          </div>
-        </div>
-        <div class="bottom-row">
-          <div class="availability-title">可約時段：</div>
-          <div>11-12-13-14-15-16-17-18-19-20-21-22-23-24-01-02-03-04-05</div>
-        </div>
+      <div class="photo">
+        <img src="https://picsum.photos/280/400?random=2" alt="動物照片">
       </div>
     </div>
     <!-- 卡片 3 -->
     <div class="card">
-      <div class="photo">
-        <img src="https://picsum.photos/130/180?random=3" alt="美容師照片">
+      <div class="info">
+        <div class="name">豹</div>
+        <div class="details">100 / 100 / 1</div>
+        <div class="price-container">
+          <div class="price">💰 3500</div>
+          <div class="price">🍱 6000</div>
+        </div>
+        <div class="availability-container">
+          <div class="availability-title">活動時段：</div>
+          <div>
+            12-13-14-15-16-17<br>
+            18-19-20-21-22-23<br>
+            24-01-02-03-04-05
+          </div>
+        </div>
       </div>
-      <div class="right-area">
-        <div class="top-row">
-          <div class="data-area">
-            <div class="name">豹</div>
-            <div class="details">158 / 48 / C</div>
-            <div class="price">💰 3500</div>
-            <div class="price">🍱 6000</div>
-          </div>
-          <div class="intro-area">
-            <p>美容師介紹：專注於護膚與造型，致力於提升您的自信與魅力。</p>
-          </div>
-        </div>
-        <div class="bottom-row">
-          <div class="availability-title">可約時段：</div>
-          <div>10-11-12-13-14-15-16-17-18-19-20-21-22-23-24-01-02-03-04-05</div>
-        </div>
+      <div class="photo">
+        <img src="https://picsum.photos/280/400?random=3" alt="動物照片">
       </div>
     </div>
   </div>
+  
+  <script>
+    // 將每個價格重新設定為隨機金額，範圍在 100 ~ 1000 之間，以百元為單位
+    document.querySelectorAll('.price').forEach(function(el) {
+      var prefix = el.innerText.trim().charAt(0);
+      var min = 100, max = 1000;
+      var price = Math.floor(Math.random() * (max - min + 1)) + min;
+      price = price - (price % 100);
+      el.innerText = prefix + " " + price;
+    });
+  </script>
 </body>
 </html>

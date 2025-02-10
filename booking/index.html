@@ -3,9 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>動物園館別切換 - 上方標籤 & 下方滑動切換</title>
+  <title>動物園館別切換 - 卡片翻轉顯示心得</title>
   <style>
     /* 全局設定 */
+    * {
+      box-sizing: border-box;
+    }
     body {
       font-family: Arial, sans-serif;
       background-color: #f5f5f5;
@@ -22,7 +25,12 @@
       display: flex;
       gap: 8px;
       margin-bottom: 10px;
+      padding: 0 10px; /* 保留一點內邊距 */
       overflow-x: auto;
+    }
+    .tabs > .tab:first-child {
+      /* 不再額外增加過多左邊距，讓標籤與主內容左對齊 */
+      margin-left: 0;
     }
     .tab {
       padding: 6px 12px;
@@ -41,11 +49,13 @@
     /* 主內容區 */
     .main-content {
       margin-bottom: 20px;
+      text-align: left;
     }
     .zoo-title {
       font-size: 16px;
       font-weight: bold;
       margin-bottom: 10px;
+      padding-left: 10px; /* 與標籤對齊 */
     }
     /* 外層橫向滑動容器 (卡片區) */
     .scroll-container {
@@ -55,33 +65,71 @@
       padding-bottom: 10px;
       justify-content: flex-start;
     }
-    /* 卡片樣式：縮小版型 */
-    .card {
-      display: flex;
-      flex-direction: column;
-      background: white;
-      border-radius: 4px;
-      box-shadow: 0 1px 2.5px rgba(0,0,0,0.15);
-      overflow: hidden;
-      text-align: left;
+    /* 翻轉卡片容器 */
+    .flip-card {
+      perspective: 1000px;
       width: 140px;
       flex-shrink: 0;
       margin-bottom: 10px;
     }
-    /* 上方照片區 */
+    /* 卡片內部容器，固定高度 */
+    .card-inner {
+      position: relative;
+      width: 100%;
+      height: 300px; /* 固定總高度 */
+      transition: transform 0.6s;
+      transform-style: preserve-3d;
+    }
+    .card-inner.flipped {
+      transform: rotateX(180deg);
+    }
+    /* 卡片正反面 */
+    .card-face {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      backface-visibility: hidden;
+    }
+    /* 前面：資訊卡（照片與基本資訊） */
+    .card-face.front {
+      /* 不需特殊變換 */
+    }
+    /* 後面：服務心得介紹，先預先翻轉 180 度 */
+    .card-face.back {
+      transform: rotateX(180deg);
+      background: #fff;
+      padding: 6px;
+      box-sizing: border-box;
+      font-size: 10px;
+      text-align: left;
+    }
+    .return-btn {
+      margin-top: 10px;
+      padding: 4px 8px;
+      font-size: 10px;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    /* 前面卡片內容 */
     .photo {
       width: 100%;
+      height: 200px; /* 固定照片高度 */
     }
     .photo img {
       width: 100%;
-      height: 200px;
+      height: 100%;
       object-fit: cover;
       display: block;
     }
-    /* 下方資訊區 */
     .info {
       padding: 6px;
       width: 100%;
+      height: calc(100% - 200px); /* 資訊區佔剩餘空間 */
       box-sizing: border-box;
       display: grid;
       grid-template-rows: repeat(4, auto);
@@ -133,10 +181,15 @@
       user-select: none;
       font-size: 14px;
     }
+    @media (max-width:480px) {
+      .flip-card {
+        width: 130px;
+      }
+    }
   </style>
 </head>
 <body>
-  <h2>動物園館別切換</h2>
+  <h2>動物園館別切換 - 卡片翻轉顯示心得</h2>
   
   <!-- 上方館別標籤 -->
   <div class="tabs">
@@ -163,25 +216,35 @@
     const zooBranches = ["A", "B", "C", "D", "E"];
     let currentZooIndex = 0;
     
-    // 生成某個館別的 10 張卡片 HTML
+    // 生成某個館別的 10 張翻轉卡片 HTML
     function generateZooCards(zooLetter) {
       let html = '';
       for (let i = 1; i <= 10; i++) {
         html += `
-          <div class="card">
-            <div class="photo">
-              <img src="https://picsum.photos/280/400?random=${zooLetter.charCodeAt(0)}${i}" alt="動物照片">
-            </div>
-            <div class="info">
-              <div class="name">動物園 ${zooLetter} - 動物 ${i}</div>
-              <div class="details">100 / 100 / 1</div>
-              <div class="price-container">
-                <div class="price">💰 3000</div>
-                <div class="price">🍱 5300</div>
+          <div class="flip-card">
+            <div class="card-inner">
+              <div class="card-face front">
+                <div class="photo">
+                  <img src="https://picsum.photos/280/400?random=${zooLetter.charCodeAt(0)}${i}" alt="動物照片">
+                </div>
+                <div class="info">
+                  <div class="name">動物園 ${zooLetter} - 動物 ${i}</div>
+                  <div class="details">100 / 100 / 1</div>
+                  <div class="price-container">
+                    <div class="price">💰 3000</div>
+                    <div class="price">🍱 5300</div>
+                  </div>
+                  <div class="availability-container">
+                    <div class="availability-title">活動時段：</div>
+                    <div>12-13-14-15-16-17-18-19-20-21-22-23-24-01-02-03-04-05</div>
+                  </div>
+                </div>
               </div>
-              <div class="availability-container">
-                <div class="availability-title">活動時段：</div>
-                <div>12-13-14-15-16-17-18-19-20-21-22-23-24-01-02-03-04-05</div>
+              <div class="card-face back">
+                <div class="review-content">
+                  <p>服務心得介紹：這是動物園 ${zooLetter} 的動物 ${i} 的服務心得介紹，描述其展現、行為及園區環境。</p>
+                </div>
+                <button class="return-btn" onclick="flipBack(this)">返回資訊</button>
               </div>
             </div>
           </div>
@@ -198,6 +261,7 @@
       updateRandomPrices();
       document.getElementById('cardContainer').scrollLeft = 0;
       updateTabs();
+      setupCardFlips();
     }
     
     // 更新隨機價格（每個價格隨機設在 100 ~ 1000 之間，以百元為單位）
@@ -211,13 +275,12 @@
       });
     }
     
-    // 更新上方標籤的 active 狀態
+    // 更新上方標籤的 active 狀態，並自動滾動 active 標籤到可見區域
     function updateTabs() {
       document.querySelectorAll('.tab').forEach(tab => {
         tab.classList.remove('active');
         if (tab.getAttribute('data-zoo') === zooBranches[currentZooIndex]) {
           tab.classList.add('active');
-          // 將 active 標籤滾動到可見區域（不過上方標籤區有 padding，所以不會過度留白）
           tab.scrollIntoView({ behavior: "smooth", inline: "start" });
         }
       });
@@ -254,16 +317,42 @@
       let elapsedTime = new Date().getTime() - startTime;
       if (elapsedTime <= allowedTime && Math.abs(distX) >= threshold) {
         if (distX < 0) {
-          // 左滑：切換到下一個館別
+          // 左滑：下一個館別
           currentZooIndex = (currentZooIndex + 1) % zooBranches.length;
         } else {
-          // 右滑：切換到上一個館別
+          // 右滑：上一個館別
           currentZooIndex = (currentZooIndex - 1 + zooBranches.length) % zooBranches.length;
         }
         updateMainContent();
       }
       e.preventDefault();
     }, false);
+    
+    // 設置每張翻轉卡片的觸控事件，讓該卡片向上滑動翻轉為心得介紹
+    function setupCardFlips() {
+      document.querySelectorAll('.flip-card').forEach(function(card) {
+        let startY = 0, startTime = 0;
+        card.addEventListener('touchstart', function(e) {
+          let touch = e.changedTouches[0];
+          startY = touch.pageY;
+          startTime = new Date().getTime();
+        }, false);
+        card.addEventListener('touchend', function(e) {
+          let touch = e.changedTouches[0];
+          let distY = touch.pageY - startY;
+          let elapsedTime = new Date().getTime() - startTime;
+          if (elapsedTime <= 500 && distY < -50) { // 向上滑動超過 50px
+            card.querySelector('.card-inner').classList.add('flipped');
+          }
+        }, false);
+      });
+    }
+    
+    // 返回按鈕函式：恢復前面資訊
+    function flipBack(btn) {
+      const cardInner = btn.closest('.card-inner');
+      cardInner.classList.remove('flipped');
+    }
   </script>
 </body>
 </html>

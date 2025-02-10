@@ -3,28 +3,54 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>動物卡片橫向滑動 - 10 張卡片</title>
+  <title>動物園館別切換 - 資訊卡</title>
   <style>
     /* 全局設定 */
     body {
       font-family: Arial, sans-serif;
       background-color: #f5f5f5;
       margin: 0;
-      padding: 5px;
+      padding: 10px;
       text-align: center;
     }
     h2 {
       margin-bottom: 10px;
-      font-size: 16px;
+      font-size: 18px;
+    }
+    /* 館別標籤 */
+    .tabs {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .tab {
+      padding: 6px 12px;
+      font-size: 14px;
+      background-color: #ddd;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .tab.active {
+      background-color: #007bff;
+      color: #fff;
+    }
+    /* 每個館別內容區 */
+    .tab-content {
+      display: none;
+    }
+    .tab-content.active {
+      display: block;
     }
     /* 外層橫向滑動容器 */
     .scroll-container {
       display: flex;
       gap: 6px;
       overflow-x: auto;
-      padding-bottom: 5px;
+      padding-bottom: 10px;
     }
-    /* 卡片樣式：垂直排列，固定寬度 */
+    /* 卡片樣式：採用垂直排列，固定寬度（縮小一半版型） */
     .card {
       display: flex;
       flex-direction: column;
@@ -36,22 +62,22 @@
       width: 140px; /* 固定卡片寬度 */
       flex-shrink: 0;
     }
-    /* 上方資訊區：與卡片同寬 */
+    /* 上方資訊區 */
     .info {
-      padding: 6px; /* 原 12px 縮小一半 */
+      padding: 6px;
       width: 100%;
       box-sizing: border-box;
       display: grid;
       grid-template-rows: repeat(4, auto);
-      gap: 4px; /* 原 8px → 4px */
+      gap: 4px;
     }
     .info .name {
-      font-size: 12px; /* 原 16px → 12px */
+      font-size: 12px;
       font-weight: bold;
       margin: 0 0 3px 0;
     }
     .info .details {
-      font-size: 10px; /* 原 12px → 10px */
+      font-size: 10px;
       color: #555;
       margin: 0 0 3px 0;
       white-space: nowrap;
@@ -59,36 +85,35 @@
     .price-container {
       display: flex;
       flex-direction: column;
-      gap: 2px; /* 原 4px → 2px */
-      margin-bottom: 3px; /* 原 6px → 3px */
+      gap: 2px;
+      margin-bottom: 3px;
     }
     .price {
-      font-size: 10px; /* 原 14px → 10px */
+      font-size: 10px;
       color: #555;
       margin: 0;
       white-space: nowrap;
-      /* 使用支援 Emoji 的字型堆疊 */
       font-family: "Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", "Segoe UI Symbol", sans-serif;
     }
     .availability-container {
       background: #eee;
-      padding: 3px 6px; /* 原 6px 12px → 3px 6px */
-      border-radius: 2px; /* 原 4px → 2px */
-      font-size: 10px; /* 原 12px → 10px */
+      padding: 3px 6px;
+      border-radius: 2px;
+      font-size: 10px;
       text-align: left;
     }
     .availability-title {
       font-weight: bold;
-      margin-bottom: 2px; /* 原 4px → 2px */
-      font-size: 10px; /* 原 12px → 10px */
+      margin-bottom: 2px;
+      font-size: 10px;
     }
-    /* 下方照片區：與上方資訊區同寬 */
+    /* 照片區 */
     .photo {
       width: 100%;
     }
     .photo img {
       width: 100%;
-      height: 200px;  /* 固定高度 200px */
+      height: 200px;  /* 固定照片高度 */
       object-fit: cover;
       display: block;
     }
@@ -101,186 +126,199 @@
   </style>
 </head>
 <body>
-  <h2>動物卡片橫向滑動 - 10 張卡片</h2>
-  <div class="scroll-container">
-    <!-- 卡片 1 -->
-    <div class="card">
-      <div class="info">
-        <div class="name">獅子</div>
-        <div class="details">100 / 100 / 1</div>
-        <div class="price-container">
-          <div class="price">💰 3000</div>
-          <div class="price">🍱 5300</div>
+  <h2>動物園資訊卡</h2>
+  <!-- 館別標籤 -->
+  <div class="tabs">
+    <button class="tab active" data-tab="zoo1">動物園 A</button>
+    <button class="tab" data-tab="zoo2">動物園 B</button>
+    <button class="tab" data-tab="zoo3">動物園 C</button>
+    <button class="tab" data-tab="zoo4">動物園 D</button>
+    <button class="tab" data-tab="zoo5">動物園 E</button>
+  </div>
+
+  <!-- 每間動物園館別的內容 -->
+  <div id="zoo1" class="tab-content active">
+    <div class="scroll-container">
+      <!-- 10 張卡片 (以卡片 1 ~ 10 為例) -->
+      <!-- 這裡以相同版型產生示範，每張卡片內容可以依需求修改 -->
+      <!-- 卡片 1 -->
+      <div class="card">
+        <div class="photo">
+          <img src="https://picsum.photos/280/400?random=1" alt="動物照片">
         </div>
-        <div class="availability-container">
-          <div class="availability-title">活動時段：</div>
-          <div>12-13-14-15-16-17-18-19-20-21-22-23-24-01-02-03-04-05</div>
-        </div>
-      </div>
-      <div class="photo">
-        <img src="https://picsum.photos/280/400?random=1" alt="動物照片">
-      </div>
-    </div>
-    <!-- 卡片 2 -->
-    <div class="card">
-      <div class="info">
-        <div class="name">老虎</div>
-        <div class="details">100 / 100 / 1</div>
-        <div class="price-container">
-          <div class="price">💰 3200</div>
-          <div class="price">🍱 5500</div>
-        </div>
-        <div class="availability-container">
-          <div class="availability-title">活動時段：</div>
-          <div>12-13-14-15-16-17-18-19-20-21-22-23-24-01-02-03-04-05</div>
-        </div>
-      </div>
-      <div class="photo">
-        <img src="https://picsum.photos/280/400?random=2" alt="動物照片">
-      </div>
-    </div>
-    <!-- 卡片 3 -->
-    <div class="card">
-      <div class="info">
-        <div class="name">豹</div>
-        <div class="details">100 / 100 / 1</div>
-        <div class="price-container">
-          <div class="price">💰 3500</div>
-          <div class="price">🍱 6000</div>
-        </div>
-        <div class="availability-container">
-          <div class="availability-title">活動時段：</div>
-          <div>12-13-14-15-16-17-18-19-20-21-22-23-24-01-02-03-04-05</div>
+        <div class="info">
+          <div class="name">獅子</div>
+          <div class="details">100 / 100 / 1</div>
+          <div class="price-container">
+            <div class="price">💰 3000</div>
+            <div class="price">🍱 5300</div>
+          </div>
+          <div class="availability-container">
+            <div class="availability-title">活動時段：</div>
+            <div>12-13-14-15-16-17-18-19-20-21-22-23-24-01-02-03-04-05</div>
+          </div>
         </div>
       </div>
-      <div class="photo">
-        <img src="https://picsum.photos/280/400?random=3" alt="動物照片">
-      </div>
-    </div>
-    <!-- 卡片 4 -->
-    <div class="card">
-      <div class="info">
-        <div class="name">熊</div>
-        <div class="details">100 / 100 / 1</div>
-        <div class="price-container">
-          <div class="price">💰 3100</div>
-          <div class="price">🍱 5400</div>
+      <!-- 以下依序產生卡片 2 ~ 卡片 10 (示範用不同的 random 參數) -->
+      <div class="card">
+        <div class="photo">
+          <img src="https://picsum.photos/280/400?random=2" alt="動物照片">
         </div>
-        <div class="availability-container">
-          <div class="availability-title">活動時段：</div>
-          <div>12-13-14-15-16-17-18-19-20-21-22-23-24-01-02-03-04-05</div>
-        </div>
-      </div>
-      <div class="photo">
-        <img src="https://picsum.photos/280/400?random=4" alt="動物照片">
-      </div>
-    </div>
-    <!-- 卡片 5 -->
-    <div class="card">
-      <div class="info">
-        <div class="name">大象</div>
-        <div class="details">100 / 100 / 1</div>
-        <div class="price-container">
-          <div class="price">💰 3300</div>
-          <div class="price">🍱 5700</div>
-        </div>
-        <div class="availability-container">
-          <div class="availability-title">活動時段：</div>
-          <div>12-13-14-15-16-17-18-19-20-21-22-23-24-01-02-03-04-05</div>
+        <div class="info">
+          <div class="name">老虎</div>
+          <div class="details">100 / 100 / 1</div>
+          <div class="price-container">
+            <div class="price">💰 3200</div>
+            <div class="price">🍱 5500</div>
+          </div>
+          <div class="availability-container">
+            <div class="availability-title">活動時段：</div>
+            <div>12-13-14-15-16-17-18-19-20-21-22-23-24-01-02-03-04-05</div>
+          </div>
         </div>
       </div>
-      <div class="photo">
-        <img src="https://picsum.photos/280/400?random=5" alt="動物照片">
-      </div>
-    </div>
-    <!-- 卡片 6 -->
-    <div class="card">
-      <div class="info">
-        <div class="name">猩猩</div>
-        <div class="details">100 / 100 / 1</div>
-        <div class="price-container">
-          <div class="price">💰 3400</div>
-          <div class="price">🍱 5800</div>
+      <div class="card">
+        <div class="photo">
+          <img src="https://picsum.photos/280/400?random=3" alt="動物照片">
         </div>
-        <div class="availability-container">
-          <div class="availability-title">活動時段：</div>
-          <div>12-13-14-15-16-17-18-19-20-21-22-23-24-01-02-03-04-05</div>
-        </div>
-      </div>
-      <div class="photo">
-        <img src="https://picsum.photos/280/400?random=6" alt="動物照片">
-      </div>
-    </div>
-    <!-- 卡片 7 -->
-    <div class="card">
-      <div class="info">
-        <div class="name">狼</div>
-        <div class="details">100 / 100 / 1</div>
-        <div class="price-container">
-          <div class="price">💰 3600</div>
-          <div class="price">🍱 5900</div>
-        </div>
-        <div class="availability-container">
-          <div class="availability-title">活動時段：</div>
-          <div>12-13-14-15-16-17-18-19-20-21-22-23-24-01-02-03-04-05</div>
+        <div class="info">
+          <div class="name">豹</div>
+          <div class="details">100 / 100 / 1</div>
+          <div class="price-container">
+            <div class="price">💰 3500</div>
+            <div class="price">🍱 6000</div>
+          </div>
+          <div class="availability-container">
+            <div class="availability-title">活動時段：</div>
+            <div>12-13-14-15-16-17-18-19-20-21-22-23-24-01-02-03-04-05</div>
+          </div>
         </div>
       </div>
-      <div class="photo">
-        <img src="https://picsum.photos/280/400?random=7" alt="動物照片">
-      </div>
-    </div>
-    <!-- 卡片 8 -->
-    <div class="card">
-      <div class="info">
-        <div class="name">鯊魚</div>
-        <div class="details">100 / 100 / 1</div>
-        <div class="price-container">
-          <div class="price">💰 3700</div>
-          <div class="price">🍱 6100</div>
+      <!-- 卡片 4 -->
+      <div class="card">
+        <div class="photo">
+          <img src="https://picsum.photos/280/400?random=4" alt="動物照片">
         </div>
-        <div class="availability-container">
-          <div class="availability-title">活動時段：</div>
-          <div>12-13-14-15-16-17-18-19-20-21-22-23-24-01-02-03-04-05</div>
-        </div>
-      </div>
-      <div class="photo">
-        <img src="https://picsum.photos/280/400?random=8" alt="動物照片">
-      </div>
-    </div>
-    <!-- 卡片 9 -->
-    <div class="card">
-      <div class="info">
-        <div class="name">鷹</div>
-        <div class="details">100 / 100 / 1</div>
-        <div class="price-container">
-          <div class="price">💰 3800</div>
-          <div class="price">🍱 6200</div>
-        </div>
-        <div class="availability-container">
-          <div class="availability-title">活動時段：</div>
-          <div>12-13-14-15-16-17-18-19-20-21-22-23-24-01-02-03-04-05</div>
+        <div class="info">
+          <div class="name">熊</div>
+          <div class="details">100 / 100 / 1</div>
+          <div class="price-container">
+            <div class="price">💰 3100</div>
+            <div class="price">🍱 5400</div>
+          </div>
+          <div class="availability-container">
+            <div class="availability-title">活動時段：</div>
+            <div>12-13-14-15-16-17-18-19-20-21-22-23-24-01-02-03-04-05</div>
+          </div>
         </div>
       </div>
-      <div class="photo">
-        <img src="https://picsum.photos/280/400?random=9" alt="動物照片">
-      </div>
-    </div>
-    <!-- 卡片 10 -->
-    <div class="card">
-      <div class="info">
-        <div class="name">孔雀</div>
-        <div class="details">100 / 100 / 1</div>
-        <div class="price-container">
-          <div class="price">💰 3900</div>
-          <div class="price">🍱 6300</div>
+      <!-- 卡片 5 -->
+      <div class="card">
+        <div class="photo">
+          <img src="https://picsum.photos/280/400?random=5" alt="動物照片">
         </div>
-        <div class="availability-container">
-          <div class="availability-title">活動時段：</div>
-          <div>12-13-14-15-16-17-18-19-20-21-22-23-24-01-02-03-04-05</div>
+        <div class="info">
+          <div class="name">大象</div>
+          <div class="details">100 / 100 / 1</div>
+          <div class="price-container">
+            <div class="price">💰 3300</div>
+            <div class="price">🍱 5700</div>
+          </div>
+          <div class="availability-container">
+            <div class="availability-title">活動時段：</div>
+            <div>12-13-14-15-16-17-18-19-20-21-22-23-24-01-02-03-04-05</div>
+          </div>
         </div>
       </div>
-      <div class="photo">
-        <img src="https://picsum.photos/280/400?random=10" alt="動物照片">
+      <!-- 卡片 6 -->
+      <div class="card">
+        <div class="photo">
+          <img src="https://picsum.photos/280/400?random=6" alt="動物照片">
+        </div>
+        <div class="info">
+          <div class="name">猩猩</div>
+          <div class="details">100 / 100 / 1</div>
+          <div class="price-container">
+            <div class="price">💰 3400</div>
+            <div class="price">🍱 5800</div>
+          </div>
+          <div class="availability-container">
+            <div class="availability-title">活動時段：</div>
+            <div>12-13-14-15-16-17-18-19-20-21-22-23-24-01-02-03-04-05</div>
+          </div>
+        </div>
+      </div>
+      <!-- 卡片 7 -->
+      <div class="card">
+        <div class="photo">
+          <img src="https://picsum.photos/280/400?random=7" alt="動物照片">
+        </div>
+        <div class="info">
+          <div class="name">狼</div>
+          <div class="details">100 / 100 / 1</div>
+          <div class="price-container">
+            <div class="price">💰 3600</div>
+            <div class="price">🍱 5900</div>
+          </div>
+          <div class="availability-container">
+            <div class="availability-title">活動時段：</div>
+            <div>12-13-14-15-16-17-18-19-20-21-22-23-24-01-02-03-04-05</div>
+          </div>
+        </div>
+      </div>
+      <!-- 卡片 8 -->
+      <div class="card">
+        <div class="photo">
+          <img src="https://picsum.photos/280/400?random=8" alt="動物照片">
+        </div>
+        <div class="info">
+          <div class="name">鯊魚</div>
+          <div class="details">100 / 100 / 1</div>
+          <div class="price-container">
+            <div class="price">💰 3700</div>
+            <div class="price">🍱 6100</div>
+          </div>
+          <div class="availability-container">
+            <div class="availability-title">活動時段：</div>
+            <div>12-13-14-15-16-17-18-19-20-21-22-23-24-01-02-03-04-05</div>
+          </div>
+        </div>
+      </div>
+      <!-- 卡片 9 -->
+      <div class="card">
+        <div class="photo">
+          <img src="https://picsum.photos/280/400?random=9" alt="動物照片">
+        </div>
+        <div class="info">
+          <div class="name">鷹</div>
+          <div class="details">100 / 100 / 1</div>
+          <div class="price-container">
+            <div class="price">💰 3800</div>
+            <div class="price">🍱 6200</div>
+          </div>
+          <div class="availability-container">
+            <div class="availability-title">活動時段：</div>
+            <div>12-13-14-15-16-17-18-19-20-21-22-23-24-01-02-03-04-05</div>
+          </div>
+        </div>
+      </div>
+      <!-- 卡片 10 -->
+      <div class="card">
+        <div class="photo">
+          <img src="https://picsum.photos/280/400?random=10" alt="動物照片">
+        </div>
+        <div class="info">
+          <div class="name">孔雀</div>
+          <div class="details">100 / 100 / 1</div>
+          <div class="price-container">
+            <div class="price">💰 3900</div>
+            <div class="price">🍱 6300</div>
+          </div>
+          <div class="availability-container">
+            <div class="availability-title">活動時段：</div>
+            <div>12-13-14-15-16-17-18-19-20-21-22-23-24-01-02-03-04-05</div>
+          </div>
+        </div>
       </div>
     </div>
   </div>

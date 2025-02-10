@@ -20,9 +20,9 @@
     /* 上方館別標籤 */
     .tabs {
       display: flex;
-      justify-content: center;
       gap: 8px;
       margin-bottom: 10px;
+      overflow-x: auto;
     }
     .tab {
       padding: 6px 12px;
@@ -32,6 +32,7 @@
       border-radius: 4px;
       cursor: pointer;
       white-space: nowrap;
+      flex-shrink: 0;
     }
     .tab.active {
       background-color: #007bff;
@@ -52,7 +53,6 @@
       gap: 6px;
       overflow-x: auto;
       padding-bottom: 10px;
-      /* 改為 flex-start 讓卡片從左邊開始排列 */
       justify-content: flex-start;
     }
     /* 卡片樣式：縮小版型 */
@@ -64,7 +64,7 @@
       box-shadow: 0 1px 2.5px rgba(0,0,0,0.15);
       overflow: hidden;
       text-align: left;
-      width: 140px;  /* 固定卡片寬度 */
+      width: 140px;
       flex-shrink: 0;
       margin-bottom: 10px;
     }
@@ -74,7 +74,7 @@
     }
     .photo img {
       width: 100%;
-      height: 200px;  /* 固定照片高度 */
+      height: 200px;
       object-fit: cover;
       display: block;
     }
@@ -140,11 +140,11 @@
   
   <!-- 上方館別標籤 -->
   <div class="tabs">
-    <button class="tab active" data-zoo="A">動物園 A</button>
-    <button class="tab" data-zoo="B">動物園 B</button>
-    <button class="tab" data-zoo="C">動物園 C</button>
-    <button class="tab" data-zoo="D">動物園 D</button>
-    <button class="tab" data-zoo="E">動物園 E</button>
+    <button class="tab active" data-zoo="A">動物園 A (10)</button>
+    <button class="tab" data-zoo="B">動物園 B (10)</button>
+    <button class="tab" data-zoo="C">動物園 C (10)</button>
+    <button class="tab" data-zoo="D">動物園 D (10)</button>
+    <button class="tab" data-zoo="E">動物園 E (10)</button>
   </div>
   
   <!-- 主內容區：包含館別標題與卡片 -->
@@ -190,13 +190,12 @@
       return html;
     }
     
-    // 更新主內容區與館別標題，並重設橫向滑動容器至最左側
+    // 更新主內容區與館別標題，並重置橫向滑動容器至最左側
     function updateMainContent() {
       const zooLetter = zooBranches[currentZooIndex];
       document.getElementById('zooTitle').innerText = `動物園 ${zooLetter}`;
       document.getElementById('cardContainer').innerHTML = generateZooCards(zooLetter);
       updateRandomPrices();
-      // 重置橫向滑動容器到最左邊
       document.getElementById('cardContainer').scrollLeft = 0;
       updateTabs();
     }
@@ -212,12 +211,14 @@
       });
     }
     
-    // 更新上方標籤 active 狀態
+    // 更新上方標籤的 active 狀態
     function updateTabs() {
       document.querySelectorAll('.tab').forEach(tab => {
         tab.classList.remove('active');
         if (tab.getAttribute('data-zoo') === zooBranches[currentZooIndex]) {
           tab.classList.add('active');
+          // 將 active 標籤滾動到可見區域（不過上方標籤區有 padding，所以不會過度留白）
+          tab.scrollIntoView({ behavior: "smooth", inline: "start" });
         }
       });
     }

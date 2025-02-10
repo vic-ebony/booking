@@ -5,31 +5,35 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>動物園館別切換 - 上方標籤 & 下方滑動切換</title>
   <style>
+    /* 設定基礎字體大小，方便後續使用 rem 單位 */
+    html {
+      font-size: 16px; /* 1rem = 16px */
+    }
     /* 全局設定 */
     body {
       font-family: Arial, sans-serif;
       background-color: #f5f5f5;
       margin: 0;
-      padding: 10px;
+      padding: 0.625rem; /* 10px */
       text-align: center;
     }
     h2 {
-      margin-bottom: 10px;
-      font-size: 18px;
+      margin-bottom: 0.625rem; /* 10px */
+      font-size: 1.125rem; /* 18px */
     }
     /* 上方館別標籤 */
     .tabs {
       display: flex;
-      gap: 8px;
-      margin-bottom: 10px;
+      gap: 0.5rem; /* 約8px */
+      margin-bottom: 0.625rem; /* 10px */
       overflow-x: auto;
     }
     .tab {
-      padding: 6px 12px;
-      font-size: 14px;
+      padding: 0.375rem 0.75rem; /* 6px 12px */
+      font-size: 0.875rem; /* 14px */
       background-color: #ddd;
       border: none;
-      border-radius: 4px;
+      border-radius: 0.25rem; /* 4px */
       cursor: pointer;
       white-space: nowrap;
       flex-shrink: 0;
@@ -40,19 +44,19 @@
     }
     /* 主內容區 */
     .main-content {
-      margin-bottom: 20px;
+      margin-bottom: 1.25rem; /* 20px */
     }
     .zoo-title {
-      font-size: 16px;
+      font-size: 1rem; /* 16px */
       font-weight: bold;
-      margin-bottom: 10px;
+      margin-bottom: 0.625rem; /* 10px */
     }
     /* 外層橫向滑動容器 (卡片區) */
     .scroll-container {
       display: flex;
-      gap: 6px;
+      gap: 0.375rem; /* 約6px */
       overflow-x: auto;
-      padding-bottom: 10px;
+      padding-bottom: 0.625rem; /* 10px */
       justify-content: flex-start;
     }
     /* 卡片樣式：縮小版型 */
@@ -60,13 +64,13 @@
       display: flex;
       flex-direction: column;
       background: white;
-      border-radius: 4px;
-      box-shadow: 0 1px 2.5px rgba(0,0,0,0.15);
+      border-radius: 0.25rem; /* 4px */
+      box-shadow: 0 0.0625rem 0.15625rem rgba(0,0,0,0.15); /* 約 1px 2.5px */
       overflow: hidden;
       text-align: left;
-      width: 140px;
+      width: 8.75rem; /* 140px / 16 = 8.75rem */
       flex-shrink: 0;
-      margin-bottom: 10px;
+      margin-bottom: 0.625rem; /* 10px */
     }
     /* 上方照片區 */
     .photo {
@@ -74,64 +78,78 @@
     }
     .photo img {
       width: 100%;
-      height: 200px;
+      height: 12.5rem; /* 200px / 16 = 12.5rem */
       object-fit: cover;
       display: block;
     }
     /* 下方資訊區 */
     .info {
-      padding: 6px;
+      padding: 0.375rem; /* 6px */
       width: 100%;
       box-sizing: border-box;
       display: grid;
       grid-template-rows: repeat(4, auto);
-      gap: 4px;
+      gap: 0.25rem; /* 4px */
     }
+    /* 調整名稱（例如動物園 A - 動物 1） */
     .info .name {
-      font-size: 12px;
+      font-size: 1.125rem; /* 18px */
       font-weight: bold;
-      margin: 0 0 3px 0;
+      margin: 0 0 0.25rem 0;
+      line-height: 1.4;
+      letter-spacing: 0.05rem;
     }
+    /* 調整身高/體重/罩杯資訊 */
     .info .details {
-      font-size: 10px;
+      font-size: 1rem;  /* 16px */
       color: #555;
-      margin: 0 0 3px 0;
+      margin: 0 0 0.2rem 0;
       white-space: nowrap;
+      line-height: 1.4;
+      letter-spacing: 0.05rem;
     }
+    /* 調整檯費資訊 */
     .price-container {
       display: flex;
       flex-direction: column;
-      gap: 2px;
-      margin-bottom: 3px;
+      gap: 0.125rem; /* 約2px */
+      margin-bottom: 0.1875rem; /* 約3px */
     }
     .price {
-      font-size: 10px;
+      font-size: 1rem; /* 16px */
       color: #555;
       margin: 0;
       white-space: nowrap;
+      font-weight: bold;
+      line-height: 1.4;
+      letter-spacing: 0.05rem;
+      /* 套餐那行已移除，只保留檯費（也可改成金錢圖示，如 "💰"） */
       font-family: "Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", "Segoe UI Symbol", sans-serif;
     }
+    /* 調整時段資訊 */
     .availability-container {
       background: #eee;
-      padding: 3px 6px;
-      border-radius: 2px;
-      font-size: 10px;
+      padding: 0.1875rem 0.375rem; /* 約3px 6px */
+      border-radius: 0.125rem; /* 約2px */
+      font-size: 1rem; /* 16px */
+      line-height: 1.4;
+      letter-spacing: 0.05rem;
       text-align: left;
     }
     .availability-title {
       font-weight: bold;
-      margin-bottom: 2px;
-      font-size: 10px;
+      margin-bottom: 0.125rem; /* 約2px */
+      font-size: 1rem; /* 16px */
     }
     /* 下方滑動區：館別切換提示 */
     #swipeArea {
-      margin-top: 20px;
-      padding: 10px;
+      margin-top: 1.25rem; /* 20px */
+      padding: 0.625rem; /* 10px */
       background: #ddd;
-      border-radius: 4px;
+      border-radius: 0.25rem; /* 4px */
       cursor: pointer;
       user-select: none;
-      font-size: 14px;
+      font-size: 0.875rem; /* 14px */
     }
   </style>
 </head>
@@ -147,7 +165,7 @@
     <button class="tab" data-zoo="E">動物園 E (10)</button>
   </div>
   
-  <!-- 主內容區：包含館別標題與卡片 -->
+  <!-- 主內容區：包含館別標籤與卡片 -->
   <div id="mainContent" class="main-content">
     <div id="zooTitle" class="zoo-title">動物園 A</div>
     <div class="scroll-container" id="cardContainer">
@@ -176,8 +194,7 @@
               <div class="name">動物園 ${zooLetter} - 動物 ${i}</div>
               <div class="details">100 / 100 / 1</div>
               <div class="price-container">
-                <div class="price">💰 3000</div>
-                <div class="price">🍱 5300</div>
+                <div class="price">檯費 3000</div>
               </div>
               <div class="availability-container">
                 <div class="availability-title">活動時段：</div>
@@ -190,7 +207,7 @@
       return html;
     }
     
-    // 更新主內容區與館別標題，並重置橫向滑動容器至最左側
+    // 更新主內容區與館別標籤，並重置橫向滑動容器至最左側
     function updateMainContent() {
       const zooLetter = zooBranches[currentZooIndex];
       document.getElementById('zooTitle').innerText = `動物園 ${zooLetter}`;
@@ -203,7 +220,8 @@
     // 更新隨機價格（每個價格隨機設在 100 ~ 1000 之間，以百元為單位）
     function updateRandomPrices() {
       document.querySelectorAll('.price').forEach(function(el) {
-        let prefix = el.innerText.trim().charAt(0);
+        // 使用 split 取出完整前置字串（例如「檯費」或您可以改成 "💰"）
+        let prefix = el.innerText.trim().split(" ")[0];
         let min = 100, max = 1000;
         let price = Math.floor(Math.random() * (max - min + 1)) + min;
         price = price - (price % 100);
@@ -217,7 +235,6 @@
         tab.classList.remove('active');
         if (tab.getAttribute('data-zoo') === zooBranches[currentZooIndex]) {
           tab.classList.add('active');
-          // 將 active 標籤滾動到可見區域（不過上方標籤區有 padding，所以不會過度留白）
           tab.scrollIntoView({ behavior: "smooth", inline: "start" });
         }
       });
@@ -254,10 +271,8 @@
       let elapsedTime = new Date().getTime() - startTime;
       if (elapsedTime <= allowedTime && Math.abs(distX) >= threshold) {
         if (distX < 0) {
-          // 左滑：切換到下一個館別
           currentZooIndex = (currentZooIndex + 1) % zooBranches.length;
         } else {
-          // 右滑：切換到上一個館別
           currentZooIndex = (currentZooIndex - 1 + zooBranches.length) % zooBranches.length;
         }
         updateMainContent();

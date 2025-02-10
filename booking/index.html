@@ -37,16 +37,23 @@
       background-color: #007bff;
       color: #fff;
     }
-    /* 主內容區：橫向滑動的卡片 */
+    /* 主內容區 */
     .main-content {
       margin-bottom: 20px;
     }
+    .zoo-title {
+      font-size: 16px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+    /* 外層橫向滑動容器 (卡片區) */
     .scroll-container {
       display: flex;
       gap: 6px;
       overflow-x: auto;
       padding-bottom: 10px;
-      justify-content: center;
+      /* 改為 flex-start 讓卡片從左邊開始排列 */
+      justify-content: flex-start;
     }
     /* 卡片樣式：縮小版型 */
     .card {
@@ -61,7 +68,7 @@
       flex-shrink: 0;
       margin-bottom: 10px;
     }
-    /* 照片區 */
+    /* 上方照片區 */
     .photo {
       width: 100%;
     }
@@ -71,7 +78,7 @@
       object-fit: cover;
       display: block;
     }
-    /* 資訊區 */
+    /* 下方資訊區 */
     .info {
       padding: 6px;
       width: 100%;
@@ -102,7 +109,6 @@
       color: #555;
       margin: 0;
       white-space: nowrap;
-      /* 使用支援 Emoji 的字型堆疊 */
       font-family: "Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", "Segoe UI Symbol", sans-serif;
     }
     .availability-container {
@@ -117,7 +123,7 @@
       margin-bottom: 2px;
       font-size: 10px;
     }
-    /* 下方滑動區：用於滑動切換館別 */
+    /* 下方滑動區：館別切換提示 */
     #swipeArea {
       margin-top: 20px;
       padding: 10px;
@@ -141,8 +147,9 @@
     <button class="tab" data-zoo="E">動物園 E</button>
   </div>
   
-  <!-- 主內容區：顯示館別資訊卡 -->
+  <!-- 主內容區：包含館別標題與卡片 -->
   <div id="mainContent" class="main-content">
+    <div id="zooTitle" class="zoo-title">動物園 A</div>
     <div class="scroll-container" id="cardContainer">
       <!-- 卡片內容由 JavaScript 動態生成 -->
     </div>
@@ -183,15 +190,18 @@
       return html;
     }
     
-    // 更新主內容區與上方標籤
+    // 更新主內容區與館別標題，並重設橫向滑動容器至最左側
     function updateMainContent() {
       const zooLetter = zooBranches[currentZooIndex];
+      document.getElementById('zooTitle').innerText = `動物園 ${zooLetter}`;
       document.getElementById('cardContainer').innerHTML = generateZooCards(zooLetter);
       updateRandomPrices();
+      // 重置橫向滑動容器到最左邊
+      document.getElementById('cardContainer').scrollLeft = 0;
       updateTabs();
     }
     
-    // 更新隨機價格
+    // 更新隨機價格（每個價格隨機設在 100 ~ 1000 之間，以百元為單位）
     function updateRandomPrices() {
       document.querySelectorAll('.price').forEach(function(el) {
         let prefix = el.innerText.trim().charAt(0);
@@ -202,7 +212,7 @@
       });
     }
     
-    // 更新上方標籤的 active 狀態
+    // 更新上方標籤 active 狀態
     function updateTabs() {
       document.querySelectorAll('.tab').forEach(tab => {
         tab.classList.remove('active');

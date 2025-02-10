@@ -6,9 +6,7 @@
   <title>動物園館別切換 - 卡片翻轉顯示心得</title>
   <style>
     /* 全局設定 */
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
     body {
       font-family: Arial, sans-serif;
       background-color: #f5f5f5;
@@ -25,11 +23,10 @@
       display: flex;
       gap: 8px;
       margin-bottom: 10px;
-      padding: 0 10px; /* 保留一點內邊距 */
+      padding: 0 10px;
       overflow-x: auto;
     }
     .tabs > .tab:first-child {
-      /* 不再額外增加過多左邊距，讓標籤與主內容左對齊 */
       margin-left: 0;
     }
     .tab {
@@ -55,7 +52,7 @@
       font-size: 16px;
       font-weight: bold;
       margin-bottom: 10px;
-      padding-left: 10px; /* 與標籤對齊 */
+      padding-left: 10px;
     }
     /* 外層橫向滑動容器 (卡片區) */
     .scroll-container {
@@ -72,11 +69,11 @@
       flex-shrink: 0;
       margin-bottom: 10px;
     }
-    /* 卡片內部容器，固定高度 */
+    /* 卡片內部容器：固定高度 320px（照片 180px + 資訊 140px） */
     .card-inner {
       position: relative;
       width: 100%;
-      height: 300px; /* 固定總高度 */
+      height: 320px;
       transition: transform 0.6s;
       transform-style: preserve-3d;
     }
@@ -92,11 +89,11 @@
       left: 0;
       backface-visibility: hidden;
     }
-    /* 前面：資訊卡（照片與基本資訊） */
+    /* 前面：資訊卡 */
     .card-face.front {
-      /* 不需特殊變換 */
+      overflow-y: hidden;
     }
-    /* 後面：服務心得介紹，先預先翻轉 180 度 */
+    /* 後面：服務心得介紹 */
     .card-face.back {
       transform: rotateX(180deg);
       background: #fff;
@@ -104,9 +101,13 @@
       box-sizing: border-box;
       font-size: 10px;
       text-align: left;
+      position: relative;
+      overflow-y: auto;
     }
     .return-btn {
-      margin-top: 10px;
+      position: absolute;
+      bottom: 6px;
+      right: 6px;
       padding: 4px 8px;
       font-size: 10px;
       background-color: #007bff;
@@ -118,7 +119,7 @@
     /* 前面卡片內容 */
     .photo {
       width: 100%;
-      height: 200px; /* 固定照片高度 */
+      height: 180px;
     }
     .photo img {
       width: 100%;
@@ -126,10 +127,16 @@
       object-fit: cover;
       display: block;
     }
+    /* 前面資訊區：固定高度 140px */
+    .card-face.front .info {
+      height: 140px;
+      overflow: hidden;
+      white-space: normal;
+      word-break: break-all;
+    }
     .info {
       padding: 6px;
       width: 100%;
-      height: calc(100% - 200px); /* 資訊區佔剩餘空間 */
       box-sizing: border-box;
       display: grid;
       grid-template-rows: repeat(4, auto);

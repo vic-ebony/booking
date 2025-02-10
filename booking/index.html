@@ -89,8 +89,15 @@
       width: 100%;
       box-sizing: border-box;
       display: grid;
-      grid-template-rows: repeat(4, auto);
+      grid-template-rows: repeat(5, auto); /* 延長至5行 */
       gap: 0.25rem; /* 4px */
+    }
+    /* 新增的狀態 badge 行 */
+    .info .badge-line {
+      font-size: 0.8rem; /* 約12.8px */
+      font-weight: bold;
+      margin: 0;
+      text-align: left;
     }
     /* 調整名稱，避免換行 */
     .info .name {
@@ -190,13 +197,23 @@
     // 生成某個館別的 20 張卡片 HTML
     function generateZooCards(zooLetter) {
       let html = '';
+      // 定義 badge 狀態選項：
+      // 🍓 代表 New (以紅色呈現)
+      // 🌶️ 代表 熱門
+      // 💯 代表 精選
+      const badgeOptions = ["🍓", "🌶️", "💯"];
       for (let i = 1; i <= 20; i++) {
+        // 隨機選擇一個 badge 狀態
+        const randomBadge = badgeOptions[Math.floor(Math.random() * badgeOptions.length)];
+        // 如果 badge 為 🍓 (New)，則使用紅色文字
+        const badgeContent = (randomBadge === "🍓") ? '<span style="color: red;">🍓</span>' : randomBadge;
         html += `
           <div class="card">
             <div class="photo">
               <img src="https://picsum.photos/280/400?random=${zooLetter.charCodeAt(0)}${i}" alt="動物照片">
             </div>
             <div class="info">
+              <div class="badge-line">${badgeContent}</div>
               <div class="name">動物園 ${zooLetter} - 動物 ${i}</div>
               <div class="details">100 / 100 / 1</div>
               <div class="price-container">

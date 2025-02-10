@@ -160,11 +160,11 @@
   
   <!-- 上方館別標籤 -->
   <div class="tabs">
-    <button class="tab active" data-zoo="A">動物園 A (10)</button>
-    <button class="tab" data-zoo="B">動物園 B (10)</button>
-    <button class="tab" data-zoo="C">動物園 C (10)</button>
-    <button class="tab" data-zoo="D">動物園 D (10)</button>
-    <button class="tab" data-zoo="E">動物園 E (10)</button>
+    <button class="tab active" data-zoo="A">動物園 A (20)</button>
+    <button class="tab" data-zoo="B">動物園 B (20)</button>
+    <button class="tab" data-zoo="C">動物園 C (20)</button>
+    <button class="tab" data-zoo="D">動物園 D (20)</button>
+    <button class="tab" data-zoo="E">動物園 E (20)</button>
   </div>
   
   <!-- 主內容區：包含館別標籤與卡片 -->
@@ -183,10 +183,10 @@
     const zooBranches = ["A", "B", "C", "D", "E"];
     let currentZooIndex = 0;
     
-    // 生成某個館別的 10 張卡片 HTML
+    // 生成某個館別的 20 張卡片 HTML
     function generateZooCards(zooLetter) {
       let html = '';
-      for (let i = 1; i <= 10; i++) {
+      for (let i = 1; i <= 20; i++) {
         html += `
           <div class="card">
             <div class="photo">

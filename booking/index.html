@@ -7,6 +7,10 @@
   <!-- 引入 Font Awesome 圖示庫（如果您希望使用圖示，可保留；此範例主要使用文字搭配徽章） -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-2T5G0sRV0QEj2QZqOCiD/f3pZpXk/q1c6eJZe9g/s4fPPpBy/jF37sx6jK0S5FqgQ7b0jwJJYOrpZhdk+sQF8g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <style>
+    /* 設定基本字體大小 */
+    html {
+      font-size: 16px; /* 基本字體 16px，可根據需求調整 */
+    }
     /* 全局設定 */
     body {
       font-family: Arial, sans-serif;
@@ -14,8 +18,7 @@
       margin: 0;
       padding: 0;
       text-align: center;
-      /* 禁止 body 自身滾動，僅下方卡片區滾動 */
-      overflow: hidden;
+      overflow: hidden; /* 禁止 body 自身滾動 */
     }
     .container {
       max-width: 600px;
@@ -37,7 +40,7 @@
     #header h2 {
       margin: 0;
       padding: 10px;
-      font-size: 1.125rem;
+      font-size: 1.25rem; /* 稍微放大標題 */
     }
     /* 上方館別標籤區 */
     #branchesContainer {
@@ -52,7 +55,7 @@
     .branch-tab {
       margin: 0 4px;
       padding: 6px 12px;
-      font-size: 14px;
+      font-size: 1rem; /* 16px */
       background-color: #ddd;
       border: none;
       border-radius: 4px;
@@ -120,7 +123,7 @@
       gap: 6px;
     }
     .name {
-      font-size: 14px;
+      font-size: 1rem;
       font-weight: bold;
       margin: 0;
       white-space: nowrap;
@@ -128,12 +131,12 @@
       text-overflow: ellipsis;
     }
     .details {
-      font-size: 12px;
+      font-size: 0.875rem;
       color: #555;
       margin: 0;
     }
     .price {
-      font-size: 12px;
+      font-size: 0.875rem;
       color: #555;
       margin: 0;
       white-space: nowrap;
@@ -146,7 +149,7 @@
       align-items: center;
     }
     .intro-area p {
-      font-size: 12px;
+      font-size: 0.875rem;
       color: #333;
       margin: 0;
     }
@@ -154,27 +157,27 @@
       background: #eee;
       padding: 6px 12px;
       border-radius: 4px;
-      font-size: 12px;
+      font-size: 0.875rem;
       text-align: left;
     }
     .bottom-row .availability-title {
       font-weight: bold;
       margin-bottom: 4px;
     }
-    /* 卡片操作按鈕區，使用 Flexbox 內部對齊 */
+    /* 卡片操作按鈕區 */
     .action-buttons {
       display: flex;
       justify-content: flex-end;
       gap: 8px;
       margin-top: 6px;
     }
-    /* 「下週搶約」按鈕：純文字 + 徽章（徽章綠底白字） */
+    /* 「下週搶約」按鈕 */
     .reservation-btn {
       min-width: 100px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      font-size: 12px;
+      font-size: 0.875rem;
       background-color: transparent;
       border: none;
       cursor: pointer;
@@ -186,18 +189,18 @@
       border: none;
       border-radius: 12px;
       padding: 2px 6px;
-      font-size: 10px;
+      font-size: 0.75rem;
       margin-left: 4px;
       min-width: 30px;
       text-align: center;
     }
-    /* 「心得」按鈕：純文字 + 徽章（徽章藍底白字） */
+    /* 「心得」按鈕 */
     .comments-btn {
       min-width: 100px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      font-size: 12px;
+      font-size: 0.875rem;
       background-color: transparent;
       border: none;
       cursor: pointer;
@@ -209,12 +212,12 @@
       border: none;
       border-radius: 12px;
       padding: 2px 6px;
-      font-size: 10px;
+      font-size: 0.75rem;
       margin-left: 4px;
       min-width: 30px;
       text-align: center;
     }
-    /* 側邊面板：拆分標籤頁面 */
+    /* 側邊面板 */
     #sidePanel {
       position: fixed;
       top: 130px;
@@ -239,6 +242,7 @@
     }
     #sidePanel h3 {
       margin-top: 0;
+      font-size: 1rem;
     }
     /* 側邊面板標籤列 */
     #sidePanelTabs {
@@ -250,7 +254,7 @@
     .side-tab {
       flex: 1;
       padding: 6px 0;
-      font-size: 14px;
+      font-size: 0.875rem;
       background: none;
       border: none;
       cursor: pointer;
@@ -263,6 +267,7 @@
     .side-tab-content {
       display: none;
       text-align: left;
+      font-size: 0.875rem;
     }
     .side-tab-content.active {
       display: block;
@@ -274,13 +279,13 @@
       right: 10px;
       border: none;
       background: none;
-      font-size: 18px;
+      font-size: 1rem;
       cursor: pointer;
     }
     #sidePanel .comment {
       text-align: left;
       margin: 8px 0;
-      font-size: 12px;
+      font-size: 0.75rem;
       color: #333;
     }
     /* 漸變遮罩（Overlay） */
@@ -377,14 +382,14 @@
       });
     });
 
-    // 產生 30 個範本，每個館別，並隨機新增留言數據；資訊卡上僅顯示「下週搶約」與「心得」按鈕
+    // 產生 30 個範本，每個館別，並隨機新增留言數據；資訊卡上只顯示「下週搶約」與「心得」按鈕
     const cardsContainer = document.getElementById('cardsContainer');
     function updateCards(){
       let cardsHTML = "";
       for (let i = 1; i <= 30; i++){
         // 隨機產生留言數據
         const numComments = Math.floor(Math.random() * 6) + 5;      // 心得留言數
-        const numReservation = Math.floor(Math.random() * 3) + 1;       // 下週搶約數
+        const numReservation = Math.floor(Math.random() * 3) + 1;     // 下週搶約數
         let commentsHTML = "";
         for (let j = 1; j <= numComments; j++){
           commentsHTML += `<div class="comment"><strong>User${j}:</strong> This is comment ${j} for 動物園 ${currentBranch} - 動物 ${i}.</div>`;
@@ -410,7 +415,7 @@
                 <div class="availability-title">活動時段：</div>
                 <div>12-13-14-15-16-17-18-19-20-21-22-23-24-01-02-03-04-05</div>
               </div>
-              <!-- 操作按鈕區：下週搶約在左、心得在右 -->
+              <!-- 卡片操作按鈕區：下週搶約在左、心得在右 -->
               <div class="action-buttons">
                 <button class="reservation-btn" onclick="openSidePanel('動物園 ${currentBranch} - 動物 ${i}', ${numReservation}, 'reservation')">
                   下週搶約 <span class="badge">${numReservation}</span>
@@ -431,7 +436,7 @@
     updateCards();
     document.querySelector(`.branch-tab[data-branch="${currentBranch}"]`).classList.add('active');
 
-    // 為下方卡片區新增左右滑動切換館別功能
+    // 下方卡片區左右滑動切換館別功能
     let startX = 0;
     const swipeThreshold = 50;
     cardsContainer.addEventListener('touchstart', function(e) {
@@ -485,7 +490,7 @@
         document.getElementById('sideTabComments').innerHTML = html;
       } else if (actionType === 'reservation') {
         sidePanelTitle.textContent = `下週搶約 - ${cardTitle} (${count}則)`;
-        let html = `<table style="width:100%; font-size:12px; text-align:left; border-collapse: collapse;">`;
+        let html = `<table style="width:100%; font-size:0.875rem; text-align:left; border-collapse: collapse;">`;
         html += `<tr><th>Date</th><th>Time</th></tr>`;
         for (let i = 1; i <= count; i++){
           html += `<tr><td>2023-09-${i+10}</td><td>${9+i}:00 - ${10+i}:00</td></tr>`;

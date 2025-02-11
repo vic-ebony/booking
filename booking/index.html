@@ -23,7 +23,7 @@
       top: 0;
       background-color: #f5f5f5;
       z-index: 1000;
-      padding: 10px; /* 上下左右皆有內距 */
+      padding: 10px; /* 上下左右皆有內距，避免標籤被裁切 */
       display: flex;
       overflow-x: auto;
       -webkit-overflow-scrolling: touch;
@@ -89,9 +89,12 @@
       gap: 6px;
     }
     .name {
-      font-size: 16px;
+      font-size: 14px;  /* 調整字體大小 */
       font-weight: bold;
       margin: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
     .details {
       font-size: 12px;
@@ -176,6 +179,8 @@
         tab.classList.add('active');
         tab.scrollIntoView({behavior: "smooth", inline: "center"});
         updateCards();
+        // 將頁面捲動到卡片區頂部（確保看到第一張卡片）
+        window.scrollTo({ top: document.getElementById('cardsContainer').offsetTop, behavior: "smooth" });
       });
     });
 
@@ -210,6 +215,8 @@
         `;
       }
       cardsContainer.innerHTML = cardsHTML;
+      // 每次更新卡片後，捲動頁面到卡片區頂部
+      window.scrollTo({ top: cardsContainer.offsetTop, behavior: "smooth" });
     }
 
     // 初始載入第一個館別 (A) 的 30 個範本，同時設定預設選取效果
@@ -235,7 +242,6 @@
           currentIndex = (currentIndex - 1 + branches.length) % branches.length;
         }
         currentBranch = branches[currentIndex];
-        // 更新上方標籤的選取效果
         branchTabs.forEach(t => t.classList.remove('active'));
         const activeTab = document.querySelector(`.branch-tab[data-branch="${currentBranch}"]`);
         activeTab.classList.add('active');

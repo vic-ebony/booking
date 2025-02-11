@@ -71,7 +71,7 @@
     /* 下方卡片區，獨立滾動且左右留空 */
     #cardsContainer {
       position: absolute;
-      top: 130px; /* Header 區域高度 (依實際 header 高度調整) */
+      top: 130px; /* Header 區域高度 */
       left: 50%;
       transform: translateX(-50%);
       width: 100%;
@@ -179,13 +179,13 @@
       border-radius: 4px;
       cursor: pointer;
     }
-    /* 側邊面板：留言顯示，預設隱藏且無陰影 */
+    /* 側邊面板：留言顯示，預設隱藏且無陰影，並調整高度為對稱上下間距 */
     #sidePanel {
       position: fixed;
       top: 130px; /* 與卡片區上方對齊 */
-      right: -320px; /* 隱藏在右側 */
+      right: -320px; /* 初始隱藏在右側 */
       width: 300px;
-      height: calc(100vh - 130px);
+      height: calc(100vh - 260px); /* 上下各 130px 間距，對稱 */
       background-color: #fff;
       border: none;
       outline: none;
@@ -196,6 +196,8 @@
       padding: 20px;
       box-sizing: border-box;
       display: none; /* 預設隱藏 */
+      border-top-left-radius: 10px;
+      border-bottom-left-radius: 10px;
     }
     #sidePanel.active {
       right: 0;
@@ -203,9 +205,10 @@
     #sidePanel h3 {
       margin-top: 0;
     }
+    /* 將關閉按鈕移到右下角 */
     #sidePanel .close-btn {
       position: absolute;
-      top: 10px;
+      bottom: 10px;
       right: 10px;
       border: none;
       background: none;
@@ -370,17 +373,12 @@
         commentsHTML += `<div class="comment"><strong>User${i}:</strong> This is comment ${i} for ${cardTitle}.</div>`;
       }
       commentsContainer.innerHTML = commentsHTML;
-      // 顯示側邊面板：先設定 display 為 block，再啟動 slide 效果
       sidePanel.style.display = "block";
-      setTimeout(() => {
-        sidePanel.classList.add('active');
-      }, 10);
+      setTimeout(() => { sidePanel.classList.add('active'); }, 10);
     }
     function closeSidePanel() {
       sidePanel.classList.remove('active');
-      setTimeout(() => {
-        sidePanel.style.display = "none";
-      }, 300);
+      setTimeout(() => { sidePanel.style.display = "none"; }, 300);
     }
   </script>
 </body>

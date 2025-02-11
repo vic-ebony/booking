@@ -179,20 +179,23 @@
       border-radius: 4px;
       cursor: pointer;
     }
-    /* 側邊面板：留言顯示 */
+    /* 側邊面板：留言顯示，預設隱藏且無陰影 */
     #sidePanel {
       position: fixed;
-      top: 0;
-      right: -320px; /* 初始隱藏在右側 */
+      top: 130px; /* 與卡片區上方對齊 */
+      right: -320px; /* 隱藏在右側 */
       width: 300px;
-      height: 100vh;
+      height: calc(100vh - 130px);
       background-color: #fff;
-      box-shadow: -2px 0 5px rgba(0,0,0,0.3);
+      border: none;
+      outline: none;
+      box-shadow: none;
       overflow-y: auto;
       transition: right 0.3s ease;
       z-index: 2000;
       padding: 20px;
       box-sizing: border-box;
+      display: none; /* 預設隱藏 */
     }
     #sidePanel.active {
       right: 0;
@@ -228,7 +231,6 @@
         width: 120px;
         height: 170px;
       }
-      /* 側邊面板寬度調整 */
       #sidePanel {
         width: 80%;
       }
@@ -252,9 +254,7 @@
   <div id="sidePanel">
     <button class="close-btn" onclick="closeSidePanel()">×</button>
     <h3 id="sidePanelTitle">留言</h3>
-    <div id="commentsContainer">
-      <!-- 留言內容將由 JavaScript 產生 -->
-    </div>
+    <div id="commentsContainer"></div>
   </div>
   <script>
     // 定義 10 個動物園館別 (A ~ J)
@@ -281,11 +281,17 @@
       });
     });
 
-    // 產生 30 個範本，每個館別，並加入「留言」按鈕（側邊面板方式）
+    // 產生 30 個範本，每個館別，並隨機新增 5~10 則留言
     const cardsContainer = document.getElementById('cardsContainer');
     function updateCards(){
       let cardsHTML = "";
       for (let i = 1; i <= 30; i++){
+        // 隨機產生 5~10 則留言
+        const numComments = Math.floor(Math.random() * 6) + 5;
+        let commentsHTML = "";
+        for (let j = 1; j <= numComments; j++){
+          commentsHTML += `<div class="comment"><strong>User${j}:</strong> This is comment ${j} for 動物園 ${currentBranch} - 動物 ${i}.</div>`;
+        }
         cardsHTML += `
           <div class="card">
             <div class="photo">
@@ -316,7 +322,7 @@
         `;
       }
       cardsContainer.innerHTML = cardsHTML;
-      // 重設卡片區捲動至最上方
+      // 更新卡片後，重設卡片區滾動至最上方
       cardsContainer.scrollTop = 0;
     }
 
@@ -346,6 +352,8 @@
         activeTab.classList.add('active');
         activeTab.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
         updateCards();
+        // 切換館別時，將卡片區滾動回最上方
+        cardsContainer.scrollTop = 0;
       }
     }, false);
 
@@ -354,27 +362,26 @@
     const commentsContainer = document.getElementById('commentsContainer');
     const sidePanelTitle = document.getElementById('sidePanelTitle');
     function openSidePanel(cardTitle) {
-      // 設定側邊面板標題（可根據需求顯示該卡片標題）
       sidePanelTitle.textContent = `留言 - ${cardTitle}`;
       // 隨機產生 5~10 則留言
       const numComments = Math.floor(Math.random() * 6) + 5;
       let commentsHTML = "";
-      for (let i = 1; i <= numComments; i++) {
+      for (let i = 1; i <= numComments; i++){
         commentsHTML += `<div class="comment"><strong>User${i}:</strong> This is comment ${i} for ${cardTitle}.</div>`;
       }
       commentsContainer.innerHTML = commentsHTML;
-      // 顯示側邊面板
-      sidePanel.classList.add('active');
+      // 顯示側邊面板：先設定 display 為 block，再啟動 slide 效果
+      sidePanel.style.display = "block";
+      setTimeout(() => {
+        sidePanel.classList.add('active');
+      }, 10);
     }
     function closeSidePanel() {
       sidePanel.classList.remove('active');
+      setTimeout(() => {
+        sidePanel.style.display = "none";
+      }, 300);
     }
   </script>
-  <!-- 側邊面板（留言區） -->
-  <div id="sidePanel">
-    <button class="close-btn" onclick="closeSidePanel()">×</button>
-    <h3 id="sidePanelTitle">留言</h3>
-    <div id="commentsContainer"></div>
-  </div>
 </body>
 </html>

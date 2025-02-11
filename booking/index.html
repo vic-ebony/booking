@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>動物園介紹</title>
-  <!-- 引入 Font Awesome 圖示庫 -->
+  <!-- 引入 Font Awesome（若未使用圖示，可保留或刪除） -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-2T5G0sRV0QEj2QZqOCiD/f3pZpXk/q1c6eJZe9g/s4fPPpBy/jF37sx6jK0S5FqgQ7b0jwJJYOrpZhdk+sQF8g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <style>
     /* 全局設定 */
@@ -14,15 +14,14 @@
       margin: 0;
       padding: 0;
       text-align: center;
-      /* 禁止 body 自身滾動，僅下方卡片區滾動 */
-      overflow: hidden;
+      overflow: hidden; /* 禁止 body 自身滾動 */
     }
     .container {
       max-width: 600px;
       margin: auto;
       box-sizing: border-box;
     }
-    /* 固定 Header 區域（包含標題與上方館別標籤） */
+    /* 固定 Header 區域（包含標題與館別標籤） */
     #header {
       position: fixed;
       top: 0;
@@ -73,7 +72,7 @@
     /* 下方卡片區，獨立滾動且左右留空 */
     #cardsContainer {
       position: absolute;
-      top: 130px; /* Header 區域高度 (依實際 header 高度調整) */
+      top: 130px; /* Header 區域高度 */
       left: 50%;
       transform: translateX(-50%);
       width: 100%;
@@ -81,7 +80,7 @@
       bottom: 0;
       overflow-y: auto;
       box-sizing: border-box;
-      padding: 0 10px; /* 左右空白 */
+      padding: 0 10px;
     }
     /* 卡片樣式 */
     .card {
@@ -164,33 +163,47 @@
     /* 卡片操作按鈕區 */
     .action-buttons {
       display: flex;
-      justify-content: space-around;
+      justify-content: flex-end;
+      gap: 8px;
       margin-top: 6px;
     }
-    .open-comments-btn {
+    /* 「下週搶約」按鈕：純文字 + 徽章，徽章綠底白字 */
+    .reservation-btn {
       font-size: 12px;
       padding: 4px 8px;
       border: none;
-      background-color: #007bff;
-      color: #fff;
-      border-radius: 4px;
+      background-color: transparent;
+      color: #000;
       cursor: pointer;
     }
-    /* 使用 Font Awesome 的圖示搭配徽章 */
-    .open-comments-btn i {
-      margin-right: 4px;
-    }
-    .badge {
-      display: inline-block;
-      background-color: #f5f5f5; /* 淺灰色背景 */
-      color: #333;             /* 深色文字 */
-      border: 1px solid #ccc;
-      border-radius: 12px;       /* Pill 形狀 */
+    .reservation-btn .badge {
+      background-color: #28a745; /* 綠底 */
+      color: #fff;
+      border: none;
+      border-radius: 12px;
       padding: 2px 6px;
       font-size: 10px;
       margin-left: 4px;
     }
-    /* 側邊面板：留言區，拆分成三個標籤頁面 */
+    /* 「心得」按鈕：純文字 + 徽章，徽章藍底白字 */
+    .comments-btn {
+      font-size: 12px;
+      padding: 4px 8px;
+      border: none;
+      background-color: transparent;
+      color: #000;
+      cursor: pointer;
+    }
+    .comments-btn .badge {
+      background-color: #007bff; /* 藍底 */
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      padding: 2px 6px;
+      font-size: 10px;
+      margin-left: 4px;
+    }
+    /* 側邊面板：留言/改名/下週搶約內容，拆分標籤頁 */
     #sidePanel {
       position: fixed;
       top: 130px; /* 與卡片區上方對齊 */
@@ -235,7 +248,7 @@
       border-bottom: 2px solid #007bff;
       color: #007bff;
     }
-    /* 側邊面板內容區 */
+    /* 側邊面板內容 */
     .side-tab-content {
       display: none;
       text-align: left;
@@ -243,7 +256,7 @@
     .side-tab-content.active {
       display: block;
     }
-    /* 將關閉按鈕移到右下角 */
+    /* 將側邊面板關閉按鈕移到右下角 */
     #sidePanel .close-btn {
       position: absolute;
       bottom: 10px;
@@ -311,17 +324,17 @@
   </div>
   <!-- 漸變遮罩（Overlay） -->
   <div id="overlay"></div>
-  <!-- 側邊面板：留言區，帶有標籤頁面 -->
+  <!-- 側邊面板：留言區，拆分標籤頁面 -->
   <div id="sidePanel">
     <button class="close-btn" onclick="closeSidePanel()">×</button>
     <h3 id="sidePanelTitle">心得</h3>
-    <!-- 標籤頁列 -->
+    <!-- 側邊面板標籤 -->
     <div id="sidePanelTabs">
       <button class="side-tab active" id="sideTabBtn_comments" onclick="switchSideTab('comments')">心得</button>
       <button class="side-tab" id="sideTabBtn_rename" onclick="switchSideTab('rename')">改名</button>
       <button class="side-tab" id="sideTabBtn_reservation" onclick="switchSideTab('reservation')">下週搶約</button>
     </div>
-    <!-- 內容區 -->
+    <!-- 側邊面板內容 -->
     <div id="sidePanelContent">
       <div id="sideTabComments" class="side-tab-content active"></div>
       <div id="sideTabRename" class="side-tab-content"></div>
@@ -341,7 +354,7 @@
     }
     branchesContainer.innerHTML = branchesHTML;
 
-    // 為館別標籤加上點擊事件
+    // 為館別標籤加上點擊事件，設定選取效果並自動滾動至置中
     const branchTabs = document.querySelectorAll('.branch-tab');
     branchTabs.forEach(tab => {
       tab.addEventListener('click', function(){
@@ -353,14 +366,14 @@
       });
     });
 
-    // 產生 30 個範本，每個館別，並隨機新增 5~10 則留言；同時加入三個按鈕：心得、改名、下週搶約
+    // 產生 30 個範本，每個館別，並隨機新增 5~10 則留言；資訊卡上只顯示「下週搶約」與「心得」兩個按鈕
     const cardsContainer = document.getElementById('cardsContainer');
     function updateCards(){
       let cardsHTML = "";
       for (let i = 1; i <= 30; i++){
-        const numComments = Math.floor(Math.random() * 6) + 5;  // 心得留言數
-        const numRename = Math.floor(Math.random() * 5) + 1;      // 改名歷程數
-        const numReservation = Math.floor(Math.random() * 3) + 1;   // 下週搶約班表數
+        // 隨機產生留言數據
+        const numComments = Math.floor(Math.random() * 6) + 5;      // 心得留言數
+        const numReservation = Math.floor(Math.random() * 3) + 1;       // 下週搶約數
         let commentsHTML = "";
         for (let j = 1; j <= numComments; j++){
           commentsHTML += `<div class="comment"><strong>User${j}:</strong> This is comment ${j} for 動物園 ${currentBranch} - 動物 ${i}.</div>`;
@@ -386,16 +399,13 @@
                 <div class="availability-title">活動時段：</div>
                 <div>12-13-14-15-16-17-18-19-20-21-22-23-24-01-02-03-04-05</div>
               </div>
-              <!-- 行動按鈕 -->
+              <!-- 卡片操作按鈕區：下週搶約在左，心得在右 -->
               <div class="action-buttons">
-                <button class="open-comments-btn" onclick="openSidePanel('動物園 ${currentBranch} - 動物 ${i}', ${numComments}, 'comments')">
-                  <i class="fa fa-comment"></i><span class="badge">${numComments}</span> 心得
+                <button class="reservation-btn" onclick="openSidePanel('動物園 ${currentBranch} - 動物 ${i}', ${numReservation}, 'reservation')">
+                  下週搶約 <span class="badge green">${numReservation}</span>
                 </button>
-                <button class="open-comments-btn" onclick="openSidePanel('動物園 ${currentBranch} - 動物 ${i}', ${numRename}, 'rename')">
-                  <i class="fa fa-edit"></i><span class="badge">${numRename}</span> 改名
-                </button>
-                <button class="open-comments-btn" onclick="openSidePanel('動物園 ${currentBranch} - 動物 ${i}', ${numReservation}, 'reservation')">
-                  <i class="fa fa-calendar"></i><span class="badge">${numReservation}</span> 下週搶約
+                <button class="comments-btn" onclick="openSidePanel('動物園 ${currentBranch} - 動物 ${i}', ${numComments}, 'comments')">
+                  心得 <span class="badge blue">${numComments}</span>
                 </button>
               </div>
             </div>
@@ -406,11 +416,11 @@
       cardsContainer.scrollTop = 0;
     }
 
-    // 初始載入第一個館別 (A) 的 30 個範本，並設定預設選取效果
+    // 初始載入第一個館別 (A) 的 30 個範本
     updateCards();
     document.querySelector(`.branch-tab[data-branch="${currentBranch}"]`).classList.add('active');
 
-    // 為下方卡片區新增左右滑動切換館別功能
+    // 下方卡片區左右滑動切換館別功能
     let startX = 0;
     const swipeThreshold = 50;
     cardsContainer.addEventListener('touchstart', function(e) {
@@ -440,13 +450,9 @@
     const sidePanel = document.getElementById('sidePanel');
     const commentsContainer = document.getElementById('commentsContainer');
     const sidePanelTitle = document.getElementById('sidePanelTitle');
-    // 切換側邊面板標籤內容
     function switchSideTab(tabName) {
-      // 清除所有標籤按鈕的 active 狀態
       document.querySelectorAll('.side-tab').forEach(btn => btn.classList.remove('active'));
-      // 隱藏所有標籤內容
       document.querySelectorAll('.side-tab-content').forEach(div => div.style.display = "none");
-      // 根據 tabName 顯示相應內容
       if (tabName === 'comments') {
         document.getElementById('sideTabComments').style.display = "block";
         document.getElementById('sideTabBtn_comments').classList.add('active');
@@ -458,7 +464,6 @@
         document.getElementById('sideTabBtn_reservation').classList.add('active');
       }
     }
-    // 當開啟側邊面板時根據傳入的 actionType自動切換標籤
     function openSidePanel(cardTitle, count, actionType) {
       if (actionType === 'comments') {
         sidePanelTitle.textContent = `心得 - ${cardTitle} (${count}則)`;
@@ -467,13 +472,6 @@
           html += `<div class="comment"><strong>User${i}:</strong> This is comment ${i} for ${cardTitle}.</div>`;
         }
         document.getElementById('sideTabComments').innerHTML = html;
-      } else if (actionType === 'rename') {
-        sidePanelTitle.textContent = `改名 - ${cardTitle} (${count}則)`;
-        let html = "";
-        for (let i = 1; i <= count; i++){
-          html += `<div class="comment"><strong>History ${i}:</strong> Changed name from OldName${i} to NewName${i} on 2023-08-${i}.</div>`;
-        }
-        document.getElementById('sideTabRename').innerHTML = html;
       } else if (actionType === 'reservation') {
         sidePanelTitle.textContent = `下週搶約 - ${cardTitle} (${count}則)`;
         let html = `<table style="width:100%; font-size:12px; text-align:left; border-collapse: collapse;">`;
@@ -486,11 +484,9 @@
       }
       // 自動切換標籤頁
       switchSideTab(actionType);
-      // 顯示遮罩（Overlay）
       const overlay = document.getElementById('overlay');
       overlay.style.display = "block";
       setTimeout(() => { overlay.classList.add('active'); }, 10);
-      // 顯示側邊面板
       sidePanel.style.display = "block";
       setTimeout(() => { sidePanel.classList.add('active'); }, 10);
     }
@@ -504,17 +500,15 @@
       }, 300);
     }
   </script>
-  <!-- 側邊面板：留言區（包含標籤頁面） -->
+  <!-- 側邊面板標籤及內容 -->
   <div id="sidePanel">
     <button class="close-btn" onclick="closeSidePanel()">×</button>
     <h3 id="sidePanelTitle">心得</h3>
-    <!-- 側邊面板標籤 -->
     <div id="sidePanelTabs">
       <button class="side-tab active" id="sideTabBtn_comments" onclick="switchSideTab('comments')">心得</button>
       <button class="side-tab" id="sideTabBtn_rename" onclick="switchSideTab('rename')">改名</button>
       <button class="side-tab" id="sideTabBtn_reservation" onclick="switchSideTab('reservation')">下週搶約</button>
     </div>
-    <!-- 側邊面板內容 -->
     <div id="sidePanelContent">
       <div id="sideTabComments" class="side-tab-content active"></div>
       <div id="sideTabRename" class="side-tab-content" style="display:none;"></div>

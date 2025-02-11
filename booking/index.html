@@ -20,7 +20,7 @@
       margin: auto;
       box-sizing: border-box;
     }
-    /* 固定 Header 區域（包含標題與館別標籤） */
+    /* 固定 Header 區域（包含標題與上方館別標籤） */
     #header {
       position: fixed;
       top: 0;
@@ -44,6 +44,8 @@
       overflow-x: auto;
       -webkit-overflow-scrolling: touch;
       scroll-snap-type: x mandatory;
+      scroll-padding-left: 50px;
+      scroll-padding-right: 50px;
     }
     .branch-tab {
       margin: 0 4px;
@@ -163,6 +165,33 @@
       font-weight: bold;
       margin-bottom: 4px;
     }
+    /* 新增：留言切換區（展開/收起留言區） */
+    .comments-toggle {
+      text-align: right;
+      margin-top: 6px;
+    }
+    .toggle-comments-btn {
+      font-size: 12px;
+      padding: 4px 8px;
+      border: none;
+      background-color: #007bff;
+      color: #fff;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .comments-section {
+      display: none;
+      background-color: #fafafa;
+      padding: 6px 12px;
+      border-radius: 4px;
+      margin-top: 6px;
+      text-align: left;
+      font-size: 12px;
+      color: #333;
+    }
+    .comments-section p {
+      margin: 4px 0;
+    }
     /* 響應式調整 */
     @media (max-width:480px) {
       .card {
@@ -212,18 +241,23 @@
         currentBranch = tab.getAttribute('data-branch');
         branchTabs.forEach(t => t.classList.remove('active'));
         tab.classList.add('active');
+        // 讓被選取的標籤置中
         tab.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
         updateCards();
-        // 當切換館別時，將卡片區捲動至最上方
-        cardsContainer.scrollTop = 0;
       });
     });
 
-    // 產生 30 個範本，每個館別
+    // 產生 30 個範本，每個館別，並隨機新增 5 ~ 10 則留言
     const cardsContainer = document.getElementById('cardsContainer');
     function updateCards(){
       let cardsHTML = "";
       for (let i = 1; i <= 30; i++){
+        // 隨機產生 5~10 則留言
+        const numComments = Math.floor(Math.random() * 6) + 5; // 5 至 10
+        let commentsHTML = "";
+        for (let j = 1; j <= numComments; j++){
+          commentsHTML += `<p><strong>User${j}:</strong> This is comment ${j} for animal ${i}.</p>`;
+        }
         cardsHTML += `
           <div class="card">
             <div class="photo">
@@ -245,12 +279,19 @@
                 <div class="availability-title">活動時段：</div>
                 <div>12-13-14-15-16-17-18-19-20-21-22-23-24-01-02-03-04-05</div>
               </div>
+              <!-- 留言切換區 -->
+              <div class="comments-toggle">
+                <button class="toggle-comments-btn" onclick="toggleComments(this)">Show Comments</button>
+              </div>
+              <div class="comments-section">
+                ${commentsHTML}
+              </div>
             </div>
           </div>
         `;
       }
       cardsContainer.innerHTML = cardsHTML;
-      // 更新卡片後也將卡片區捲動至最上方
+      // 更新卡片後，重設捲動到卡片區最上方
       cardsContainer.scrollTop = 0;
     }
 
@@ -282,6 +323,18 @@
         updateCards();
       }
     }, false);
+
+    // 留言切換函式：切換同一卡片內的留言區顯示/隱藏
+    function toggleComments(btn) {
+      const commentsSection = btn.parentElement.nextElementSibling;
+      if (commentsSection.style.display === "none" || commentsSection.style.display === "") {
+        commentsSection.style.display = "block";
+        btn.textContent = "Hide Comments";
+      } else {
+        commentsSection.style.display = "none";
+        btn.textContent = "Show Comments";
+      }
+    }
   </script>
 </body>
 </html>

@@ -17,13 +17,37 @@
       max-width: 600px;
       margin: auto;
     }
-    /* 讓上方動物園館別標籤保持在頂 */
+    /* 上方館別標籤區，置頂且橫向排列 */
     #branchesContainer {
       position: sticky;
       top: 0;
       background-color: #f5f5f5;
       z-index: 1000;
-      padding: 10px 0;
+      padding: 10px; /* 上下左右皆有內距 */
+      display: flex;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .branch-tab {
+      margin: 0 4px;
+      padding: 6px 12px;
+      font-size: 14px;
+      background-color: #ddd;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    /* 加入第一個與最後一個標籤的左右額外間距 */
+    .branch-tab:first-child {
+      margin-left: 10px;
+    }
+    .branch-tab:last-child {
+      margin-right: 10px;
+    }
+    .branch-tab.active {
+      background-color: #007bff;
+      color: #fff;
     }
     .card {
       display: flex;
@@ -125,29 +149,32 @@
   <h2>動物園介紹</h2>
   <!-- 上方 10 個動物園館別標籤 -->
   <div class="container" id="branchesContainer">
-    <!-- 動物園館別標籤將由 JavaScript 動態生成 -->
+    <!-- 分館標籤由 JavaScript 動態生成 -->
   </div>
   <div class="container" id="cardsContainer">
-    <!-- 卡片將由 JavaScript 動態生成 -->
+    <!-- 卡片由 JavaScript 動態生成 -->
   </div>
   <script>
     // 定義 10 個動物園館別標籤 (A ~ J)
     const branches = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
     let currentBranch = branches[0];
 
-    // 產生館別標籤的 HTML
+    // 產生館別標籤的 HTML，並加入固定數量 (30)
     const branchesContainer = document.getElementById('branchesContainer');
     let branchesHTML = "";
     for (let i = 0; i < branches.length; i++) {
-      branchesHTML += `<button class="branch-tab" data-branch="${branches[i]}">動物園 ${branches[i]}</button> `;
+      branchesHTML += `<button class="branch-tab" data-branch="${branches[i]}">動物園 ${branches[i]} (30)</button> `;
     }
     branchesContainer.innerHTML = branchesHTML;
 
-    // 為館別標籤加上點擊事件
+    // 為館別標籤加上點擊事件，設定選取效果並自動滾動到中間
     const branchTabs = document.querySelectorAll('.branch-tab');
     branchTabs.forEach(tab => {
       tab.addEventListener('click', function(){
         currentBranch = tab.getAttribute('data-branch');
+        branchTabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        tab.scrollIntoView({behavior: "smooth", inline: "center"});
         updateCards();
       });
     });
@@ -185,8 +212,37 @@
       cardsContainer.innerHTML = cardsHTML;
     }
 
-    // 初始載入第一個館別的 30 個範本
+    // 初始載入第一個館別 (A) 的 30 個範本，同時設定預設選取效果
     updateCards();
+    document.querySelector(`.branch-tab[data-branch="${currentBranch}"]`).classList.add('active');
+
+    // 為下方卡片區新增左右滑動切換館別功能
+    let startX = 0;
+    const swipeThreshold = 50; // 定義最小滑動距離 (px)
+    cardsContainer.addEventListener('touchstart', function(e) {
+      startX = e.changedTouches[0].pageX;
+    }, false);
+    cardsContainer.addEventListener('touchend', function(e) {
+      let endX = e.changedTouches[0].pageX;
+      let diff = endX - startX;
+      if (Math.abs(diff) > swipeThreshold) {
+        let currentIndex = branches.indexOf(currentBranch);
+        if (diff < 0) {
+          // 往左滑：下一個館別
+          currentIndex = (currentIndex + 1) % branches.length;
+        } else {
+          // 往右滑：上一個館別
+          currentIndex = (currentIndex - 1 + branches.length) % branches.length;
+        }
+        currentBranch = branches[currentIndex];
+        // 更新上方標籤的選取效果
+        branchTabs.forEach(t => t.classList.remove('active'));
+        const activeTab = document.querySelector(`.branch-tab[data-branch="${currentBranch}"]`);
+        activeTab.classList.add('active');
+        activeTab.scrollIntoView({behavior: "smooth", inline: "center"});
+        updateCards();
+      }
+    }, false);
   </script>
 </body>
 </html>

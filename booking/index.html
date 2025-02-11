@@ -12,7 +12,7 @@
       margin: 0;
       padding: 0;
       text-align: center;
-      /* 禁止 body 本身滾動，僅下方卡片區可滾動 */
+      /* 禁止 body 自身滾動，僅下方卡片區滾動 */
       overflow: hidden;
     }
     .container {
@@ -66,10 +66,10 @@
       background-color: #007bff;
       color: #fff;
     }
-    /* 下方卡片區，獨立垂直滾動且左右留空 */
+    /* 下方卡片區，獨立滾動且左右留空 */
     #cardsContainer {
       position: absolute;
-      top: 130px; /* Header 區域高度 (根據 header 高度調整) */
+      top: 130px; /* Header 區域高度 (依實際 header 高度調整) */
       left: 50%;
       transform: translateX(-50%);
       width: 100%;
@@ -77,7 +77,7 @@
       bottom: 0;
       overflow-y: auto;
       box-sizing: border-box;
-      padding: 0 10px; /* 左右保留空白 */
+      padding: 0 10px; /* 左右空白 */
     }
     /* 卡片樣式（保持不變） */
     .card {
@@ -120,7 +120,7 @@
       gap: 6px;
     }
     .name {
-      font-size: 14px;
+      font-size: 14px;  /* 調整字體大小 */
       font-weight: bold;
       margin: 0;
       white-space: nowrap;
@@ -212,9 +212,10 @@
         currentBranch = tab.getAttribute('data-branch');
         branchTabs.forEach(t => t.classList.remove('active'));
         tab.classList.add('active');
-        // 讓被選取的標籤置中
         tab.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
         updateCards();
+        // 當切換館別時，將卡片區捲動至最上方
+        cardsContainer.scrollTop = 0;
       });
     });
 
@@ -249,6 +250,8 @@
         `;
       }
       cardsContainer.innerHTML = cardsHTML;
+      // 更新卡片後也將卡片區捲動至最上方
+      cardsContainer.scrollTop = 0;
     }
 
     // 初始載入第一個館別 (A) 的 30 個範本，同時設定預設選取效果

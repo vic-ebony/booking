@@ -11,28 +11,35 @@
       background-color: #f5f5f5;
       margin: 0;
       padding: 0;
-      /* 禁用 body 的垂直捲動，由下方區塊自行滾動 */
+      text-align: center;
+      /* 禁止 body 本身滾動，僅下方卡片區可滾動 */
       overflow: hidden;
     }
-    /* Header 區塊：包含標題與上方館別標籤 */
+    .container {
+      max-width: 600px;
+      margin: auto;
+      box-sizing: border-box;
+    }
+    /* 固定 Header 區域（包含標題與館別標籤） */
     #header {
       position: fixed;
       top: 0;
-      left: 0;
-      right: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 600px;
       background-color: #f5f5f5;
-      z-index: 1000;
-      padding: 10px;
+      z-index: 1001;
       box-sizing: border-box;
     }
     #header h2 {
       margin: 0;
+      padding: 10px;
       font-size: 1.125rem;
-      text-align: center;
     }
-    /* 上方館別標籤區，置中並可橫向捲動 */
+    /* 上方館別標籤區 */
     #branchesContainer {
-      margin-top: 10px;
+      padding: 10px;
       display: flex;
       overflow-x: auto;
       -webkit-overflow-scrolling: touch;
@@ -59,16 +66,20 @@
       background-color: #007bff;
       color: #fff;
     }
-    /* 下方卡片區 */
+    /* 下方卡片區，獨立垂直滾動且左右留空 */
     #cardsContainer {
-      margin-top: 130px; /* Header 高度 (約 130px，可根據實際 header 高度調整) */
-      overflow-y: auto;
-      height: calc(100vh - 130px);
-    }
-    .container {
+      position: absolute;
+      top: 130px; /* Header 區域高度 (根據 header 高度調整) */
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
       max-width: 600px;
-      margin: auto;
+      bottom: 0;
+      overflow-y: auto;
+      box-sizing: border-box;
+      padding: 0 10px; /* 左右保留空白 */
     }
+    /* 卡片樣式（保持不變） */
     .card {
       display: flex;
       background: white;
@@ -96,10 +107,12 @@
       flex-direction: column;
       gap: 12px;
     }
+    /* 上半部：分成兩欄 */
     .top-row {
       display: flex;
       gap: 12px;
     }
+    /* 左邊：動物資料區 */
     .data-area {
       flex: 1;
       display: flex;
@@ -107,7 +120,7 @@
       gap: 6px;
     }
     .name {
-      font-size: 14px;  /* 調整字體大小 */
+      font-size: 14px;
       font-weight: bold;
       margin: 0;
       white-space: nowrap;
@@ -125,6 +138,7 @@
       margin: 0;
       white-space: nowrap;
     }
+    /* 右邊：動物園介紹 */
     .intro-area {
       flex: 1;
       border-left: 1px solid #ddd;
@@ -137,6 +151,7 @@
       color: #333;
       margin: 0;
     }
+    /* 下半部：活動時段 */
     .bottom-row {
       background: #eee;
       padding: 6px 12px;
@@ -165,7 +180,7 @@
   </style>
 </head>
 <body>
-  <!-- Header 固定區塊 -->
+  <!-- 固定 Header 區域 -->
   <div id="header" class="container">
     <h2>動物園介紹</h2>
     <!-- 上方 10 個動物園館別標籤 -->
@@ -173,7 +188,7 @@
       <!-- 分館標籤由 JavaScript 動態生成 -->
     </div>
   </div>
-  <!-- 下方卡片區 -->
+  <!-- 下方卡片區（獨立滾動） -->
   <div id="cardsContainer" class="container">
     <!-- 卡片由 JavaScript 動態生成 -->
   </div>
@@ -182,7 +197,7 @@
     const branches = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
     let currentBranch = branches[0];
 
-    // 產生館別標籤的 HTML，並加入固定數量 (30)
+    // 產生館別標籤的 HTML（固定 30 個範本）
     const branchesContainer = document.getElementById('branchesContainer');
     let branchesHTML = "";
     for (let i = 0; i < branches.length; i++) {
@@ -190,13 +205,14 @@
     }
     branchesContainer.innerHTML = branchesHTML;
 
-    // 為館別標籤加上點擊事件，設定選取效果並自動滾動到中間
+    // 為館別標籤加上點擊事件，設定選取效果並自動滾動至置中
     const branchTabs = document.querySelectorAll('.branch-tab');
     branchTabs.forEach(tab => {
       tab.addEventListener('click', function(){
         currentBranch = tab.getAttribute('data-branch');
         branchTabs.forEach(t => t.classList.remove('active'));
         tab.classList.add('active');
+        // 讓被選取的標籤置中
         tab.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
         updateCards();
       });

@@ -285,14 +285,13 @@
     /* 使用 CSS Grid 對齊心得結果 */
     .review-details {
       display: grid;
-      /* 將原來的30% 70%改為auto 1fr，讓標籤不會離邊框太遠 */
+      /* 將第一欄改為自動寬度，讓標籤靠近左邊 */
       grid-template-columns: auto 1fr;
       gap: 5px 10px;
     }
     .review-label {
       text-align: right;
       font-weight: bold;
-      /* 減少padding */
       padding-right: 5px;
       word-break: break-all;
     }
@@ -475,14 +474,19 @@
     // 行動裝置左右滑動切換館別
     let startX = 0;
     const swipeThreshold = 50;
-    cardsContainer.addEventListener('touchstart', function(e) { startX = e.changedTouches[0].pageX; }, false);
+    cardsContainer.addEventListener('touchstart', function(e) {
+      startX = e.changedTouches[0].pageX;
+    }, false);
     cardsContainer.addEventListener('touchend', function(e) {
       let endX = e.changedTouches[0].pageX;
       let diff = endX - startX;
       if (Math.abs(diff) > swipeThreshold) {
         let currentIndex = branches.indexOf(currentBranch);
-        if (diff < 0) { currentIndex = (currentIndex + 1) % branches.length; }
-        else { currentIndex = (currentIndex - 1 + branches.length) % branches.length; }
+        if (diff < 0) {
+          currentIndex = (currentIndex + 1) % branches.length;
+        } else {
+          currentIndex = (currentIndex - 1 + branches.length) % branches.length;
+        }
         currentBranch = branches[currentIndex];
         branchTabs.forEach(t => t.classList.remove('active'));
         const activeTab = document.querySelector(`.branch-tab[data-branch="${currentBranch}"]`);
@@ -559,29 +563,26 @@
       });
     }
     
-    // 更新「身材」滑桿顯示文字
-    function updateBodyValue(val) {
-      const bodyTypes = ["骨感", "瘦", "均勻", "微肉", "棉花糖"];
-      document.getElementById('bodyValue').innerText = bodyTypes[val-1];
-    }
-    // 更新「膚質」滑桿顯示文字
-    function updateSkinQualityValue(val) {
-      const qualities = ["絲滑", "普通", "差"];
-      document.getElementById('skinQualityValue').innerText = qualities[val-1];
-    }
-    // 更新「膚色」滑桿顯示文字
-    function updateSkinColorValue(val) {
-      const colors = ["白皙", "偏白", "普通", "偏黃", "黑"];
-      document.getElementById('skinColorValue').innerText = colors[val-1];
+    // 新增：單選型點選函式 (用於身材、膚質、膚色)
+    function selectSingleChip(element, containerId) {
+      const container = document.getElementById(containerId);
+      const chips = container.getElementsByClassName("chip");
+      // 清除同容器內所有選取狀態
+      for (let i = 0; i < chips.length; i++) {
+        chips[i].classList.remove("selected");
+      }
+      // 設定當前點選項為選取狀態
+      element.classList.add("selected");
     }
     
-    // 開啟側邊面板（填寫表單）
+    // 以下為心得填寫表單與結果部分（僅修改身材、膚質、膚色部分為單選型）
     function openSidePanel(cardTitle, count, actionType) {
       const sidePanel = document.getElementById('sidePanel');
       const overlay = document.getElementById('overlay');
       if (actionType === 'comments') {
         document.getElementById('sidePanelTitle').textContent = `心得 - ${cardTitle}`;
         // 建立「現有心得」區與「新增心得」表單
+        // ※ 下列表單中保留了尺度部分 (加值前／加值後)
         const reviewContent = `
           <div id="reviewList" style="margin-bottom:20px;"></div>
           <hr>
@@ -602,10 +603,16 @@
                 <span class="chip" onclick="toggleChip(this)">素人</span>
               </div>
             </div>
+            <!-- 將身材改為點選型（單選） -->
             <div class="form-section">
-              <label for="bodySlider">身材：</label>
-              <input type="range" id="bodySlider" name="bodySlider" min="1" max="5" step="1" value="3" oninput="updateBodyValue(this.value)">
-              <span id="bodyValue">均勻</span>
+              <label>身材：</label>
+              <div class="chip-container" id="bodyTypeContainer">
+                <span class="chip" onclick="selectSingleChip(this, 'bodyTypeContainer')">骨感</span>
+                <span class="chip" onclick="selectSingleChip(this, 'bodyTypeContainer')">瘦</span>
+                <span class="chip" onclick="selectSingleChip(this, 'bodyTypeContainer')">均勻</span>
+                <span class="chip" onclick="selectSingleChip(this, 'bodyTypeContainer')">微肉</span>
+                <span class="chip" onclick="selectSingleChip(this, 'bodyTypeContainer')">棉花糖</span>
+              </div>
             </div>
             <div class="form-section">
               <label for="cupSize">罩杯：</label>
@@ -613,17 +620,27 @@
                 <option value="">請選擇</option>
               </select>
             </div>
+            <!-- 將膚質改為點選型（單選） -->
             <div class="form-section">
-              <label for="skinQualitySlider">膚質：</label>
-              <input type="range" id="skinQualitySlider" name="skinQualitySlider" min="1" max="3" step="1" value="2" oninput="updateSkinQualityValue(this.value)">
-              <span id="skinQualityValue">普通</span>
+              <label>膚質：</label>
+              <div class="chip-container" id="skinQualityContainer">
+                <span class="chip" onclick="selectSingleChip(this, 'skinQualityContainer')">絲滑</span>
+                <span class="chip" onclick="selectSingleChip(this, 'skinQualityContainer')">普通</span>
+                <span class="chip" onclick="selectSingleChip(this, 'skinQualityContainer')">差</span>
+              </div>
             </div>
+            <!-- 將膚色改為點選型（單選），並將 "普通" 改為 "正常" -->
             <div class="form-section">
-              <label for="skinColorSlider">膚色：</label>
-              <input type="range" id="skinColorSlider" name="skinColorSlider" min="1" max="5" step="1" value="3" oninput="updateSkinColorValue(this.value)">
-              <span id="skinColorValue">普通</span>
+              <label>膚色：</label>
+              <div class="chip-container" id="skinColorContainer">
+                <span class="chip" onclick="selectSingleChip(this, 'skinColorContainer')">白皙</span>
+                <span class="chip" onclick="selectSingleChip(this, 'skinColorContainer')">偏白</span>
+                <span class="chip" onclick="selectSingleChip(this, 'skinColorContainer')">正常</span>
+                <span class="chip" onclick="selectSingleChip(this, 'skinColorContainer')">偏黃</span>
+                <span class="chip" onclick="selectSingleChip(this, 'skinColorContainer')">黑</span>
+              </div>
             </div>
-            <!-- 尺度部分 -->
+            <!-- 尺度部分：新增尺度 (加值前／加值後) -->
             <div class="form-section">
               <label>尺度：</label>
               <div class="scale-container">
@@ -701,6 +718,7 @@
       sidePanel.style.display = "block";
       setTimeout(() => { sidePanel.classList.add('active'); }, 10);
     }
+    
     // 關閉側邊面板
     function closeSidePanel(){
       const sidePanel = document.getElementById('sidePanel');
@@ -712,22 +730,28 @@
         overlay.style.display = "none";
       }, 300);
     }
+    
     // 處理表單提交，將心得以表格式顯示
     function handleReviewFormSubmit(){
       const age = document.getElementById('ageRange').value;
       const appearanceElems = document.querySelectorAll('#appearanceContainer .chip.selected');
       let appearance = [];
       appearanceElems.forEach(elem => { appearance.push(elem.textContent); });
-      const bodyVal = document.getElementById('bodySlider').value;
-      const bodyTypes = ["骨感", "瘦", "均勻", "微肉", "棉花糖"];
-      const bodyText = bodyTypes[bodyVal - 1];
+      
+      // 取得身材（單選型）
+      const bodyChip = document.querySelector('#bodyTypeContainer .chip.selected');
+      const bodyText = bodyChip ? bodyChip.textContent : "";
+      
       const cupSize = document.getElementById('cupSize').value;
-      const skinQualityVal = document.getElementById('skinQualitySlider').value;
-      const qualities = ["絲滑", "普通", "差"];
-      const skinQuality = qualities[skinQualityVal - 1];
-      const skinColorVal = document.getElementById('skinColorSlider').value;
-      const colors = ["白皙", "偏白", "普通", "偏黃", "黑"];
-      const skinColor = colors[skinColorVal - 1];
+      
+      // 取得膚質（單選型）
+      const skinQualityChip = document.querySelector('#skinQualityContainer .chip.selected');
+      const skinQuality = skinQualityChip ? skinQualityChip.textContent : "";
+      
+      // 取得膚色（單選型），選項"普通"已改為"正常"
+      const skinColorChip = document.querySelector('#skinColorContainer .chip.selected');
+      const skinColor = skinColorChip ? skinColorChip.textContent : "";
+      
       const valueAddedBeforeElems = document.querySelectorAll('#valueAddedBeforeContainer .chip.selected');
       let valueAddedBefore = [];
       valueAddedBeforeElems.forEach(elem => { valueAddedBefore.push(elem.textContent); });

@@ -9,7 +9,8 @@
         integrity="sha512-2T5G0sRV0QEj2QZqOCiD/f3pZpXk/q1c6eJZe9g/s4fPPpBy/jF37sx6jK0S5FqgQ7b0jwJJYOrpZhdk+sQF8g==" 
         crossorigin="anonymous" referrerpolicy="no-referrer" />
   <style>
-    /* 全局與版面設定 */
+    /* 全局與盒模型設定 */
+    *, *::before, *::after { box-sizing: border-box; }
     html { font-size: 16px; }
     body {
       font-family: Arial, sans-serif;
@@ -19,11 +20,8 @@
       text-align: center;
       overflow: hidden;
     }
-    .container {
-      max-width: 600px;
-      margin: auto;
-      box-sizing: border-box;
-    }
+    .container { max-width: 600px; margin: auto; }
+    
     /* Header 與館別標籤 */
     #header {
       position: fixed;
@@ -33,39 +31,29 @@
       width: 100%;
       max-width: 600px;
       background-color: #f5f5f5;
+      padding: 0 10px;
       z-index: 1001;
-      box-sizing: border-box;
     }
-    #header h2 {
-      margin: 0;
-      padding: 10px;
-      font-size: 1.25rem;
-    }
+    #header h2 { margin: 0; padding: 10px; font-size: 1.25rem; }
     #branchesContainer {
-      padding: 10px;
       display: flex;
       overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
+      padding: 10px 0;
       scroll-snap-type: x mandatory;
-      scroll-padding-left: 50px;
-      scroll-padding-right: 50px;
     }
     .branch-tab {
+      flex-shrink: 0;
       margin: 0 4px;
       padding: 6px 12px;
-      font-size: 1rem;
       background-color: #ddd;
       border: none;
       border-radius: 4px;
       cursor: pointer;
-      flex-shrink: 0;
       scroll-snap-align: center;
     }
-    .branch-tab.active {
-      background-color: #007bff;
-      color: #fff;
-    }
-    /* 資訊卡區 */
+    .branch-tab.active { background-color: #007bff; color: #fff; }
+    
+    /* 資料卡區 */
     #cardsContainer {
       position: absolute;
       top: 130px;
@@ -75,19 +63,17 @@
       max-width: 600px;
       bottom: 0;
       overflow-y: auto;
-      box-sizing: border-box;
       padding: 0 10px;
     }
     .card {
       display: flex;
-      background: white;
+      background: #fff;
       border-radius: 8px;
       box-shadow: 0 2px 5px rgba(0,0,0,0.15);
       margin: 12px 0;
       overflow: hidden;
       text-align: left;
     }
-    .photo { flex-shrink: 0; }
     .photo img {
       width: 130px;
       height: 180px;
@@ -95,15 +81,13 @@
       display: block;
     }
     .right-area {
-      flex-grow: 1;
+      flex: 1;
       padding: 12px;
       display: flex;
       flex-direction: column;
       gap: 12px;
     }
-    .top-row { display: flex; gap: 12px; }
     .data-area {
-      flex: 1;
       display: flex;
       flex-direction: column;
       gap: 6px;
@@ -111,20 +95,12 @@
     .name {
       font-size: 1rem;
       font-weight: bold;
-      margin: 0;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
-    .details, .price { font-size: 0.875rem; color: #555; margin: 0; white-space: nowrap; }
-    .intro-area {
-      flex: 1;
-      border-left: 1px solid #ddd;
-      padding-left: 12px;
-      display: flex;
-      align-items: center;
-    }
-    .intro-area p { font-size: 0.875rem; color: #333; margin: 0; }
+    .details, .price { font-size: 0.875rem; color: #555; }
+    .intro-area { border-left: 1px solid #ddd; padding-left: 12px; }
     .bottom-row {
       background: #eee;
       padding: 6px 12px;
@@ -136,41 +112,18 @@
       display: flex;
       justify-content: flex-end;
       gap: 8px;
-      margin-top: 6px;
     }
     .reservation-btn, .comments-btn {
       min-width: 100px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.875rem;
-      background-color: transparent;
+      background: transparent;
       border: none;
       cursor: pointer;
+      font-size: 0.875rem;
       color: #000;
     }
-    .reservation-btn .badge {
-      background-color: #28a745;
-      color: #fff;
-      border: none;
-      border-radius: 12px;
-      padding: 2px 6px;
-      font-size: 0.75rem;
-      margin-left: 4px;
-      min-width: 30px;
-      text-align: center;
-    }
-    .comments-btn .badge {
-      background-color: #007bff;
-      color: #fff;
-      border: none;
-      border-radius: 12px;
-      padding: 2px 6px;
-      font-size: 0.75rem;
-      margin-left: 4px;
-      min-width: 30px;
-      text-align: center;
-    }
+    .reservation-btn .badge { background: #28a745; color: #fff; border-radius: 12px; padding: 2px 6px; font-size: 0.75rem; margin-left: 4px; }
+    .comments-btn .badge { background: #007bff; color: #fff; border-radius: 12px; padding: 2px 6px; font-size: 0.75rem; margin-left: 4px; }
+    
     /* 側邊面板 */
     #sidePanel {
       position: fixed;
@@ -178,16 +131,15 @@
       right: -320px;
       width: 300px;
       height: calc(100vh - 260px);
-      background-color: #fff;
+      background: #fff;
       box-shadow: -2px 0 5px rgba(0,0,0,0.2);
       overflow-y: auto;
-      transition: right 0.3s ease;
+      transition: right 0.3s;
       z-index: 2000;
       padding: 20px;
-      box-sizing: border-box;
-      display: none;
       border-top-left-radius: 10px;
       border-bottom-left-radius: 10px;
+      display: none;
     }
     #sidePanel.active { right: 0; }
     #sidePanel h3 { margin-top: 0; font-size: 1rem; }
@@ -200,15 +152,12 @@
     .side-tab {
       flex: 1;
       padding: 6px 0;
-      font-size: 0.875rem;
       background: none;
       border: none;
       cursor: pointer;
+      font-size: 0.875rem;
     }
-    .side-tab.active {
-      border-bottom: 2px solid #007bff;
-      color: #007bff;
-    }
+    .side-tab.active { border-bottom: 2px solid #007bff; color: #007bff; }
     .side-tab-content { display: none; text-align: left; font-size: 0.875rem; }
     .side-tab-content.active { display: block; }
     #sidePanel .close-btn {
@@ -220,6 +169,7 @@
       font-size: 1rem;
       cursor: pointer;
     }
+    
     /* 漸變遮罩 */
     #overlay {
       position: fixed;
@@ -230,12 +180,13 @@
       background: linear-gradient(to bottom, rgba(0,0,0,0.2), rgba(0,0,0,0.5));
       z-index: 1500;
       opacity: 0;
-      transition: opacity 0.3s ease;
+      transition: opacity 0.3s;
       pointer-events: none;
       display: none;
     }
     #overlay.active { display: block; opacity: 1; }
-    /* 心得表單內部樣式 */
+    
+    /* 表單內部樣式 */
     .form-section { margin-bottom: 12px; text-align: left; }
     .form-section label { display: block; margin-bottom: 4px; font-weight: bold; }
     input[type="range"],
@@ -244,49 +195,34 @@
     textarea {
       width: 100%;
       padding: 8px;
-      box-sizing: border-box;
       border: 1px solid #ccc;
       border-radius: 4px;
     }
-    .chip-container {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
+    .chip-container { display: flex; flex-wrap: wrap; gap: 8px; }
     .chip {
       padding: 6px 10px;
-      background-color: #eee;
+      background: #eee;
       border-radius: 16px;
       cursor: pointer;
-      user-select: none;
-      transition: background-color 0.2s;
+      transition: background 0.2s;
     }
-    .chip.selected {
-      background-color: #007bff;
-      color: #fff;
-    }
-    /* 若處於禁用狀態 */
-    .chip.disabled {
-      opacity: 0.5;
-      pointer-events: none;
-    }
-    .rating {
-      display: flex;
-      flex-direction: row;
-    }
+    .chip.selected { background: #007bff; color: #fff; }
+    .chip.disabled { opacity: 0.5; pointer-events: none; }
+    .rating { display: flex; flex-direction: row; }
     .rating span {
       font-size: 1.5em;
       cursor: pointer;
       color: #ccc;
-      user-select: none;
       transition: color 0.2s;
     }
     .rating span.selected { color: gold; }
-    /* 使用 CSS Grid 對齊心得結果 */
+    
+    /* 填寫結果排版（使用 CSS Grid 對齊） */
     .review-details {
       display: grid;
       grid-template-columns: 30% 70%;
       gap: 5px 10px;
+      margin-top: 10px;
     }
     .review-label {
       text-align: right;
@@ -294,15 +230,8 @@
       padding-right: 5px;
       word-break: break-all;
     }
-    .review-content {
-      text-align: left;
-      word-break: break-all;
-    }
-    .review {
-      margin-bottom: 10px;
-      padding: 8px;
-      border-bottom: 1px solid #eee;
-    }
+    .review-content { text-align: left; word-break: break-all; }
+    .review { margin-bottom: 10px; padding: 8px; border-bottom: 1px solid #eee; }
     .review-header {
       display: flex;
       justify-content: space-between;
@@ -310,19 +239,18 @@
       margin-bottom: 4px;
     }
     .review-rating span { color: gold; }
-    /* 尺度部分：在填寫結果中，將加值前與加值後放在同一行 */
-    .scale-row {
+    /* 尺度結果排版：加入單獨的「尺度」類別 */
+    .review-scale-row {
       grid-column: 1 / -1;
       display: flex;
       gap: 10px;
       border: 1px solid #ddd;
       border-radius: 4px;
       padding: 4px;
-      background-color: #fafafa;
+      background: #fafafa;
+      margin-top: 10px;
     }
-    .review-scale-group {
-      flex: 1;
-    }
+    .review-scale-group { flex: 1; }
     .review-scale-title {
       font-weight: bold;
       margin-bottom: 4px;
@@ -331,27 +259,40 @@
       padding-bottom: 2px;
       text-align: center;
     }
-    .review-scale-content {
-      font-size: 0.85rem;
-      text-align: center;
+    .review-scale-content { font-size: 0.85rem; text-align: center; }
+    
+    /* 表單中尺度區塊（填寫區）的排版：使用 Flexbox */
+    .scale-container {
+      display: flex;
+      flex-wrap: nowrap;
+      gap: 10px;
+      margin-bottom: 12px;
     }
-    /* 送出按鈕 */
+    .scale-group {
+      flex: 1;
+      min-width: 0;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      padding: 8px;
+      background: #fafafa;
+    }
+    .scale-title { font-weight: bold; margin-bottom: 4px; text-align: center; font-size: 0.9rem; }
+    
+    /* 提交按鈕 */
     button[type="submit"] {
       padding: 10px 20px;
-      font-size: 1em;
-      background-color: #007bff;
+      background: #007bff;
       color: #fff;
       border: none;
       border-radius: 4px;
       cursor: pointer;
+      font-size: 1em;
     }
-    button[type="submit"]:hover {
-      background-color: #0056b3;
-    }
+    button[type="submit"]:hover { background: #0056b3; }
+    
     /* 響應式調整 */
     @media (max-width:480px) {
-      .card { flex-direction: row; }
-      .photo img { width: 120px; height: 170px; }
+      /* 若需針對小螢幕調整側邊面板寬度，可保留以下設定 */
       #sidePanel { width: 80%; }
     }
   </style>
@@ -362,7 +303,7 @@
     <h2>動物園介紹</h2>
     <div id="branchesContainer"></div>
   </div>
-  <!-- Cards 區 -->
+  <!-- 資料卡區 -->
   <div id="cardsContainer" class="container"></div>
   <!-- 漸變遮罩 -->
   <div id="overlay"></div>
@@ -402,6 +343,7 @@
         updateCards();
       });
     });
+    
     // 產生資訊卡
     const cardsContainer = document.getElementById('cardsContainer');
     function updateCards(){
@@ -447,6 +389,7 @@
     }
     updateCards();
     document.querySelector(`.branch-tab[data-branch="${currentBranch}"]`).classList.add('active');
+    
     // 行動裝置左右滑動切換館別
     let startX = 0;
     const swipeThreshold = 50;
@@ -458,11 +401,8 @@
       let diff = endX - startX;
       if (Math.abs(diff) > swipeThreshold) {
         let currentIndex = branches.indexOf(currentBranch);
-        if (diff < 0) {
-          currentIndex = (currentIndex + 1) % branches.length;
-        } else {
-          currentIndex = (currentIndex - 1 + branches.length) % branches.length;
-        }
+        if (diff < 0) { currentIndex = (currentIndex + 1) % branches.length; }
+        else { currentIndex = (currentIndex - 1 + branches.length) % branches.length; }
         currentBranch = branches[currentIndex];
         branchTabs.forEach(t => t.classList.remove('active'));
         const activeTab = document.querySelector(`.branch-tab[data-branch="${currentBranch}"]`);
@@ -472,6 +412,7 @@
         cardsContainer.scrollTop = 0;
       }
     }, false);
+    
     // 側邊面板標籤切換
     function switchSideTab(tabName) {
       document.querySelectorAll('.side-tab').forEach(btn => btn.classList.remove('active'));
@@ -487,6 +428,7 @@
         document.getElementById('sideTabBtn_reservation').classList.add('active');
       }
     }
+    
     // 產生罩杯選項 A~Z
     function generateCupSizeOptions() {
       const cupSizeSelect = document.getElementById('cupSize');
@@ -496,25 +438,26 @@
         cupSizeSelect.innerHTML += `<option value="${letter}">${letter}</option>`;
       }
     }
+    
     // 評分星星點選功能
     function selectRating(selectedSpan) {
       const ratingContainer = document.getElementById('ratingInput');
       const ratingValue = selectedSpan.getAttribute('data-value');
       ratingContainer.querySelectorAll('span').forEach(span => {
-        if (span.getAttribute('data-value') <= ratingValue) {
-          span.classList.add('selected');
-        } else {
-          span.classList.remove('selected');
+        if (span.getAttribute('data-value') <= ratingValue) { 
+          span.classList.add('selected'); 
+        } else { 
+          span.classList.remove('selected'); 
         }
       });
     }
-    /* toggleChip：當使用者點選「加值前」或「加值後」中的某個選項時，
-       如果該選項在一個群組中被選取，則另一群組中相同文字的選項將被禁用 */
+    
+    /* toggleChip：
+       當使用者點選「加值前」或「加值後」群組中的某個選項時，
+       如果該選項在一組中被選取，則另一組中相同文字的選項將被禁用 */
     function toggleChip(element) {
-      // 如果該元素已處於禁用狀態，則不處理
       if (element.classList.contains('disabled')) return;
       element.classList.toggle('selected');
-      // 取得目前群組ID與選項文字
       const groupId = element.parentElement.id;
       const optionText = element.textContent.trim();
       let otherGroupId = "";
@@ -523,9 +466,8 @@
       } else if (groupId === 'valueAddedAfterContainer') {
         otherGroupId = 'valueAddedBeforeContainer';
       } else {
-        return; // 非尺度群組不處理
+        return;
       }
-      // 在另一群組中尋找相同文字的 Chip
       const otherChips = document.querySelectorAll(`#${otherGroupId} .chip`);
       otherChips.forEach(chip => {
         if (chip.textContent.trim() === optionText) {
@@ -537,28 +479,27 @@
         }
       });
     }
-    // 更新「身材」滑桿顯示文字
+    
+    // 更新滑桿顯示文字
     function updateBodyValue(val) {
       const bodyTypes = ["骨感", "瘦", "均勻", "微肉", "棉花糖"];
       document.getElementById('bodyValue').innerText = bodyTypes[val-1];
     }
-    // 更新「膚質」滑桿顯示文字
     function updateSkinQualityValue(val) {
       const qualities = ["絲滑", "普通", "差"];
       document.getElementById('skinQualityValue').innerText = qualities[val-1];
     }
-    // 更新「膚色」滑桿顯示文字
     function updateSkinColorValue(val) {
       const colors = ["白皙", "偏白", "普通", "偏黃", "黑"];
       document.getElementById('skinColorValue').innerText = colors[val-1];
     }
-    // 開啟側邊面板
+    
+    // 開啟側邊面板（填寫表單）
     function openSidePanel(cardTitle, count, actionType) {
       const sidePanel = document.getElementById('sidePanel');
       const overlay = document.getElementById('overlay');
       if (actionType === 'comments') {
         document.getElementById('sidePanelTitle').textContent = `心得 - ${cardTitle}`;
-        // 建立「現有心得」區與「新增心得」表單
         const reviewContent = `
           <div id="reviewList" style="margin-bottom:20px;"></div>
           <hr>
@@ -653,11 +594,8 @@
         `;
         document.getElementById('sideTabComments').innerHTML = reviewContent;
         generateCupSizeOptions();
-        // 附加評分事件
         const stars = document.querySelectorAll('#ratingInput span');
-        stars.forEach(star => {
-          star.addEventListener('click', function(){ selectRating(this); });
-        });
+        stars.forEach(star => { star.addEventListener('click', function(){ selectRating(this); }); });
         document.getElementById('reviewForm').addEventListener('submit', function(e) {
           e.preventDefault();
           handleReviewFormSubmit();
@@ -678,6 +616,7 @@
       sidePanel.style.display = "block";
       setTimeout(() => { sidePanel.classList.add('active'); }, 10);
     }
+    
     // 關閉側邊面板
     function closeSidePanel(){
       const sidePanel = document.getElementById('sidePanel');
@@ -689,7 +628,8 @@
         overlay.style.display = "none";
       }, 300);
     }
-    // 處理表單提交，將心得以 CSS Grid 方式呈現
+    
+    // 處理表單提交，將心得以表格式顯示（使用 CSS Grid 與 Flexbox 美化）
     function handleReviewFormSubmit(){
       const age = document.getElementById('ageRange').value;
       const appearanceElems = document.querySelectorAll('#appearanceContainer .chip.selected');
@@ -718,8 +658,9 @@
       const reviewText = document.getElementById('reviewText').value;
       
       const reviewList = document.getElementById('reviewList');
-      // 直接利用 CSS Grid 的方式呈現，每對 label 與內容直接為兩個子項目
-      const newReviewHTML = `
+      const newReview = document.createElement('div');
+      newReview.className = "review";
+      newReview.innerHTML = `
         <div class="review-header">
           <strong>新心得</strong>
           <span class="review-rating">${generateStars(rating)}</span>
@@ -743,14 +684,17 @@
           <div class="review-label">膚色：</div>
           <div class="review-content">${skinColor}</div>
           
-          <div class="scale-row">
-            <div class="review-scale-group">
-              <div class="review-scale-title">加值前</div>
-              <div class="review-scale-content">${valueAddedBefore.join(', ') || '-'}</div>
-            </div>
-            <div class="review-scale-group">
-              <div class="review-scale-title">加值後</div>
-              <div class="review-scale-content">${valueAddedAfter.join(', ') || '-'}</div>
+          <div class="review-label">尺度：</div>
+          <div class="review-content">
+            <div class="review-scale-row">
+              <div class="review-scale-group">
+                <div class="review-scale-title">加值前</div>
+                <div class="review-scale-content">${valueAddedBefore.join(', ') || '-'}</div>
+              </div>
+              <div class="review-scale-group">
+                <div class="review-scale-title">加值後</div>
+                <div class="review-scale-content">${valueAddedAfter.join(', ') || '-'}</div>
+              </div>
             </div>
           </div>
           
@@ -764,9 +708,6 @@
           <div class="review-content">${reviewText}</div>
         </div>
       `;
-      const newReview = document.createElement('div');
-      newReview.className = "review";
-      newReview.innerHTML = newReviewHTML;
       reviewList.innerHTML += newReview.outerHTML;
       
       // 重設表單

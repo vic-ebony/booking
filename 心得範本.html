@@ -3,13 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>動物園介紹</title>
+  <title>動物園介紹 - 心得表單呈現</title>
   <!-- 引入 Font Awesome 圖示庫（可選） -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" 
         integrity="sha512-2T5G0sRV0QEj2QZqOCiD/f3pZpXk/q1c6eJZe9g/s4fPPpBy/jF37sx6jK0S5FqgQ7b0jwJJYOrpZhdk+sQF8g==" 
         crossorigin="anonymous" referrerpolicy="no-referrer" />
   <style>
-    /* 全局與版面設定 */
+    /* 全局設定 */
+    *, *::before, *::after { box-sizing: border-box; }
     html { font-size: 16px; }
     body {
       font-family: Arial, sans-serif;
@@ -17,13 +18,9 @@
       margin: 0;
       padding: 0;
       text-align: center;
-      overflow: hidden; /* 禁止 body 自身滾動 */
+      overflow: hidden;
     }
-    .container {
-      max-width: 600px;
-      margin: auto;
-      box-sizing: border-box;
-    }
+    .container { max-width: 600px; margin: auto; }
     /* Header 與館別標籤 */
     #header {
       position: fixed;
@@ -34,62 +31,47 @@
       max-width: 600px;
       background-color: #f5f5f5;
       z-index: 1001;
-      box-sizing: border-box;
+      padding: 0 10px;
     }
-    #header h2 {
-      margin: 0;
-      padding: 10px;
-      font-size: 1.25rem;
-    }
+    #header h2 { margin: 0; padding: 10px; font-size: 1.25rem; }
     #branchesContainer {
-      padding: 10px;
       display: flex;
       overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
+      padding: 10px 0;
       scroll-snap-type: x mandatory;
-      scroll-padding-left: 50px;
-      scroll-padding-right: 50px;
     }
     .branch-tab {
+      flex-shrink: 0;
       margin: 0 4px;
       padding: 6px 12px;
-      font-size: 1rem;
       background-color: #ddd;
       border: none;
       border-radius: 4px;
       cursor: pointer;
-      flex-shrink: 0;
       scroll-snap-align: center;
     }
-    .branch-tab:first-child { margin-left: 10px; }
-    .branch-tab:last-child { margin-right: 10px; }
-    .branch-tab.active {
-      background-color: #007bff;
-      color: #fff;
-    }
+    .branch-tab.active { background-color: #007bff; color: #fff; }
     /* 資訊卡區 */
     #cardsContainer {
       position: absolute;
-      top: 130px; /* Header 高度 */
+      top: 130px;
       left: 50%;
       transform: translateX(-50%);
       width: 100%;
       max-width: 600px;
       bottom: 0;
       overflow-y: auto;
-      box-sizing: border-box;
       padding: 0 10px;
     }
     .card {
       display: flex;
-      background: white;
+      background: #fff;
       border-radius: 8px;
       box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+      margin: 12px 0;
       overflow: hidden;
       text-align: left;
-      margin: 12px 0;
     }
-    .photo { flex-shrink: 0; }
     .photo img {
       width: 130px;
       height: 180px;
@@ -97,15 +79,13 @@
       display: block;
     }
     .right-area {
-      flex-grow: 1;
+      flex: 1;
       padding: 12px;
       display: flex;
       flex-direction: column;
       gap: 12px;
     }
-    .top-row { display: flex; gap: 12px; }
     .data-area {
-      flex: 1;
       display: flex;
       flex-direction: column;
       gap: 6px;
@@ -113,20 +93,12 @@
     .name {
       font-size: 1rem;
       font-weight: bold;
-      margin: 0;
-      white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      white-space: nowrap;
     }
-    .details, .price { font-size: 0.875rem; color: #555; margin: 0; white-space: nowrap; }
-    .intro-area {
-      flex: 1;
-      border-left: 1px solid #ddd;
-      padding-left: 12px;
-      display: flex;
-      align-items: center;
-    }
-    .intro-area p { font-size: 0.875rem; color: #333; margin: 0; }
+    .details, .price { font-size: 0.875rem; color: #555; }
+    .intro-area { border-left: 1px solid #ddd; padding-left: 12px; }
     .bottom-row {
       background: #eee;
       padding: 6px 12px;
@@ -134,46 +106,21 @@
       font-size: 0.875rem;
       text-align: left;
     }
-    .bottom-row .availability-title { font-weight: bold; margin-bottom: 4px; }
     .action-buttons {
       display: flex;
       justify-content: flex-end;
       gap: 8px;
-      margin-top: 6px;
     }
     .reservation-btn, .comments-btn {
       min-width: 100px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.875rem;
-      background-color: transparent;
+      background: transparent;
       border: none;
       cursor: pointer;
+      font-size: 0.875rem;
       color: #000;
     }
-    .reservation-btn .badge {
-      background-color: #28a745;
-      color: #fff;
-      border: none;
-      border-radius: 12px;
-      padding: 2px 6px;
-      font-size: 0.75rem;
-      margin-left: 4px;
-      min-width: 30px;
-      text-align: center;
-    }
-    .comments-btn .badge {
-      background-color: #007bff;
-      color: #fff;
-      border: none;
-      border-radius: 12px;
-      padding: 2px 6px;
-      font-size: 0.75rem;
-      margin-left: 4px;
-      min-width: 30px;
-      text-align: center;
-    }
+    .reservation-btn .badge { background: #28a745; color: #fff; border-radius: 12px; padding: 2px 6px; font-size: 0.75rem; margin-left: 4px; }
+    .comments-btn .badge { background: #007bff; color: #fff; border-radius: 12px; padding: 2px 6px; font-size: 0.75rem; margin-left: 4px; }
     /* 側邊面板 */
     #sidePanel {
       position: fixed;
@@ -181,20 +128,18 @@
       right: -320px;
       width: 300px;
       height: calc(100vh - 260px);
-      background-color: #fff;
+      background: #fff;
       box-shadow: -2px 0 5px rgba(0,0,0,0.2);
       overflow-y: auto;
-      transition: right 0.3s ease;
+      transition: right 0.3s;
       z-index: 2000;
       padding: 20px;
-      box-sizing: border-box;
-      display: none;
       border-top-left-radius: 10px;
       border-bottom-left-radius: 10px;
+      display: none;
     }
     #sidePanel.active { right: 0; }
     #sidePanel h3 { margin-top: 0; font-size: 1rem; }
-    /* 側邊面板標籤 */
     #sidePanelTabs {
       display: flex;
       justify-content: space-around;
@@ -204,15 +149,12 @@
     .side-tab {
       flex: 1;
       padding: 6px 0;
-      font-size: 0.875rem;
       background: none;
       border: none;
       cursor: pointer;
+      font-size: 0.875rem;
     }
-    .side-tab.active {
-      border-bottom: 2px solid #007bff;
-      color: #007bff;
-    }
+    .side-tab.active { border-bottom: 2px solid #007bff; color: #007bff; }
     .side-tab-content { display: none; text-align: left; font-size: 0.875rem; }
     .side-tab-content.active { display: block; }
     #sidePanel .close-btn {
@@ -234,12 +176,12 @@
       background: linear-gradient(to bottom, rgba(0,0,0,0.2), rgba(0,0,0,0.5));
       z-index: 1500;
       opacity: 0;
-      transition: opacity 0.3s ease;
+      transition: opacity 0.3s;
       pointer-events: none;
       display: none;
     }
     #overlay.active { display: block; opacity: 1; }
-    /* 心得表單樣式 */
+    /* 表單內部樣式 */
     .form-section { margin-bottom: 12px; text-align: left; }
     .form-section label { display: block; margin-bottom: 4px; font-weight: bold; }
     input[type="range"],
@@ -248,11 +190,9 @@
     textarea {
       width: 100%;
       padding: 8px;
-      box-sizing: border-box;
       border: 1px solid #ccc;
       border-radius: 4px;
     }
-    /* Chip 風格 */
     .chip-container {
       display: flex;
       flex-wrap: wrap;
@@ -260,17 +200,13 @@
     }
     .chip {
       padding: 6px 10px;
-      background-color: #eee;
+      background: #eee;
       border-radius: 16px;
       cursor: pointer;
-      user-select: none;
-      transition: background-color 0.2s;
+      transition: background 0.2s;
     }
-    .chip.selected {
-      background-color: #007bff;
-      color: #fff;
-    }
-    /* 評分星星 */
+    .chip.selected { background: #007bff; color: #fff; }
+    .chip.disabled { opacity: 0.5; pointer-events: none; }
     .rating {
       display: flex;
       flex-direction: row;
@@ -279,16 +215,22 @@
       font-size: 1.5em;
       cursor: pointer;
       color: #ccc;
-      user-select: none;
       transition: color 0.2s;
     }
     .rating span.selected { color: gold; }
-    /* 心得結果樣式 */
-    .review {
-      margin-bottom: 10px;
-      padding: 8px;
-      border-bottom: 1px solid #eee;
+    /* 結果呈現 */
+    .review-details {
+      display: grid;
+      grid-template-columns: 30% 70%;
+      gap: 5px 10px;
     }
+    .review-label {
+      text-align: right;
+      font-weight: bold;
+      padding-right: 5px;
+    }
+    .review-content { text-align: left; }
+    .review { margin-bottom: 10px; padding: 8px; border-bottom: 1px solid #eee; }
     .review-header {
       display: flex;
       justify-content: space-between;
@@ -296,43 +238,82 @@
       margin-bottom: 4px;
     }
     .review-rating span { color: gold; }
-    .review-details p { margin: 2px 0; font-size: 0.85rem; }
-    /* 送出按鈕 */
+    /* 尺度部分的結果顯示：兩欄對齊 */
+    .scale-row {
+      grid-column: 1 / -1;
+      display: flex;
+      gap: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      padding: 4px;
+      background: #fafafa;
+    }
+    .review-scale-group {
+      flex: 1;
+    }
+    .review-scale-title {
+      font-weight: bold;
+      margin-bottom: 4px;
+      font-size: 0.85rem;
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 2px;
+      text-align: center;
+    }
+    .review-scale-content {
+      font-size: 0.85rem;
+      text-align: center;
+    }
+    /* 提交按鈕 */
     button[type="submit"] {
       padding: 10px 20px;
-      font-size: 1em;
-      background-color: #007bff;
+      background: #007bff;
       color: #fff;
       border: none;
       border-radius: 4px;
       cursor: pointer;
+      font-size: 1em;
     }
-    button[type="submit"]:hover {
-      background-color: #0056b3;
+    button[type="submit"]:hover { background: #0056b3; }
+    /* 表單中尺度區塊（填寫區）的排版 */
+    .scale-container {
+      display: flex;
+      flex-wrap: nowrap;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .scale-group {
+      flex: 1;
+      min-width: 0;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      padding: 8px;
+      background: #fafafa;
+    }
+    .scale-title {
+      font-weight: bold;
+      margin-bottom: 4px;
+      text-align: center;
+      font-size: 0.9rem;
     }
     /* 響應式調整 */
     @media (max-width:480px) {
-      .card { flex-direction: row; }
-      .top-row { flex-direction: row; gap: 8px; }
-      .photo img { width: 120px; height: 170px; }
+      .card { flex-direction: column; }
+      .photo img { width: 100%; height: auto; }
       #sidePanel { width: 80%; }
     }
   </style>
 </head>
 <body>
-  <!-- 固定 Header 區域 -->
+  <!-- Header -->
   <div id="header" class="container">
     <h2>動物園介紹</h2>
     <div id="branchesContainer"></div>
   </div>
-
-  <!-- 下方卡片區 -->
+  <!-- Cards 區 -->
   <div id="cardsContainer" class="container"></div>
-
   <!-- 漸變遮罩 -->
   <div id="overlay"></div>
-
-  <!-- 側邊面板：包含「心得」、改名、下週搶約 -->
+  <!-- 側邊面板 -->
   <div id="sidePanel">
     <button class="close-btn" onclick="closeSidePanel()">×</button>
     <h3 id="sidePanelTitle">心得</h3>
@@ -347,9 +328,9 @@
       <div id="sideTabReservation" class="side-tab-content" style="display:none;"></div>
     </div>
   </div>
-
+  
   <script>
-    // 產生 10 個動物園館別 (A ~ J)
+    // 產生 10 個館別
     const branches = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
     let currentBranch = branches[0];
     const branchesContainer = document.getElementById('branchesContainer');
@@ -368,7 +349,7 @@
         updateCards();
       });
     });
-    // 產生 30 個資訊卡（隨機產生心得與搶約數量）
+    // 產生資訊卡
     const cardsContainer = document.getElementById('cardsContainer');
     function updateCards(){
       let cardsHTML = "";
@@ -416,19 +397,14 @@
     // 行動裝置左右滑動切換館別
     let startX = 0;
     const swipeThreshold = 50;
-    cardsContainer.addEventListener('touchstart', function(e) {
-      startX = e.changedTouches[0].pageX;
-    }, false);
+    cardsContainer.addEventListener('touchstart', function(e) { startX = e.changedTouches[0].pageX; }, false);
     cardsContainer.addEventListener('touchend', function(e) {
       let endX = e.changedTouches[0].pageX;
       let diff = endX - startX;
       if (Math.abs(diff) > swipeThreshold) {
         let currentIndex = branches.indexOf(currentBranch);
-        if (diff < 0) {
-          currentIndex = (currentIndex + 1) % branches.length;
-        } else {
-          currentIndex = (currentIndex - 1 + branches.length) % branches.length;
-        }
+        if (diff < 0) { currentIndex = (currentIndex + 1) % branches.length; }
+        else { currentIndex = (currentIndex - 1 + branches.length) % branches.length; }
         currentBranch = branches[currentIndex];
         branchTabs.forEach(t => t.classList.remove('active'));
         const activeTab = document.querySelector(`.branch-tab[data-branch="${currentBranch}"]`);
@@ -438,7 +414,7 @@
         cardsContainer.scrollTop = 0;
       }
     }, false);
-    // 側邊面板標籤切換功能
+    // 側邊面板標籤切換
     function switchSideTab(tabName) {
       document.querySelectorAll('.side-tab').forEach(btn => btn.classList.remove('active'));
       document.querySelectorAll('.side-tab-content').forEach(div => div.style.display = "none");
@@ -474,32 +450,53 @@
         }
       });
     }
-    // Chip 點選切換效果
+    /* toggleChip：當使用者點選「加值前」或「加值後」群組中的某個選項時，
+       若該選項在一個群組中被選取，則另一群組中相同文字的選項將被禁用 */
     function toggleChip(element) {
+      if (element.classList.contains('disabled')) return;
       element.classList.toggle('selected');
+      const groupId = element.parentElement.id;
+      const optionText = element.textContent.trim();
+      let otherGroupId = "";
+      if (groupId === 'valueAddedBeforeContainer') {
+        otherGroupId = 'valueAddedAfterContainer';
+      } else if (groupId === 'valueAddedAfterContainer') {
+        otherGroupId = 'valueAddedBeforeContainer';
+      } else {
+        return;
+      }
+      const otherChips = document.querySelectorAll(`#${otherGroupId} .chip`);
+      otherChips.forEach(chip => {
+        if (chip.textContent.trim() === optionText) {
+          if (element.classList.contains('selected')) {
+            chip.classList.add('disabled');
+          } else {
+            chip.classList.remove('disabled');
+          }
+        }
+      });
     }
-    // 更新「身材」滑桿的顯示文字
+    // 更新「身材」滑桿顯示文字
     function updateBodyValue(val) {
       const bodyTypes = ["骨感", "瘦", "均勻", "微肉", "棉花糖"];
       document.getElementById('bodyValue').innerText = bodyTypes[val-1];
     }
-    // 更新「膚質」滑桿的顯示文字
+    // 更新「膚質」滑桿顯示文字
     function updateSkinQualityValue(val) {
       const qualities = ["絲滑", "普通", "差"];
       document.getElementById('skinQualityValue').innerText = qualities[val-1];
     }
-    // 更新「膚色」滑桿的顯示文字
+    // 更新「膚色」滑桿顯示文字
     function updateSkinColorValue(val) {
       const colors = ["白皙", "偏白", "普通", "偏黃", "黑"];
       document.getElementById('skinColorValue').innerText = colors[val-1];
     }
-    // 開啟側邊面板，根據 actionType 區分「心得」與「下週搶約」
+    // 開啟側邊面板
     function openSidePanel(cardTitle, count, actionType) {
       const sidePanel = document.getElementById('sidePanel');
       const overlay = document.getElementById('overlay');
       if (actionType === 'comments') {
         document.getElementById('sidePanelTitle').textContent = `心得 - ${cardTitle}`;
-        // 產生「現有心得」區與「新增心得」表單（此處以 reviewList 與 reviewForm 呈現）
         const reviewContent = `
           <div id="reviewList" style="margin-bottom:20px;"></div>
           <hr>
@@ -541,24 +538,30 @@
               <input type="range" id="skinColorSlider" name="skinColorSlider" min="1" max="5" step="1" value="3" oninput="updateSkinColorValue(this.value)">
               <span id="skinColorValue">普通</span>
             </div>
+            <!-- 尺度部分：使用 Flexbox 排列，確保兩欄同一行 -->
             <div class="form-section">
-              <label>加值前 (可複選)：</label>
-              <div class="chip-container" id="valueAddedBeforeContainer">
-                <span class="chip" onclick="toggleChip(this)">LG</span>
-                <span class="chip" onclick="toggleChip(this)">三光</span>
-                <span class="chip" onclick="toggleChip(this)">摳</span>
-                <span class="chip" onclick="toggleChip(this)">舔</span>
-                <span class="chip" onclick="toggleChip(this)">親</span>
-              </div>
-            </div>
-            <div class="form-section">
-              <label>加值後 (可複選)：</label>
-              <div class="chip-container" id="valueAddedAfterContainer">
-                <span class="chip" onclick="toggleChip(this)">LG</span>
-                <span class="chip" onclick="toggleChip(this)">三光</span>
-                <span class="chip" onclick="toggleChip(this)">摳</span>
-                <span class="chip" onclick="toggleChip(this)">舔</span>
-                <span class="chip" onclick="toggleChip(this)">親</span>
+              <label>尺度：</label>
+              <div class="scale-container">
+                <div class="scale-group">
+                  <div class="scale-title">加值前</div>
+                  <div class="chip-container" id="valueAddedBeforeContainer">
+                    <span class="chip" onclick="toggleChip(this)">LG</span>
+                    <span class="chip" onclick="toggleChip(this)">三光</span>
+                    <span class="chip" onclick="toggleChip(this)">摳</span>
+                    <span class="chip" onclick="toggleChip(this)">舔</span>
+                    <span class="chip" onclick="toggleChip(this)">親</span>
+                  </div>
+                </div>
+                <div class="scale-group">
+                  <div class="scale-title">加值後</div>
+                  <div class="chip-container" id="valueAddedAfterContainer">
+                    <span class="chip" onclick="toggleChip(this)">LG</span>
+                    <span class="chip" onclick="toggleChip(this)">三光</span>
+                    <span class="chip" onclick="toggleChip(this)">摳</span>
+                    <span class="chip" onclick="toggleChip(this)">舔</span>
+                    <span class="chip" onclick="toggleChip(this)">親</span>
+                  </div>
+                </div>
               </div>
             </div>
             <div class="form-section">
@@ -588,12 +591,8 @@
         `;
         document.getElementById('sideTabComments').innerHTML = reviewContent;
         generateCupSizeOptions();
-        // 附加評分星星點選事件
         const stars = document.querySelectorAll('#ratingInput span');
-        stars.forEach(star => {
-          star.addEventListener('click', function(){ selectRating(this); });
-        });
-        // 表單提交事件
+        stars.forEach(star => { star.addEventListener('click', function(){ selectRating(this); }); });
         document.getElementById('reviewForm').addEventListener('submit', function(e) {
           e.preventDefault();
           handleReviewFormSubmit();
@@ -608,7 +607,6 @@
         html += `</table>`;
         document.getElementById('sideTabReservation').innerHTML = html;
       }
-      // 自動切換標籤
       switchSideTab(actionType);
       overlay.style.display = "block";
       setTimeout(() => { overlay.classList.add('active'); }, 10);
@@ -626,7 +624,7 @@
         overlay.style.display = "none";
       }, 300);
     }
-    // 處理「新增心得」表單提交，將心得結果呈現在側邊面板的「現有心得」區
+    // 處理表單提交，將心得以表格式顯示（使用 CSS Grid 與 Flexbox 美化）
     function handleReviewFormSubmit(){
       const age = document.getElementById('ageRange').value;
       const appearanceElems = document.querySelectorAll('#appearanceContainer .chip.selected');
@@ -663,30 +661,55 @@
           <span class="review-rating">${generateStars(rating)}</span>
         </div>
         <div class="review-details">
-          <p><strong>年紀：</strong> ${age}</p>
-          <p><strong>外型：</strong> ${appearance.join(', ')}</p>
-          <p><strong>身材：</strong> ${bodyText}</p>
-          <p><strong>罩杯：</strong> ${cupSize}</p>
-          <p><strong>膚質：</strong> ${skinQuality}</p>
-          <p><strong>膚色：</strong> ${skinColor}</p>
-          <p><strong>加值前：</strong> ${valueAddedBefore.join(', ')}</p>
-          <p><strong>加值後：</strong> ${valueAddedAfter.join(', ')}</p>
-          <p><strong>音樂：</strong> ${musicFee}</p>
-          <p><strong>體育：</strong> ${sportsFee}</p>
-          <p><strong>心得：</strong> ${reviewText}</p>
+          <div class="review-label">年紀：</div>
+          <div class="review-content">${age}</div>
+          
+          <div class="review-label">外型：</div>
+          <div class="review-content">${appearance.join(', ')}</div>
+          
+          <div class="review-label">身材：</div>
+          <div class="review-content">${bodyText}</div>
+          
+          <div class="review-label">罩杯：</div>
+          <div class="review-content">${cupSize}</div>
+          
+          <div class="review-label">膚質：</div>
+          <div class="review-content">${skinQuality}</div>
+          
+          <div class="review-label">膚色：</div>
+          <div class="review-content">${skinColor}</div>
+          
+          <div class="scale-row">
+            <div class="review-scale-group">
+              <div class="review-scale-title">加值前</div>
+              <div class="review-scale-content">${valueAddedBefore.join(', ') || '-'}</div>
+            </div>
+            <div class="review-scale-group">
+              <div class="review-scale-title">加值後</div>
+              <div class="review-scale-content">${valueAddedAfter.join(', ') || '-'}</div>
+            </div>
+          </div>
+          
+          <div class="review-label">音樂：</div>
+          <div class="review-content">${musicFee}</div>
+          
+          <div class="review-label">體育：</div>
+          <div class="review-content">${sportsFee}</div>
+          
+          <div class="review-label">心得：</div>
+          <div class="review-content">${reviewText}</div>
         </div>
       `;
       reviewList.innerHTML += newReview.outerHTML;
-      // 重設表單內容
+      
+      // 重設表單
       document.getElementById('reviewForm').reset();
       document.querySelectorAll('.chip.selected').forEach(chip => chip.classList.remove('selected'));
+      document.querySelectorAll('.chip.disabled').forEach(chip => chip.classList.remove('disabled'));
       document.querySelectorAll('#ratingInput span').forEach(s => s.classList.remove('selected'));
       document.getElementById('ageValue').innerText = "18";
-      document.getElementById('bodyValue').innerText = "均勻";
-      document.getElementById('skinQualityValue').innerText = "普通";
-      document.getElementById('skinColorValue').innerText = "普通";
     }
-    // 產生星星字串，用於呈現評分
+    // 產生星星字串
     function generateStars(rating) {
       let starsHtml = "";
       for (let i = 1; i <= 5; i++){

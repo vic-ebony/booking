@@ -265,6 +265,11 @@
       background-color: #007bff;
       color: #fff;
     }
+    /* 若處於禁用狀態 */
+    .chip.disabled {
+      opacity: 0.5;
+      pointer-events: none;
+    }
     .rating {
       display: flex;
       flex-direction: row;
@@ -280,19 +285,18 @@
     /* 使用 CSS Grid 對齊心得結果 */
     .review-details {
       display: grid;
-      grid-template-columns: 1fr 2fr;
+      grid-template-columns: 30% 70%;
       gap: 5px 10px;
-    }
-    .review-row {
-      display: contents;
     }
     .review-label {
       text-align: right;
       font-weight: bold;
       padding-right: 5px;
+      word-break: break-all;
     }
     .review-content {
       text-align: left;
+      word-break: break-all;
     }
     .review {
       margin-bottom: 10px;
@@ -306,6 +310,31 @@
       margin-bottom: 4px;
     }
     .review-rating span { color: gold; }
+    /* 尺度部分：在填寫結果中，將加值前與加值後放在同一行 */
+    .scale-row {
+      grid-column: 1 / -1;
+      display: flex;
+      gap: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      padding: 4px;
+      background-color: #fafafa;
+    }
+    .review-scale-group {
+      flex: 1;
+    }
+    .review-scale-title {
+      font-weight: bold;
+      margin-bottom: 4px;
+      font-size: 0.85rem;
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 2px;
+      text-align: center;
+    }
+    .review-scale-content {
+      font-size: 0.85rem;
+      text-align: center;
+    }
     /* 送出按鈕 */
     button[type="submit"] {
       padding: 10px 20px;
@@ -354,7 +383,7 @@
   </div>
   
   <script>
-    // 產生館別
+    // 產生 10 個館別
     const branches = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
     let currentBranch = branches[0];
     const branchesContainer = document.getElementById('branchesContainer');
@@ -479,9 +508,34 @@
         }
       });
     }
-    // Chip 點選切換效果
+    /* toggleChip：當使用者點選「加值前」或「加值後」中的某個選項時，
+       如果該選項在一個群組中被選取，則另一群組中相同文字的選項將被禁用 */
     function toggleChip(element) {
+      // 如果該元素已處於禁用狀態，則不處理
+      if (element.classList.contains('disabled')) return;
       element.classList.toggle('selected');
+      // 取得目前群組ID與選項文字
+      const groupId = element.parentElement.id;
+      const optionText = element.textContent.trim();
+      let otherGroupId = "";
+      if (groupId === 'valueAddedBeforeContainer') {
+        otherGroupId = 'valueAddedAfterContainer';
+      } else if (groupId === 'valueAddedAfterContainer') {
+        otherGroupId = 'valueAddedBeforeContainer';
+      } else {
+        return; // 非尺度群組不處理
+      }
+      // 在另一群組中尋找相同文字的 Chip
+      const otherChips = document.querySelectorAll(`#${otherGroupId} .chip`);
+      otherChips.forEach(chip => {
+        if (chip.textContent.trim() === optionText) {
+          if (element.classList.contains('selected')) {
+            chip.classList.add('disabled');
+          } else {
+            chip.classList.remove('disabled');
+          }
+        }
+      });
     }
     // 更新「身材」滑桿顯示文字
     function updateBodyValue(val) {
@@ -546,24 +600,30 @@
               <input type="range" id="skinColorSlider" name="skinColorSlider" min="1" max="5" step="1" value="3" oninput="updateSkinColorValue(this.value)">
               <span id="skinColorValue">普通</span>
             </div>
+            <!-- 尺度部分 -->
             <div class="form-section">
-              <label>加值前 (可複選)：</label>
-              <div class="chip-container" id="valueAddedBeforeContainer">
-                <span class="chip" onclick="toggleChip(this)">LG</span>
-                <span class="chip" onclick="toggleChip(this)">三光</span>
-                <span class="chip" onclick="toggleChip(this)">摳</span>
-                <span class="chip" onclick="toggleChip(this)">舔</span>
-                <span class="chip" onclick="toggleChip(this)">親</span>
-              </div>
-            </div>
-            <div class="form-section">
-              <label>加值後 (可複選)：</label>
-              <div class="chip-container" id="valueAddedAfterContainer">
-                <span class="chip" onclick="toggleChip(this)">LG</span>
-                <span class="chip" onclick="toggleChip(this)">三光</span>
-                <span class="chip" onclick="toggleChip(this)">摳</span>
-                <span class="chip" onclick="toggleChip(this)">舔</span>
-                <span class="chip" onclick="toggleChip(this)">親</span>
+              <label>尺度：</label>
+              <div class="scale-container">
+                <div class="scale-group">
+                  <div class="scale-title">加值前</div>
+                  <div class="chip-container" id="valueAddedBeforeContainer">
+                    <span class="chip" onclick="toggleChip(this)">LG</span>
+                    <span class="chip" onclick="toggleChip(this)">三光</span>
+                    <span class="chip" onclick="toggleChip(this)">摳</span>
+                    <span class="chip" onclick="toggleChip(this)">舔</span>
+                    <span class="chip" onclick="toggleChip(this)">親</span>
+                  </div>
+                </div>
+                <div class="scale-group">
+                  <div class="scale-title">加值後</div>
+                  <div class="chip-container" id="valueAddedAfterContainer">
+                    <span class="chip" onclick="toggleChip(this)">LG</span>
+                    <span class="chip" onclick="toggleChip(this)">三光</span>
+                    <span class="chip" onclick="toggleChip(this)">摳</span>
+                    <span class="chip" onclick="toggleChip(this)">舔</span>
+                    <span class="chip" onclick="toggleChip(this)">親</span>
+                  </div>
+                </div>
               </div>
             </div>
             <div class="form-section">
@@ -629,7 +689,7 @@
         overlay.style.display = "none";
       }, 300);
     }
-    // 處理「新增心得」表單提交，將心得以對齊方式呈現在現有心得區
+    // 處理表單提交，將心得以 CSS Grid 方式呈現
     function handleReviewFormSubmit(){
       const age = document.getElementById('ageRange').value;
       const appearanceElems = document.querySelectorAll('#appearanceContainer .chip.selected');
@@ -658,70 +718,65 @@
       const reviewText = document.getElementById('reviewText').value;
       
       const reviewList = document.getElementById('reviewList');
-      const newReview = document.createElement('div');
-      newReview.className = "review";
-      newReview.innerHTML = `
+      // 直接利用 CSS Grid 的方式呈現，每對 label 與內容直接為兩個子項目
+      const newReviewHTML = `
         <div class="review-header">
           <strong>新心得</strong>
           <span class="review-rating">${generateStars(rating)}</span>
         </div>
         <div class="review-details">
-          <div class="review-row">
-            <div class="review-label">年紀：</div>
-            <div class="review-content">${age}</div>
+          <div class="review-label">年紀：</div>
+          <div class="review-content">${age}</div>
+          
+          <div class="review-label">外型：</div>
+          <div class="review-content">${appearance.join(', ')}</div>
+          
+          <div class="review-label">身材：</div>
+          <div class="review-content">${bodyText}</div>
+          
+          <div class="review-label">罩杯：</div>
+          <div class="review-content">${cupSize}</div>
+          
+          <div class="review-label">膚質：</div>
+          <div class="review-content">${skinQuality}</div>
+          
+          <div class="review-label">膚色：</div>
+          <div class="review-content">${skinColor}</div>
+          
+          <div class="scale-row">
+            <div class="review-scale-group">
+              <div class="review-scale-title">加值前</div>
+              <div class="review-scale-content">${valueAddedBefore.join(', ') || '-'}</div>
+            </div>
+            <div class="review-scale-group">
+              <div class="review-scale-title">加值後</div>
+              <div class="review-scale-content">${valueAddedAfter.join(', ') || '-'}</div>
+            </div>
           </div>
-          <div class="review-row">
-            <div class="review-label">外型：</div>
-            <div class="review-content">${appearance.join(', ')}</div>
-          </div>
-          <div class="review-row">
-            <div class="review-label">身材：</div>
-            <div class="review-content">${bodyText}</div>
-          </div>
-          <div class="review-row">
-            <div class="review-label">罩杯：</div>
-            <div class="review-content">${cupSize}</div>
-          </div>
-          <div class="review-row">
-            <div class="review-label">膚質：</div>
-            <div class="review-content">${skinQuality}</div>
-          </div>
-          <div class="review-row">
-            <div class="review-label">膚色：</div>
-            <div class="review-content">${skinColor}</div>
-          </div>
-          <div class="review-row">
-            <div class="review-label">加值前：</div>
-            <div class="review-content">${valueAddedBefore.join(', ')}</div>
-          </div>
-          <div class="review-row">
-            <div class="review-label">加值後：</div>
-            <div class="review-content">${valueAddedAfter.join(', ')}</div>
-          </div>
-          <div class="review-row">
-            <div class="review-label">音樂：</div>
-            <div class="review-content">${musicFee}</div>
-          </div>
-          <div class="review-row">
-            <div class="review-label">體育：</div>
-            <div class="review-content">${sportsFee}</div>
-          </div>
-          <div class="review-row">
-            <div class="review-label">心得：</div>
-            <div class="review-content">${reviewText}</div>
-          </div>
+          
+          <div class="review-label">音樂：</div>
+          <div class="review-content">${musicFee}</div>
+          
+          <div class="review-label">體育：</div>
+          <div class="review-content">${sportsFee}</div>
+          
+          <div class="review-label">心得：</div>
+          <div class="review-content">${reviewText}</div>
         </div>
       `;
+      const newReview = document.createElement('div');
+      newReview.className = "review";
+      newReview.innerHTML = newReviewHTML;
       reviewList.innerHTML += newReview.outerHTML;
+      
       // 重設表單
       document.getElementById('reviewForm').reset();
       document.querySelectorAll('.chip.selected').forEach(chip => chip.classList.remove('selected'));
+      document.querySelectorAll('.chip.disabled').forEach(chip => chip.classList.remove('disabled'));
       document.querySelectorAll('#ratingInput span').forEach(s => s.classList.remove('selected'));
       document.getElementById('ageValue').innerText = "18";
-      document.getElementById('bodyValue').innerText = "均勻";
-      document.getElementById('skinQualityValue').innerText = "普通";
-      document.getElementById('skinColorValue').innerText = "普通";
     }
+    
     // 產生星星字串
     function generateStars(rating) {
       let starsHtml = "";

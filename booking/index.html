@@ -4,10 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>動物園介紹</title>
-  <!-- 引入 Font Awesome 圖示庫（若需要圖示可保留） -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-2T5G0sRV0QEj2QZqOCiD/f3pZpXk/q1c6eJZe9g/s4fPPpBy/jF37sx6jK0S5FqgQ7b0jwJJYOrpZhdk+sQF8g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <!-- 引入 Font Awesome 圖示庫（可選） -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" 
+        integrity="sha512-2T5G0sRV0QEj2QZqOCiD/f3pZpXk/q1c6eJZe9g/s4fPPpBy/jF37sx6jK0S5FqgQ7b0jwJJYOrpZhdk+sQF8g==" 
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
   <style>
-    /* 基本字體與全局設定 */
+    /* 全局與版面設定 */
     html { font-size: 16px; }
     body {
       font-family: Arial, sans-serif;
@@ -22,7 +24,7 @@
       margin: auto;
       box-sizing: border-box;
     }
-    /* 固定 Header 區域 */
+    /* Header 與館別標籤 */
     #header {
       position: fixed;
       top: 0;
@@ -39,7 +41,6 @@
       padding: 10px;
       font-size: 1.25rem;
     }
-    /* 館別標籤 */
     #branchesContainer {
       padding: 10px;
       display: flex;
@@ -66,7 +67,7 @@
       background-color: #007bff;
       color: #fff;
     }
-    /* 卡片區 */
+    /* 資訊卡區 */
     #cardsContainer {
       position: absolute;
       top: 130px; /* Header 高度 */
@@ -134,7 +135,6 @@
       text-align: left;
     }
     .bottom-row .availability-title { font-weight: bold; margin-bottom: 4px; }
-    /* 按鈕區 */
     .action-buttons {
       display: flex;
       justify-content: flex-end;
@@ -213,10 +213,8 @@
       border-bottom: 2px solid #007bff;
       color: #007bff;
     }
-    /* 側邊面板內容 */
     .side-tab-content { display: none; text-align: left; font-size: 0.875rem; }
     .side-tab-content.active { display: block; }
-    /* 側邊面板關閉按鈕 */
     #sidePanel .close-btn {
       position: absolute;
       bottom: 10px;
@@ -226,7 +224,7 @@
       font-size: 1rem;
       cursor: pointer;
     }
-    /* 漸變遮罩（Overlay） */
+    /* 漸變遮罩 */
     #overlay {
       position: fixed;
       top: 130px;
@@ -241,7 +239,51 @@
       display: none;
     }
     #overlay.active { display: block; opacity: 1; }
-    /* 評論區與表單樣式 */
+    /* 心得表單樣式 */
+    .form-section { margin-bottom: 12px; text-align: left; }
+    .form-section label { display: block; margin-bottom: 4px; font-weight: bold; }
+    input[type="range"],
+    select,
+    input[type="number"],
+    textarea {
+      width: 100%;
+      padding: 8px;
+      box-sizing: border-box;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    /* Chip 風格 */
+    .chip-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .chip {
+      padding: 6px 10px;
+      background-color: #eee;
+      border-radius: 16px;
+      cursor: pointer;
+      user-select: none;
+      transition: background-color 0.2s;
+    }
+    .chip.selected {
+      background-color: #007bff;
+      color: #fff;
+    }
+    /* 評分星星 */
+    .rating {
+      display: flex;
+      flex-direction: row;
+    }
+    .rating span {
+      font-size: 1.5em;
+      cursor: pointer;
+      color: #ccc;
+      user-select: none;
+      transition: color 0.2s;
+    }
+    .rating span.selected { color: gold; }
+    /* 心得結果樣式 */
     .review {
       margin-bottom: 10px;
       padding: 8px;
@@ -254,21 +296,20 @@
       margin-bottom: 4px;
     }
     .review-rating span { color: gold; }
-    .review-text { font-size: 0.85rem; }
-    .form-section { margin-bottom: 12px; }
-    .form-section label { display: block; margin-bottom: 4px; font-weight: bold; }
-    /* 評分星星樣式 */
-    .rating {
-      display: flex;
-      flex-direction: row;
-    }
-    .rating span {
-      font-size: 1.5em;
+    .review-details p { margin: 2px 0; font-size: 0.85rem; }
+    /* 送出按鈕 */
+    button[type="submit"] {
+      padding: 10px 20px;
+      font-size: 1em;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
       cursor: pointer;
-      color: #ccc;
-      user-select: none;
     }
-    .rating span.selected { color: gold; }
+    button[type="submit"]:hover {
+      background-color: #0056b3;
+    }
     /* 響應式調整 */
     @media (max-width:480px) {
       .card { flex-direction: row; }
@@ -282,7 +323,6 @@
   <!-- 固定 Header 區域 -->
   <div id="header" class="container">
     <h2>動物園介紹</h2>
-    <!-- 上方 10 個館別標籤 -->
     <div id="branchesContainer"></div>
   </div>
 
@@ -292,7 +332,7 @@
   <!-- 漸變遮罩 -->
   <div id="overlay"></div>
 
-  <!-- 側邊面板：包含 留言（心得）、改名、下週搶約 -->
+  <!-- 側邊面板：包含「心得」、改名、下週搶約 -->
   <div id="sidePanel">
     <button class="close-btn" onclick="closeSidePanel()">×</button>
     <h3 id="sidePanelTitle">心得</h3>
@@ -309,19 +349,15 @@
   </div>
 
   <script>
-    // 定義 10 個動物園館別 (A ~ J)
+    // 產生 10 個動物園館別 (A ~ J)
     const branches = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
     let currentBranch = branches[0];
-
-    // 產生館別標籤
     const branchesContainer = document.getElementById('branchesContainer');
     let branchesHTML = "";
     branches.forEach(branch => {
       branchesHTML += `<button class="branch-tab" data-branch="${branch}">動物園 ${branch} (30)</button> `;
     });
     branchesContainer.innerHTML = branchesHTML;
-
-    // 為館別標籤加上點擊事件
     const branchTabs = document.querySelectorAll('.branch-tab');
     branchTabs.forEach(tab => {
       tab.addEventListener('click', function(){
@@ -332,13 +368,11 @@
         updateCards();
       });
     });
-
-    // 產生 30 個範本卡片（隨機留言數與下週搶約數）
+    // 產生 30 個資訊卡（隨機產生心得與搶約數量）
     const cardsContainer = document.getElementById('cardsContainer');
     function updateCards(){
       let cardsHTML = "";
       for (let i = 1; i <= 30; i++){
-        // 隨機留言數 (心得) 與下週搶約數
         const numComments = Math.floor(Math.random() * 6) + 5;
         const numReservation = Math.floor(Math.random() * 3) + 1;
         cardsHTML += `
@@ -362,7 +396,6 @@
                 <div class="availability-title">活動時段：</div>
                 <div>12-13-14-15-16-17-18-19-20-21-22-23-24-01-02-03-04-05</div>
               </div>
-              <!-- 卡片操作按鈕 -->
               <div class="action-buttons">
                 <button class="reservation-btn" onclick="openSidePanel('動物園 ${currentBranch} - 動物 ${i}', ${numReservation}, 'reservation')">
                   下週搶約 <span class="badge">${numReservation}</span>
@@ -378,10 +411,8 @@
       cardsContainer.innerHTML = cardsHTML;
       cardsContainer.scrollTop = 0;
     }
-    // 初始載入
     updateCards();
     document.querySelector(`.branch-tab[data-branch="${currentBranch}"]`).classList.add('active');
-
     // 行動裝置左右滑動切換館別
     let startX = 0;
     const swipeThreshold = 50;
@@ -407,8 +438,7 @@
         cardsContainer.scrollTop = 0;
       }
     }, false);
-
-    /* 側邊面板功能 */
+    // 側邊面板標籤切換功能
     function switchSideTab(tabName) {
       document.querySelectorAll('.side-tab').forEach(btn => btn.classList.remove('active'));
       document.querySelectorAll('.side-tab-content').forEach(div => div.style.display = "none");
@@ -423,86 +453,127 @@
         document.getElementById('sideTabBtn_reservation').classList.add('active');
       }
     }
-
-    // 產生星星（回傳 filled 與 unfilled 標記）
-    function generateStars(rating) {
-      let starsHtml = "";
-      for (let i = 1; i <= 5; i++) {
-        starsHtml += (i <= rating) ? "&#9733;" : "&#9734;";
+    // 產生罩杯選項 A~Z
+    function generateCupSizeOptions() {
+      const cupSizeSelect = document.getElementById('cupSize');
+      cupSizeSelect.innerHTML = '<option value="">請選擇</option>';
+      for (let c = 65; c <= 90; c++){
+        let letter = String.fromCharCode(c);
+        cupSizeSelect.innerHTML += `<option value="${letter}">${letter}</option>`;
       }
-      return starsHtml;
     }
-
-    // 為「新增心得」表單的評分星星加入點選事件
-    function attachRatingEvents() {
-      const stars = document.querySelectorAll('#ratingInput span');
-      stars.forEach(star => {
-        star.addEventListener('click', function(){
-          const ratingValue = this.getAttribute('data-value');
-          stars.forEach(s => {
-            if (s.getAttribute('data-value') <= ratingValue) {
-              s.classList.add('selected');
-            } else {
-              s.classList.remove('selected');
-            }
-          });
-          // 可將評分存入隱藏欄位或變數（此處略）
-        });
+    // 評分星星點選功能
+    function selectRating(selectedSpan) {
+      const ratingContainer = document.getElementById('ratingInput');
+      const ratingValue = selectedSpan.getAttribute('data-value');
+      ratingContainer.querySelectorAll('span').forEach(span => {
+        if (span.getAttribute('data-value') <= ratingValue) {
+          span.classList.add('selected');
+        } else {
+          span.classList.remove('selected');
+        }
       });
     }
-
-    // 開啟側邊面板
+    // Chip 點選切換效果
+    function toggleChip(element) {
+      element.classList.toggle('selected');
+    }
+    // 開啟側邊面板，依據 actionType 區分「心得」與「下週搶約」
     function openSidePanel(cardTitle, count, actionType) {
+      const sidePanel = document.getElementById('sidePanel');
+      const overlay = document.getElementById('overlay');
       if (actionType === 'comments') {
-        // 設定標題（不再顯示留言數，因將呈現「現有心得」與「新增心得」表單）
         document.getElementById('sidePanelTitle').textContent = `心得 - ${cardTitle}`;
-        // 產生隨機現有心得（依 count 數量）
-        let reviewListHtml = `<div id="reviewList">`;
-        for (let i = 1; i <= count; i++){
-          const randomRating = Math.floor(Math.random() * 5) + 1;
-          const sampleComment = `This is comment ${i} for ${cardTitle}.`;
-          reviewListHtml += `
-            <div class="review">
-              <div class="review-header">
-                <strong>User${i}</strong>
-                <span class="review-rating">${generateStars(randomRating)}</span>
-              </div>
-              <div class="review-text">${sampleComment}</div>
-            </div>
-          `;
-        }
-        reviewListHtml += `</div>`;
-        // 新增「新增心得」表單（互動式星級評分與文字輸入）
-        const reviewFormHtml = `
+        // 在「心得」分頁中呈現「現有心得」區與「新增心得」表單
+        const reviewContent = `
+          <div id="reviewList" style="margin-bottom: 20px;"></div>
+          <hr>
           <form id="reviewForm">
             <div class="form-section">
-              <label for="ratingInput">您的評分：</label>
-              <div class="rating" id="ratingInput">
-                <span data-value="1">&#9733;</span>
-                <span data-value="2">&#9733;</span>
-                <span data-value="3">&#9733;</span>
-                <span data-value="4">&#9733;</span>
-                <span data-value="5">&#9733;</span>
+              <label for="ageRange">年紀 (18~40)：<span id="ageValue">18</span></label>
+              <input type="range" id="ageRange" name="age" min="18" max="40" value="18" oninput="document.getElementById('ageValue').innerText=this.value">
+            </div>
+            <div class="form-section">
+              <label>外型 (可複選)：</label>
+              <div class="chip-container" id="appearanceContainer">
+                <span class="chip" onclick="toggleChip(this)">甜美</span>
+                <span class="chip" onclick="toggleChip(this)">可愛</span>
+                <span class="chip" onclick="toggleChip(this)">氣質</span>
+                <span class="chip" onclick="toggleChip(this)">漂亮</span>
+                <span class="chip" onclick="toggleChip(this)">艷麗</span>
+                <span class="chip" onclick="toggleChip(this)">鄰家</span>
+                <span class="chip" onclick="toggleChip(this)">素人</span>
               </div>
             </div>
             <div class="form-section">
-              <label for="reviewText">您的心得：</label>
-              <textarea id="reviewText" rows="4" placeholder="請簡述您的體驗或建議……"></textarea>
+              <label for="bodyType">身材：</label>
+              <select id="bodyType" name="bodyType">
+                <option value="">請選擇</option>
+                <option value="骨感">骨感</option>
+                <option value="瘦">瘦</option>
+                <option value="均勻">均勻</option>
+                <option value="微肉">微肉</option>
+                <option value="棉花糖">棉花糖</option>
+              </select>
+            </div>
+            <div class="form-section">
+              <label for="cupSize">罩杯：</label>
+              <select id="cupSize" name="cupSize">
+                <option value="">請選擇</option>
+              </select>
+            </div>
+            <div class="form-section">
+              <label>膚質：</label>
+              <label><input type="radio" name="skinQuality" value="絲滑"> 絲滑</label>
+              <label><input type="radio" name="skinQuality" value="普通"> 普通</label>
+              <label><input type="radio" name="skinQuality" value="差"> 差</label>
+            </div>
+            <div class="form-section">
+              <label>加值 (可複選)：</label>
+              <div class="chip-container" id="valueAddedContainer">
+                <span class="chip" onclick="toggleChip(this)">LG</span>
+                <span class="chip" onclick="toggleChip(this)">三光</span>
+                <span class="chip" onclick="toggleChip(this)">摳</span>
+                <span class="chip" onclick="toggleChip(this)">舔</span>
+                <span class="chip" onclick="toggleChip(this)">親</span>
+              </div>
+            </div>
+            <div class="form-section">
+              <label for="musicFee">音樂 (金額)：</label>
+              <input type="number" id="musicFee" name="musicFee" placeholder="請輸入金額">
+            </div>
+            <div class="form-section">
+              <label for="sportsFee">體育 (金額)：</label>
+              <input type="number" id="sportsFee" name="sportsFee" placeholder="請輸入金額">
+            </div>
+            <div class="form-section">
+              <label for="ratingInput">評分：</label>
+              <div class="rating" id="ratingInput">
+                <span data-value="1" onclick="selectRating(this)">&#9733;</span>
+                <span data-value="2" onclick="selectRating(this)">&#9733;</span>
+                <span data-value="3" onclick="selectRating(this)">&#9733;</span>
+                <span data-value="4" onclick="selectRating(this)">&#9733;</span>
+                <span data-value="5" onclick="selectRating(this)">&#9733;</span>
+              </div>
+            </div>
+            <div class="form-section">
+              <label for="reviewText">心得：</label>
+              <textarea id="reviewText" name="reviewText" rows="4" placeholder="請輸入您的心得..."></textarea>
             </div>
             <button type="submit">提交心得</button>
           </form>
         `;
-        const fullHtml = reviewListHtml + reviewFormHtml;
-        document.getElementById('sideTabComments').innerHTML = fullHtml;
-        // 加入評分星星事件
-        attachRatingEvents();
-        // 表單提交事件（示範）
+        document.getElementById('sideTabComments').innerHTML = reviewContent;
+        generateCupSizeOptions();
+        // 附加評分星星點選事件
+        const stars = document.querySelectorAll('#ratingInput span');
+        stars.forEach(star => {
+          star.addEventListener('click', function(){ selectRating(this); });
+        });
+        // 表單提交事件
         document.getElementById('reviewForm').addEventListener('submit', function(e) {
           e.preventDefault();
-          alert("心得已提交！");
-          // 清除表單內容
-          document.getElementById('reviewText').value = "";
-          document.querySelectorAll('#ratingInput span').forEach(s => s.classList.remove('selected'));
+          handleReviewFormSubmit();
         });
       } else if (actionType === 'reservation') {
         document.getElementById('sidePanelTitle').textContent = `下週搶約 - ${cardTitle} (${count}則)`;
@@ -514,26 +585,80 @@
         html += `</table>`;
         document.getElementById('sideTabReservation').innerHTML = html;
       }
-      // 自動切換到對應標籤
+      // 自動切換標籤
       switchSideTab(actionType);
-      const overlay = document.getElementById('overlay');
       overlay.style.display = "block";
       setTimeout(() => { overlay.classList.add('active'); }, 10);
-      const sidePanel = document.getElementById('sidePanel');
       sidePanel.style.display = "block";
       setTimeout(() => { sidePanel.classList.add('active'); }, 10);
     }
-
     // 關閉側邊面板
-    function closeSidePanel() {
+    function closeSidePanel(){
       const sidePanel = document.getElementById('sidePanel');
-      sidePanel.classList.remove('active');
       const overlay = document.getElementById('overlay');
+      sidePanel.classList.remove('active');
       overlay.classList.remove('active');
       setTimeout(() => { 
         sidePanel.style.display = "none"; 
         overlay.style.display = "none";
       }, 300);
+    }
+    // 處理「新增心得」表單提交，將心得結果呈現在側邊面板的「現有心得」區
+    function handleReviewFormSubmit(){
+      const age = document.getElementById('ageRange').value;
+      // 外型：取得 appearanceContainer 中選取的 Chip（有 .selected）
+      const appearanceElems = document.querySelectorAll('#appearanceContainer .chip.selected');
+      let appearance = [];
+      appearanceElems.forEach(elem => { appearance.push(elem.textContent); });
+      const bodyType = document.getElementById('bodyType').value;
+      const cupSize = document.getElementById('cupSize').value;
+      const skinQualityElem = document.querySelector('input[name="skinQuality"]:checked');
+      const skinQuality = skinQualityElem ? skinQualityElem.value : "";
+      const valueAddedElems = document.querySelectorAll('#valueAddedContainer .chip.selected');
+      let valueAdded = [];
+      valueAddedElems.forEach(elem => { valueAdded.push(elem.textContent); });
+      const musicFee = document.getElementById('musicFee').value;
+      const sportsFee = document.getElementById('sportsFee').value;
+      const ratingSpans = document.querySelectorAll('#ratingInput span.selected');
+      let rating = ratingSpans.length;
+      const reviewText = document.getElementById('reviewText').value;
+      
+      // 建立一個新的心得區塊（呈現所有欄位內容）
+      const reviewList = document.getElementById('reviewList');
+      const newReview = document.createElement('div');
+      newReview.className = "review";
+      newReview.innerHTML = `
+        <div class="review-header">
+          <strong>新心得</strong>
+          <span class="review-rating">${generateStars(rating)}</span>
+        </div>
+        <div class="review-details">
+          <p><strong>年紀：</strong> ${age}</p>
+          <p><strong>外型：</strong> ${appearance.join(', ')}</p>
+          <p><strong>身材：</strong> ${bodyType}</p>
+          <p><strong>罩杯：</strong> ${cupSize}</p>
+          <p><strong>膚質：</strong> ${skinQuality}</p>
+          <p><strong>加值：</strong> ${valueAdded.join(', ')}</p>
+          <p><strong>音樂：</strong> ${musicFee}</p>
+          <p><strong>體育：</strong> ${sportsFee}</p>
+          <p><strong>心得：</strong> ${reviewText}</p>
+        </div>
+      `;
+      reviewList.innerHTML += newReview.outerHTML;
+      // 重設表單內容
+      document.getElementById('reviewForm').reset();
+      document.querySelectorAll('.chip.selected').forEach(chip => chip.classList.remove('selected'));
+      document.querySelectorAll('#ratingInput span').forEach(s => s.classList.remove('selected'));
+      document.getElementById('ageValue').innerText = "18";
+    }
+    
+    // 產生星星字串，用於呈現評分（已填色或空星）
+    function generateStars(rating) {
+      let starsHtml = "";
+      for (let i = 1; i <= 5; i++){
+        starsHtml += (i <= rating) ? "&#9733;" : "&#9734;";
+      }
+      return starsHtml;
     }
   </script>
 </body>

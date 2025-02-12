@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>心得表單範本展示</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f5f5f5;
+      padding: 20px;
+      margin: 0;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    form {
+      max-width: 600px;
+      margin: auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+    }
+    .form-section {
+      margin-bottom: 16px;
+    }
+    .form-section label {
+      display: block;
+      margin-bottom: 4px;
+      font-weight: bold;
+    }
+    /* 年紀滑桿 */
+    input[type="range"] {
+      width: 100%;
+    }
+    /* 下拉選單、數值輸入、文字區 */
+    select,
+    input[type="number"],
+    textarea {
+      width: 100%;
+      padding: 8px;
+      box-sizing: border-box;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    /* Chip 風格 */
+    .chip-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .chip {
+      padding: 6px 10px;
+      border-radius: 16px;
+      background-color: #eee;
+      cursor: pointer;
+      user-select: none;
+      transition: background-color 0.2s;
+    }
+    .chip.selected {
+      background-color: #007bff;
+      color: #fff;
+    }
+    /* 評分星星 */
+    .rating {
+      display: flex;
+      flex-direction: row;
+    }
+    .rating span {
+      font-size: 1.5em;
+      cursor: pointer;
+      color: #ccc;
+      user-select: none;
+      transition: color 0.2s;
+    }
+    .rating span.selected {
+      color: gold;
+    }
+    /* 送出按鈕 */
+    button[type="submit"] {
+      padding: 10px 20px;
+      font-size: 1em;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button[type="submit"]:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <h1>心得表單範本展示</h1>
+  <form id="reviewFormSample">
+    <!-- 年紀 -->
+    <div class="form-section">
+      <label for="ageRange">年紀 (18~40)：<span id="ageValue">18</span></label>
+      <input type="range" id="ageRange" name="age" min="18" max="40" value="18" oninput="document.getElementById('ageValue').innerText=this.value">
+    </div>
+    
+    <!-- 外型 -->
+    <div class="form-section">
+      <label>外型 (可複選)：</label>
+      <div class="chip-container" id="appearanceContainer">
+        <span class="chip" onclick="this.classList.toggle('selected')">甜美</span>
+        <span class="chip" onclick="this.classList.toggle('selected')">可愛</span>
+        <span class="chip" onclick="this.classList.toggle('selected')">氣質</span>
+        <span class="chip" onclick="this.classList.toggle('selected')">漂亮</span>
+        <span class="chip" onclick="this.classList.toggle('selected')">艷麗</span>
+        <span class="chip" onclick="this.classList.toggle('selected')">鄰家</span>
+        <span class="chip" onclick="this.classList.toggle('selected')">素人</span>
+      </div>
+    </div>
+    
+    <!-- 身材 -->
+    <div class="form-section">
+      <label for="bodyType">身材：</label>
+      <select id="bodyType" name="bodyType">
+        <option value="">請選擇</option>
+        <option value="骨感">骨感</option>
+        <option value="瘦">瘦</option>
+        <option value="均勻">均勻</option>
+        <option value="微肉">微肉</option>
+        <option value="棉花糖">棉花糖</option>
+      </select>
+    </div>
+    
+    <!-- 罩杯 -->
+    <div class="form-section">
+      <label for="cupSize">罩杯：</label>
+      <select id="cupSize" name="cupSize">
+        <option value="">請選擇</option>
+      </select>
+    </div>
+    
+    <!-- 膚質 -->
+    <div class="form-section">
+      <label>膚質：</label>
+      <label><input type="radio" name="skinQuality" value="絲滑"> 絲滑</label>
+      <label><input type="radio" name="skinQuality" value="普通"> 普通</label>
+      <label><input type="radio" name="skinQuality" value="差"> 差</label>
+    </div>
+    
+    <!-- 加值 -->
+    <div class="form-section">
+      <label>加值 (可複選)：</label>
+      <div class="chip-container" id="valueAddedContainer">
+        <span class="chip" onclick="this.classList.toggle('selected')">LG</span>
+        <span class="chip" onclick="this.classList.toggle('selected')">三光</span>
+        <span class="chip" onclick="this.classList.toggle('selected')">摳</span>
+        <span class="chip" onclick="this.classList.toggle('selected')">舔</span>
+        <span class="chip" onclick="this.classList.toggle('selected')">親</span>
+      </div>
+    </div>
+    
+    <!-- 音樂 -->
+    <div class="form-section">
+      <label for="musicFee">音樂 (金額)：</label>
+      <input type="number" id="musicFee" name="musicFee" placeholder="請輸入金額">
+    </div>
+    
+    <!-- 體育 -->
+    <div class="form-section">
+      <label for="sportsFee">體育 (金額)：</label>
+      <input type="number" id="sportsFee" name="sportsFee" placeholder="請輸入金額">
+    </div>
+    
+    <!-- 評分 -->
+    <div class="form-section">
+      <label for="ratingInput">評分：</label>
+      <div class="rating" id="ratingInput">
+        <span data-value="1" onclick="selectRating(this)">&#9733;</span>
+        <span data-value="2" onclick="selectRating(this)">&#9733;</span>
+        <span data-value="3" onclick="selectRating(this)">&#9733;</span>
+        <span data-value="4" onclick="selectRating(this)">&#9733;</span>
+        <span data-value="5" onclick="selectRating(this)">&#9733;</span>
+      </div>
+    </div>
+    
+    <!-- 心得 -->
+    <div class="form-section">
+      <label for="reviewText">心得：</label>
+      <textarea id="reviewText" name="reviewText" rows="4" placeholder="請輸入您的心得..."></textarea>
+    </div>
+    
+    <button type="submit">送出</button>
+  </form>
+  
+  <script>
+    // 產生罩杯選項 A~Z
+    function generateCupSizeOptions() {
+      const cupSizeSelect = document.getElementById('cupSize');
+      for(let c = 65; c <= 90; c++){
+        let letter = String.fromCharCode(c);
+        let option = document.createElement('option');
+        option.value = letter;
+        option.textContent = letter;
+        cupSizeSelect.appendChild(option);
+      }
+    }
+    generateCupSizeOptions();
+    
+    // 評分星星點選功能
+    function selectRating(selectedSpan) {
+      const ratingContainer = document.getElementById('ratingInput');
+      const ratingValue = selectedSpan.getAttribute('data-value');
+      ratingContainer.querySelectorAll('span').forEach(span => {
+        if (span.getAttribute('data-value') <= ratingValue) {
+          span.classList.add('selected');
+        } else {
+          span.classList.remove('selected');
+        }
+      });
+    }
+    
+    // 表單提交事件 (僅示範)
+    document.getElementById('reviewFormSample').addEventListener('submit', function(e) {
+      e.preventDefault();
+      alert("表單已提交！");
+      // 可根據需求進行進一步處理
+    });
+  </script>
+</body>
+</html>

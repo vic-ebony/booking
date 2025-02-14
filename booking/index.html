@@ -87,12 +87,18 @@
       overflow: hidden;
       text-align: left;
     }
-    .photo { flex-shrink: 0; }
+    /* 調整照片部分：寬度加寬，並加入上方與左側 margin 與圓角 */
+    .photo {
+      flex-shrink: 0;
+    }
     .photo img {
-      width: 130px;
+      width: 160px;
       height: 180px;
       object-fit: cover;
       display: block;
+      border-radius: 10px;
+      margin-top: 10px;
+      margin-left: 10px;
     }
     .right-area {
       flex-grow: 1;
@@ -124,7 +130,7 @@
       display: flex;
       align-items: center;
     }
-    /* 修改：介紹區塊固定最大高度約4行，並啟用垂直滾動 */
+    /* 修改：介紹區塊固定最大高度約4行，啟用垂直滾動 */
     .intro-area p { 
       font-size: 0.875rem; 
       color: #333; 
@@ -246,7 +252,7 @@
       display: none;
     }
     #overlay.active { display: block; opacity: 1; }
-    /* 心得表單內部樣式（保持原狀） */
+    /* 心得表單內部樣式 */
     .form-section { margin-bottom: 12px; text-align: left; }
     .form-section label { display: block; margin-bottom: 4px; font-weight: bold; }
     input[type="range"],
@@ -259,12 +265,29 @@
       border: 1px solid #ccc;
       border-radius: 4px;
     }
-    .chip-container { display: flex; flex-wrap: wrap; gap: 8px; }
-    .chip { padding: 6px 10px; background-color: #eee; border-radius: 16px; cursor: pointer; user-select: none; transition: background-color 0.2s; }
+    .chip-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .chip {
+      padding: 6px 10px;
+      background-color: #eee;
+      border-radius: 16px;
+      cursor: pointer;
+      user-select: none;
+      transition: background-color 0.2s;
+    }
     .chip.selected { background-color: #007bff; color: #fff; }
     .chip.disabled { opacity: 0.5; pointer-events: none; }
     .rating { display: flex; flex-direction: row; }
-    .rating span { font-size: 1.5em; cursor: pointer; color: #ccc; user-select: none; transition: color 0.2s; }
+    .rating span {
+      font-size: 1.5em;
+      cursor: pointer;
+      color: #ccc;
+      user-select: none;
+      transition: color 0.2s;
+    }
     .rating span.selected { color: gold; }
     .review-details {
       display: grid;
@@ -414,7 +437,6 @@
                   <div class="name">動物園 ${currentBranch} - 動物 ${i}</div>
                   <div class="details">100 / 50 / 1</div>
                   <div class="price">💰 3000</div>
-                  <div class="price">🍱 5300</div>
                 </div>
                 <div class="intro-area">
                   <p>動物園介紹：本動物園擁有多樣化的動物，歡迎前來參觀！若介紹內容過多，您可以在此區域內滾動閱讀完整內容。</p>

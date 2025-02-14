@@ -48,8 +48,9 @@
       overflow-x: auto;
       -webkit-overflow-scrolling: touch;
       scroll-snap-type: x mandatory;
-      scroll-padding-left: 50px;
-      scroll-padding-right: 50px;
+      /* 將左右內邊距調整為10px，使第一個館別按鈕與選單對齊 */
+      scroll-padding-left: 10px;
+      scroll-padding-right: 10px;
     }
     .branch-tab {
       margin: 0 4px;
@@ -60,7 +61,7 @@
       border-radius: 4px;
       cursor: pointer;
       flex-shrink: 0;
-      scroll-snap-align: center;
+      scroll-snap-align: start;
     }
     .branch-tab.active {
       background-color: #007bff;
@@ -80,7 +81,7 @@
       border-radius: 4px;
       cursor: pointer;
     }
-    /* 選單側邊面板 - 調整為與心得面板相同高度 */
+    /* 選單側邊面板 - 與心得面板相同高度，並右上與右下圓角，z-index 調整到 2000 */
     #menuPanel {
       position: fixed;
       top: 130px;
@@ -90,9 +91,11 @@
       background-color: #fff;
       box-shadow: 2px 0 5px rgba(0,0,0,0.2);
       transition: left 0.3s ease;
-      z-index: 1200;
+      z-index: 2000;
       padding: 20px;
       box-sizing: border-box;
+      border-top-right-radius: 10px;
+      border-bottom-right-radius: 10px;
     }
     #menuPanel.active {
       left: 0;
@@ -260,7 +263,8 @@
       border-bottom-left-radius: 10px;
     }
     #sidePanel.active { right: 0; }
-    #sidePanel h3 { margin-top: 0; font-size: 1rem; }
+    /* 將右側面板內字體稍微放大 */
+    #sidePanel h3 { margin-top: 0; font-size: 1.2rem; }
     #sidePanelTabs {
       display: flex;
       justify-content: space-around;
@@ -270,7 +274,7 @@
     .side-tab {
       flex: 1;
       padding: 6px 0;
-      font-size: 0.875rem;
+      font-size: 1rem;
       background: none;
       border: none;
       cursor: pointer;
@@ -279,7 +283,7 @@
       border-bottom: 2px solid #007bff;
       color: #007bff;
     }
-    .side-tab-content { display: none; text-align: left; font-size: 0.875rem; }
+    .side-tab-content { display: none; text-align: left; font-size: 1rem; }
     .side-tab-content.active { display: block; }
     #sidePanel .close-btn {
       position: absolute;
@@ -290,7 +294,7 @@
       font-size: 1rem;
       cursor: pointer;
     }
-    /* 漸變遮罩 */
+    /* 漸變遮罩 - 只覆蓋底層資料區 */
     #overlay {
       position: fixed;
       top: 130px;
@@ -445,7 +449,7 @@
   </div>
   <!-- 資料卡區 -->
   <div id="cardsContainer" class="container"></div>
-  <!-- 漸變遮罩 -->
+  <!-- 漸變遮罩 (覆蓋底層資料區) -->
   <div id="overlay"></div>
   <!-- 側邊面板 -->
   <div id="sidePanel">
@@ -464,12 +468,18 @@
   </div>
   
   <script>
-    // 選單側邊面板功能
+    // 選單側邊面板功能 (加入與心得面板相同的漸變遮罩效果)
     function openMenuPanel(){
       document.getElementById('menuPanel').classList.add('active');
+      const overlay = document.getElementById('overlay');
+      overlay.style.display = "block";
+      setTimeout(() => { overlay.classList.add('active'); }, 10);
     }
     function closeMenuPanel(){
       document.getElementById('menuPanel').classList.remove('active');
+      const overlay = document.getElementById('overlay');
+      overlay.classList.remove('active');
+      setTimeout(() => { overlay.style.display = "none"; }, 300);
     }
     
     // 產生 10 個館別
@@ -487,7 +497,7 @@
         currentBranch = tab.getAttribute('data-branch');
         branchTabs.forEach(t => t.classList.remove('active'));
         tab.classList.add('active');
-        tab.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+        tab.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "start" });
         updateCards();
       });
     });
@@ -557,7 +567,7 @@
         branchTabs.forEach(t => t.classList.remove('active'));
         const activeTab = document.querySelector(`.branch-tab[data-branch="${currentBranch}"]`);
         activeTab.classList.add('active');
-        activeTab.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+        activeTab.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "start" });
         updateCards();
         cardsContainer.scrollTop = 0;
       }
@@ -579,7 +589,7 @@
       }
     }
     
-    // 側邊面板功能
+    // 側邊面板功能 (使用漸變遮罩)
     function openSidePanel(cardTitle, count, actionType) {
       const sidePanel = document.getElementById('sidePanel');
       const overlay = document.getElementById('overlay');

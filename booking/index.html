@@ -24,7 +24,7 @@
       margin: auto;
       box-sizing: border-box;
     }
-    /* 頁首與館別標籤 */
+    /* Header 與館別標籤 */
     #header {
       position: fixed;
       top: 0;
@@ -143,7 +143,6 @@
       overflow: hidden;
       text-align: left;
     }
-    /* 調整照片部分 */
     .photo {
       flex-shrink: 0;
     }
@@ -243,44 +242,53 @@
       min-width: 30px;
       text-align: center;
     }
-    /* 右側面板 (側邊面板) 放大字體及調整標籤 */
+    /* 右側面板 - 保持原有大小與滑出效果 */
     #sidePanel {
       position: fixed;
-      top: 130px;
+      top: 0;
       right: -320px;
       width: 300px;
-      height: calc(100vh - 260px);
+      height: 100vh;
       background-color: #fff;
       box-shadow: -2px 0 5px rgba(0,0,0,0.2);
-      overflow-y: auto;
       transition: right 0.3s ease;
       z-index: 2000;
-      padding: 0;
       box-sizing: border-box;
-      display: none;
       border-top-left-radius: 10px;
       border-bottom-left-radius: 10px;
       font-size: 1.1rem;
+      display: none;
+      /* 以 flex 排版，上方固定，下方獨立捲動 */
+      display: flex;
+      flex-direction: column;
     }
-    #sidePanel.active { right: 0; }
-    /* 將上方館別標題區與標籤區分離，並固定 */
+    #sidePanel.active { 
+      right: 0; 
+      display: flex;
+    }
+    /* 上方固定區：僅修改此區背景與內部排版，風格與下方館別標籤相似 */
     #sidePanelHeader {
-      position: sticky;
-      top: 0;
-      background: #fff;
-      z-index: 2100;
       padding: 10px;
       border-bottom: 1px solid #ddd;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #f5f5f5;
     }
     #sidePanelHeader h3 {
       margin: 0;
       font-size: 1.2rem;
     }
+    #reviewToggleBtn {
+      font-size: 1.1rem;
+      padding: 4px 8px;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
     #sidePanelTabs {
-      position: sticky;
-      top: 50px; /* 50px 為館別標題高度 */
-      background: #fff;
-      z-index: 2100;
       display: flex;
       justify-content: space-around;
       border-bottom: 1px solid #ddd;
@@ -297,12 +305,21 @@
       border-bottom: 2px solid #007bff;
       color: #007bff;
     }
-    .side-tab-content {
-      display: none;
+    /* 下方可滾動內容區 */
+    #sidePanelContent {
+      flex: 1;
+      overflow-y: auto;
       text-align: left;
       font-size: 1.1rem;
     }
-    .side-tab-content.active { display: block; }
+    #sidePanelContent .side-tab-content {
+      display: none;
+    }
+    #sidePanelContent .side-tab-content.active { 
+      display: block;
+      padding: 10px;
+    }
+    /* 右側面板關閉按鈕 */
     #sidePanel .close-btn {
       position: absolute;
       bottom: 10px;
@@ -327,7 +344,7 @@
       display: none;
     }
     #overlay.active { display: block; opacity: 1; }
-    /* 體驗心得表單內部樣式 (放大字體) */
+    /* 體驗心得表單內部樣式 */
     .form-section { margin-bottom: 12px; text-align: left; padding: 0 10px; }
     .form-section label { display: block; margin-bottom: 4px; font-weight: bold; }
     input[type="range"],
@@ -475,9 +492,10 @@
   <!-- 右側面板 -->
   <div id="sidePanel">
     <button class="close-btn" onclick="closeSidePanel()">×</button>
-    <!-- 固定上方：館別+名稱 -->
+    <!-- 上方固定區：館別標題與心得填寫按鈕 -->
     <div id="sidePanelHeader">
       <h3 id="sidePanelTitle"></h3>
+      <button id="reviewToggleBtn" onclick="toggleReviewForm()">心得填寫</button>
     </div>
     <!-- 固定標籤區 -->
     <div id="sidePanelTabs">
@@ -485,16 +503,19 @@
       <button class="side-tab" id="sideTabBtn_reservation" onclick="switchSideTab('reservation')">下週搶約</button>
       <button class="side-tab" id="sideTabBtn_rename" onclick="switchSideTab('rename')">改名紀錄</button>
     </div>
-    <!-- 可滑動內容區 -->
+    <!-- 下方可滾動內容區 -->
     <div id="sidePanelContent">
-      <div id="sideTabComments" class="side-tab-content active"></div>
+      <div id="sideTabComments" class="side-tab-content active">
+        <div id="reviewFormContainer" style="display:none;"></div>
+        <div id="reviewList"></div>
+      </div>
       <div id="sideTabReservation" class="side-tab-content" style="display:none;"></div>
       <div id="sideTabRename" class="side-tab-content" style="display:none;"></div>
     </div>
   </div>
   
   <script>
-    // 變數用於右側面板滑動切換標籤（左右滑動）
+    // 用於右側面板滑動切換標籤
     let sideStartX = 0;
     const sideSwipeThreshold = 50;
     const tabOrder = ['comments', 'reservation', 'rename'];
@@ -514,11 +535,11 @@
     }
     
     // 產生 10 個館別
-    const branches = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
-    let currentBranch = branches[0];
+    const branchList = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
+    let currentBranch = branchList[0];
     const branchesContainer = document.getElementById('branchesContainer');
     let branchesHTML = "";
-    branches.forEach(branch => {
+    branchList.forEach(branch => {
       branchesHTML += `<button class="branch-tab" data-branch="${branch}">動物園 ${branch} (30)</button> `;
     });
     branchesContainer.innerHTML = branchesHTML;
@@ -588,13 +609,13 @@
       let endX = e.changedTouches[0].pageX;
       let diff = endX - startX;
       if (Math.abs(diff) > swipeThreshold) {
-        let currentIndex = branches.indexOf(currentBranch);
+        let currentIndex = branchList.indexOf(currentBranch);
         if (diff < 0) {
-          currentIndex = (currentIndex + 1) % branches.length;
+          currentIndex = (currentIndex + 1) % branchList.length;
         } else {
-          currentIndex = (currentIndex - 1 + branches.length) % branches.length;
+          currentIndex = (currentIndex - 1 + branchList.length) % branchList.length;
         }
-        currentBranch = branches[currentIndex];
+        currentBranch = branchList[currentIndex];
         branchTabs.forEach(t => t.classList.remove('active'));
         const activeTab = document.querySelector(`.branch-tab[data-branch="${currentBranch}"]`);
         activeTab.classList.add('active');
@@ -604,23 +625,23 @@
       }
     }, false);
     
-    // 側邊面板標籤切換
+    // 右側面板標籤切換
     function switchSideTab(tabName) {
       document.querySelectorAll('.side-tab').forEach(btn => btn.classList.remove('active'));
-      document.querySelectorAll('.side-tab-content').forEach(div => div.style.display = "none");
+      document.querySelectorAll('.side-tab-content').forEach(div => div.classList.remove('active'));
       if (tabName === 'comments') {
-        document.getElementById('sideTabComments').style.display = "block";
+        document.getElementById('sideTabComments').classList.add('active');
         document.getElementById('sideTabBtn_comments').classList.add('active');
       } else if (tabName === 'reservation') {
-        document.getElementById('sideTabReservation').style.display = "block";
+        document.getElementById('sideTabReservation').classList.add('active');
         document.getElementById('sideTabBtn_reservation').classList.add('active');
       } else if (tabName === 'rename') {
-        document.getElementById('sideTabRename').style.display = "block";
+        document.getElementById('sideTabRename').classList.add('active');
         document.getElementById('sideTabBtn_rename').classList.add('active');
       }
     }
     
-    // 右側面板內滑動切換標籤 (左右滑動)
+    // 右側面板內滑動切換標籤（左右滑動）
     const sidePanelContent = document.getElementById('sidePanelContent');
     sidePanelContent.addEventListener('touchstart', function(e) {
       sideStartX = e.changedTouches[0].pageX;
@@ -632,25 +653,20 @@
         let currentIndex = tabOrder.findIndex(name => {
           return document.getElementById('sideTabBtn_' + name).classList.contains('active');
         });
-        if (diff < 0) { // 向左滑
+        if (diff < 0) {
           currentIndex = (currentIndex + 1) % tabOrder.length;
-        } else { // 向右滑
+        } else {
           currentIndex = (currentIndex - 1 + tabOrder.length) % tabOrder.length;
         }
         switchSideTab(tabOrder[currentIndex]);
       }
     }, false);
     
-    // 右側面板功能 (使用漸變遮罩) 並依據 actionType 更新內容
-    function openSidePanel(cardTitle, count, actionType) {
-      const sidePanel = document.getElementById('sidePanel');
-      const overlay = document.getElementById('overlay');
-      // 上方館別標題顯示：館別+名稱（完整 cardTitle 內容）
-      document.getElementById('sidePanelTitle').textContent = cardTitle;
-      
-      if (actionType === 'comments') {
-        document.getElementById('sideTabBtn_comments').textContent = `心得 (${count})`;
-        const reviewContent = `
+    // 切換心得填寫表單顯示/隱藏
+    function toggleReviewForm() {
+      const container = document.getElementById('reviewFormContainer');
+      if (container.style.display === "none" || container.style.display === "") {
+        container.innerHTML = `
           <form id="reviewForm" onsubmit="return handleReviewFormSubmit(event);">
             <div class="form-section">
               <label for="ageRange">年紀 (18~40)：<span id="ageValue">18</span></label>
@@ -735,7 +751,6 @@
               <label for="sportsFee">體育 (金額)：</label>
               <input type="number" id="sportsFee" name="sportsFee" placeholder="請輸入金額">
             </div>
-            <!-- 移除評分設定 -->
             <div class="form-section">
               <label for="reviewText">心得：</label>
               <textarea id="reviewText" name="reviewText" rows="4" placeholder="請輸入您的心得..."></textarea>
@@ -743,8 +758,47 @@
             <button type="submit">提交心得</button>
           </form>
         `;
-        document.getElementById('sideTabComments').innerHTML = reviewContent;
+        container.style.display = "block";
         generateCupSizeOptions();
+      } else {
+        container = document.getElementById('reviewFormContainer');
+        container.style.display = "none";
+        container.innerHTML = "";
+      }
+    }
+    
+    // 右側面板內滑動切換標籤（左右滑動）
+    const sidePanelContentEl = document.getElementById('sidePanelContent');
+    sidePanelContentEl.addEventListener('touchstart', function(e) {
+      sideStartX = e.changedTouches[0].pageX;
+    }, false);
+    sidePanelContentEl.addEventListener('touchend', function(e) {
+      const endX = e.changedTouches[0].pageX;
+      const diff = endX - sideStartX;
+      if (Math.abs(diff) > sideSwipeThreshold) {
+        let currentIndex = tabOrder.findIndex(name => {
+          return document.getElementById('sideTabBtn_' + name).classList.contains('active');
+        });
+        if (diff < 0) {
+          currentIndex = (currentIndex + 1) % tabOrder.length;
+        } else {
+          currentIndex = (currentIndex - 1 + tabOrder.length) % tabOrder.length;
+        }
+        switchSideTab(tabOrder[currentIndex]);
+      }
+    }, false);
+    
+    // 右側面板功能 – 根據不同 actionType 更新內容
+    function openSidePanel(cardTitle, count, actionType) {
+      const sidePanel = document.getElementById('sidePanel');
+      const overlay = document.getElementById('overlay');
+      // 更新上方館別標題（完整 cardTitle）
+      document.getElementById('sidePanelTitle').textContent = cardTitle;
+      
+      if (actionType === 'comments') {
+        document.getElementById('sideTabBtn_comments').textContent = `心得 (${count})`;
+        // 初始化心得區，保留 reviewFormContainer 與 reviewList
+        document.getElementById('sideTabComments').innerHTML = '<div id="reviewFormContainer" style="display:none;"></div><div id="reviewList"></div>';
       } else if (actionType === 'reservation') {
         document.getElementById('sideTabBtn_reservation').textContent = `下週搶約`;
         let html = `<table style="width:100%; font-size:1.1rem; text-align:left; border-collapse: collapse;">`;
@@ -763,7 +817,7 @@
       
       overlay.style.display = "block";
       setTimeout(() => { overlay.classList.add('active'); }, 10);
-      sidePanel.style.display = "block";
+      sidePanel.style.display = "flex";
       setTimeout(() => { sidePanel.classList.add('active'); }, 10);
     }
     
@@ -787,53 +841,7 @@
       }
     }
     
-    function selectRating(selectedSpan) {
-      const ratingContainer = document.getElementById('ratingInput');
-      const ratingValue = selectedSpan.getAttribute('data-value');
-      ratingContainer.querySelectorAll('span').forEach(span => {
-        if (span.getAttribute('data-value') <= ratingValue) { 
-          span.classList.add('selected'); 
-        } else { 
-          span.classList.remove('selected'); 
-        }
-      });
-    }
-    
-    function toggleChip(element) {
-      if (element.classList.contains('disabled')) return;
-      element.classList.toggle('selected');
-      const groupId = element.parentElement.id;
-      const optionText = element.textContent.trim();
-      let otherGroupId = "";
-      if (groupId === 'valueAddedBeforeContainer') { 
-        otherGroupId = 'valueAddedAfterContainer'; 
-      } else if (groupId === 'valueAddedAfterContainer') { 
-        otherGroupId = 'valueAddedBeforeContainer'; 
-      } else { 
-        return; 
-      }
-      const otherChips = document.querySelectorAll(`#${otherGroupId} .chip`);
-      otherChips.forEach(chip => {
-        if (chip.textContent.trim() === optionText) {
-          if (element.classList.contains('selected')) { 
-            chip.classList.add('disabled'); 
-          } else { 
-            chip.classList.remove('disabled'); 
-          }
-        }
-      });
-    }
-    
-    function selectSingleChip(element, containerId) {
-      const container = document.getElementById(containerId);
-      const chips = container.getElementsByClassName("chip");
-      for (let i = 0; i < chips.length; i++) {
-        chips[i].classList.remove("selected");
-      }
-      element.classList.add("selected");
-    }
-    
-    // 儲存體驗心得表單，防止表單提交後頁面刷新
+    // 表單提交處理：防止頁面刷新，將心得追加到 reviewList 區域
     function handleReviewFormSubmit(e) {
       e.preventDefault();
       const age = document.getElementById('ageRange').value;
@@ -902,15 +910,11 @@
       document.querySelectorAll('.chip.selected').forEach(chip => chip.classList.remove('selected'));
       document.querySelectorAll('.chip.disabled').forEach(chip => chip.classList.remove('disabled'));
       document.getElementById('ageValue').innerText = "18";
+      // 隱藏表單區
+      document.getElementById('reviewFormContainer').style.display = "none";
+      document.getElementById('reviewFormContainer').innerHTML = "";
+      
       return false;
-    }
-    
-    function generateStars(rating) {
-      let starsHtml = "";
-      for (let i = 1; i <= 5; i++){
-        starsHtml += (i <= rating) ? "&#9733;" : "&#9734;";
-      }
-      return starsHtml;
     }
   </script>
 </body>

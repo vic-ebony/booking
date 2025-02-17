@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>動物園介紹 - 優化排版</title>
+  <title>介紹 - 優化排版</title>
   <!-- 引入 Font Awesome 圖示庫（可選） -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" 
         integrity="sha512-2T5G0sRV0QEj2QZqOCiD/f3pZpXk/q1c6eJZe9g/s4fPPpBy/jF37sx6jK0S5FqgQ7b0jwJJYOrpZhdk+sQF8g==" 
@@ -38,35 +38,68 @@
       font-size: 1.25rem;
       color: white;
     }
-    /* 左側垂直館別選單 */
+    /* 左側垂直館別選單 - 桌機版 */
     #branchesContainer {
       position: fixed;
       top: 50px;
       left: 0;
       bottom: 0;
-      width: 120px;
+      width: 60px;  /* 從80px改為60px */
       background-color: #00c300;
       padding: 5px;
       box-sizing: border-box;
       overflow-y: auto;
+      overflow-x: visible; /* 允許水平溢出，避免徽章被裁切 */
+      touch-action: pan-y; /* 僅允許垂直滾動，禁止左右拖曳 */
       z-index: 1000;
       display: flex;
       flex-direction: column;
+      align-items: flex-start;
     }
+    /* 將館別按鈕改為圓形，並允許徽章溢出 */
     .branch-tab {
-      margin: 4px 0;
-      padding: 6px 8px;
-      font-size: 0.9rem;
+      position: relative;
+      width: 45px;   /* 從60px改為45px */
+      height: 45px;  /* 從60px改為45px */
+      border-radius: 50%;
       background-color: #e6ffe6;
       border: none;
-      border-radius: 4px;
       cursor: pointer;
+      margin: 5px 0;
+      /* 使用 flex 置中內部內容 */
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      font-size: 0.8rem;
       color: #000;
-      text-align: left;
+      overflow: visible;
+    }
+    /* 新增規則，允許館別名稱多行換行並完整呈現 */
+    .branch-tab .branch-name {
+      white-space: normal;
+      word-break: break-all;
+      text-align: center;
+      line-height: 1.2;
     }
     .branch-tab.active {
       background-color: #008f00;
       color: #fff;
+    }
+    /* 徽章效果 */
+    .branch-tab .badge {
+      position: absolute;
+      bottom: -3px;  /* 調整位置 */
+      right: -3px;   /* 調整位置 */
+      background: red;
+      color: white;
+      border-radius: 50%;
+      width: 16px;   /* 調整尺寸 */
+      height: 16px;  /* 調整尺寸 */
+      font-size: 0.65rem;
+      text-align: center;
+      line-height: 16px;
+      z-index: 2;
     }
     /* 首頁選單按鈕 */
     #menuButton {
@@ -104,7 +137,7 @@
     #menuPanel ul { list-style: none; padding: 0; }
     #menuPanel ul li { margin: 10px 0; cursor: pointer; }
     #menuPanel .close-menu {
-      position: absolute;
+      position: fixed;
       top: 10px;
       right: 10px;
       border: none;
@@ -112,18 +145,18 @@
       font-size: 1.2rem;
       cursor: pointer;
     }
-    /* 資訊卡區：利用 left:120px, right:0 完全展開 */
+    /* 資訊卡區 */
     #cardsContainer {
       position: absolute;
       top: 50px;
-      left: 120px;
+      left: 60px;  /* 與左側區塊寬度一致 */
       right: 0;
       bottom: 0;
       overflow-y: auto;
       padding: 10px;
       box-sizing: border-box;
     }
-    /* 卡片結構：左右兩欄 */
+    /* 卡片結構 */
     .card {
       display: flex;
       background: white;
@@ -134,18 +167,19 @@
       text-align: left;
       position: relative;
     }
-    /* 左欄：包含照片與活動時段 */
+    /* 左欄 - 調整為比例 40% 並靠左 */
     .left-column {
-      flex: 0 0 160px;
+      flex: 0 0 40%;
       display: flex;
       flex-direction: column;
-      align-items: center;
+      align-items: flex-start;
       border-right: 1px solid #ddd;
       padding: 10px;
       overflow: hidden;
     }
+    /* 讓照片區塊撐滿左欄 */
     .photo {
-      width: 140px;
+      width: 100%;
       margin-bottom: 6px;
     }
     .photo img {
@@ -170,11 +204,11 @@
       color: #555;
       margin-bottom: 2px;
     }
-    /* 右欄：包含基本資料、介紹與按鈕 */
+    /* 右欄 - 調整為比例 60% */
     .right-column {
-      flex: 1;
+      flex: 0 0 60%;
       padding: 12px;
-      min-width: 0; /* 允許收縮 */
+      min-width: 0;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
@@ -444,11 +478,21 @@
       cursor: pointer;
     }
     button[type="submit"]:hover { background-color: #007700; }
-    /* 響應式：若寬度小於 480px，左右欄稍微調整 */
+    /* 響應式調整 */
     @media (max-width:480px) {
+      /* 手機版館別縮小 */
+      #branchesContainer {
+        width: 60px;
+      }
+      #cardsContainer {
+        left: 60px;
+      }
       .card { flex-direction: row; }
-      .left-column { flex: 0 0 40%; }
-      .right-column { flex: 1; padding: 8px; }
+      .left-column { 
+        flex: 0 0 40%; 
+        align-items: flex-start;
+      }
+      .right-column { flex: 0 0 60%; padding: 8px; }
       .photo { width: 100%; object-fit: cover; margin: 5px; }
       #sidePanel { width: 80%; }
     }
@@ -469,7 +513,7 @@
   </div>
   <!-- Header -->
   <div id="header">
-    <h2>動物園介紹</h2>
+    <h2>介紹</h2>
   </div>
   <!-- 左側垂直館別選單 -->
   <div id="branchesContainer"></div>
@@ -503,48 +547,29 @@
   </div>
   
   <script>
+    // 更新館別名稱（共10個），直接採用清單中的名稱
+    const branchList = [
+      "樂鑽",
+      "手中情",
+      "潘朵拉",
+      "茶湯會",
+      "芯苑",
+      "八五",
+      "寶可夢",
+      "愛寶",
+      "芯店",
+      "水沙連"
+    ];
+    let currentBranch = branchList[0];
+    
     // 為避免使用前未定義，先宣告 branchesContainer 與 cardsContainer
     const branchesContainer = document.getElementById('branchesContainer');
     const cardsContainer = document.getElementById('cardsContainer');
-
-    // 切換 chip 的功能
-    function toggleChip(el) {
-      el.classList.toggle('selected');
-    }
-    function selectSingleChip(el, containerId) {
-      const container = document.getElementById(containerId);
-      const chips = container.getElementsByClassName('chip');
-      for (let chip of chips) {
-        chip.classList.remove('selected');
-      }
-      el.classList.add('selected');
-    }
     
-    // 右側面板滑動切換標籤設定
-    let sideStartX = 0;
-    const sideSwipeThreshold = 50;
-    const tabOrder = ['comments', 'reservation', 'rename'];
-    
-    // 選單側邊面板功能
-    function openMenuPanel() {
-      document.getElementById('menuPanel').classList.add('active');
-      const overlay = document.getElementById('overlay');
-      overlay.style.display = "block";
-      setTimeout(() => { overlay.classList.add('active'); }, 10);
-    }
-    function closeMenuPanel() {
-      document.getElementById('menuPanel').classList.remove('active');
-      const overlay = document.getElementById('overlay');
-      overlay.classList.remove('active');
-      setTimeout(() => { overlay.style.display = "none"; }, 300);
-    }
-    
-    // 產生 10 個館別
-    const branchList = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
-    let currentBranch = branchList[0];
+    // 產生館別選單，每個按鈕包含名稱與徽章
     let branchesHTML = "";
     branchList.forEach(branch => {
-      branchesHTML += `<button class="branch-tab" data-branch="${branch}">動物園 ${branch} (30)</button>`;
+      branchesHTML += `<button class="branch-tab" data-branch="${branch}"><span class="branch-name">${branch}</span><span class="badge">30</span></button>`;
     });
     branchesContainer.innerHTML = branchesHTML;
     const branchTabs = document.querySelectorAll('.branch-tab');
@@ -577,18 +602,18 @@
             </div>
             <div class="right-column">
               <div class="data-area">
-                <div class="name">動物園 ${currentBranch} - 動物 ${i}</div>
+                <div class="name">${currentBranch} - 動物 ${i}</div>
                 <div class="details">100 / 50 / 1</div>
                 <div class="price">💰 3000</div>
                 <div class="intro-area">
-                  <p>動物園介紹：本動物園擁有多樣化的動物，歡迎前來參觀！</p>
+                  <p>介紹：本館擁有多樣化的動物，歡迎前來參觀！</p>
                 </div>
               </div>
               <div class="action-buttons">
-                <button class="reservation-btn" onclick="openSidePanel('動物園 ${currentBranch} - 動物 ${i}', ${numReservation}, 'reservation')">
+                <button class="reservation-btn" onclick="openSidePanel('${currentBranch} - 動物 ${i}', ${numReservation}, 'reservation')">
                   下週搶約 <span class="badge">${numReservation}</span>
                 </button>
-                <button class="comments-btn" onclick="openSidePanel('動物園 ${currentBranch} - 動物 ${i}', ${numComments}, 'comments')">
+                <button class="comments-btn" onclick="openSidePanel('${currentBranch} - 動物 ${i}', ${numComments}, 'comments')">
                   體驗心得 <span class="badge">${numComments}</span>
                 </button>
               </div>
@@ -652,7 +677,7 @@
     sidePanelContentEl.addEventListener('touchend', function(e) {
       const endX = e.changedTouches[0].pageX;
       const diff = endX - sideStartX;
-      if (Math.abs(diff) > sideSwipeThreshold) {
+      if (Math.abs(diff) > swipeThreshold) {
         let currentIndex = tabOrder.findIndex(name => {
           return document.getElementById('sideTabBtn_' + name).classList.contains('active');
         });

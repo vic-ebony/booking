@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>動物園介紹 - 心得表單呈現</title>
+  <title>介紹 - 優化排版</title>
   <!-- 引入 Font Awesome 圖示庫（可選） -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" 
         integrity="sha512-2T5G0sRV0QEj2QZqOCiD/f3pZpXk/q1c6eJZe9g/s4fPPpBy/jF37sx6jK0S5FqgQ7b0jwJJYOrpZhdk+sQF8g==" 
@@ -13,148 +13,228 @@
     html { font-size: 16px; }
     body {
       font-family: Arial, sans-serif;
-      background-color: #f5f5f5;
+      background-color: #00c300; /* LINE 綠色背景 */
       margin: 0;
       padding: 0;
-      text-align: center;
-      overflow: hidden;
+      overflow-y: auto;
     }
     .container {
-      max-width: 600px;
-      margin: auto;
       box-sizing: border-box;
     }
-    /* Header 與館別標籤 */
+    /* Header 區塊 */
     #header {
       position: fixed;
       top: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 100%;
-      max-width: 600px;
-      background-color: #f5f5f5;
+      left: 0;
+      right: 0;
+      height: 50px;
+      background-color: #00c300;
       z-index: 1001;
-      box-sizing: border-box;
+      text-align: center;
+      line-height: 50px;
     }
     #header h2 {
       margin: 0;
-      padding: 10px;
       font-size: 1.25rem;
+      color: white;
     }
+    /* 左側垂直館別選單 - 桌機版 */
     #branchesContainer {
-      padding: 10px;
+      position: fixed;
+      top: 50px;
+      left: 0;
+      bottom: 0;
+      width: 80px;
+      background-color: #00c300;
+      padding: 5px;
+      box-sizing: border-box;
+      overflow-y: auto;
+      overflow-x: visible; /* 允許水平溢出，避免徽章被裁切 */
+      z-index: 1000;
       display: flex;
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
-      scroll-snap-type: x mandatory;
-      scroll-padding-left: 50px;
-      scroll-padding-right: 50px;
+      flex-direction: column;
+      align-items: flex-start;
     }
+    /* 將館別按鈕改為圓形，並允許徽章溢出 */
     .branch-tab {
-      margin: 0 4px;
-      padding: 6px 12px;
+      position: relative;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background-color: #e6ffe6;
+      border: none;
+      cursor: pointer;
+      margin: 8px 0;
+      text-align: center;
+      font-size: 0.9rem;
+      line-height: 60px; /* 垂直置中 */
+      color: #000;
+      overflow: visible;
+    }
+    .branch-tab.active {
+      background-color: #008f00;
+      color: #fff;
+    }
+    /* 徽章效果 */
+    .branch-tab .badge {
+      position: absolute;
+      bottom: -5px;
+      right: -5px;
+      background: red;
+      color: white;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      font-size: 0.7rem;
+      text-align: center;
+      line-height: 20px;
+      z-index: 2;
+    }
+    /* 首頁選單按鈕 */
+    #menuButton {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      z-index: 1100;
+      padding: 8px 12px;
       font-size: 1rem;
-      background-color: #ddd;
+      background-color: #009900;
+      color: #fff;
       border: none;
       border-radius: 4px;
       cursor: pointer;
-      flex-shrink: 0;
-      scroll-snap-align: center;
     }
-    .branch-tab.active {
-      background-color: #007bff;
-      color: #fff;
+    /* 選單側邊面板 */
+    #menuPanel {
+      position: fixed;
+      top: 50px;
+      left: -250px;
+      width: 250px;
+      height: calc(100vh - 50px);
+      background-color: #fff;
+      box-shadow: 2px 0 5px rgba(0,0,0,0.2);
+      transition: left 0.3s ease;
+      z-index: 2000;
+      padding: 20px;
+      box-sizing: border-box;
+      border-top-right-radius: 10px;
+      border-bottom-right-radius: 10px;
+      font-size: 1.1rem;
+    }
+    #menuPanel.active { left: 0; }
+    #menuPanel h3 { margin-top: 0; font-size: 1.2rem; }
+    #menuPanel ul { list-style: none; padding: 0; }
+    #menuPanel ul li { margin: 10px 0; cursor: pointer; }
+    #menuPanel .close-menu {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      border: none;
+      background: none;
+      font-size: 1.2rem;
+      cursor: pointer;
     }
     /* 資訊卡區 */
     #cardsContainer {
       position: absolute;
-      top: 130px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 100%;
-      max-width: 600px;
+      top: 50px;
+      left: 90px;  /* 增加10px間距，避免與左側按鈕相貼 */
+      right: 0;
       bottom: 0;
       overflow-y: auto;
+      padding: 10px;
       box-sizing: border-box;
-      padding: 0 10px;
     }
+    /* 卡片結構 */
     .card {
       display: flex;
       background: white;
       border-radius: 8px;
       box-shadow: 0 2px 5px rgba(0,0,0,0.15);
-      margin: 12px 0;
+      margin: 8px 0;
       overflow: hidden;
       text-align: left;
+      position: relative;
     }
-    .photo { flex-shrink: 0; }
+    /* 左欄 - 調整為比例 40% 並靠左 */
+    .left-column {
+      flex: 0 0 40%;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      border-right: 1px solid #ddd;
+      padding: 10px;
+      overflow: hidden;
+    }
+    /* 讓照片區塊撐滿左欄 */
+    .photo {
+      width: 100%;
+      margin-bottom: 6px;
+    }
     .photo img {
-      width: 130px;
-      height: 180px;
+      width: 100%;
       object-fit: cover;
+      border-radius: 8px;
+    }
+    /* 活動時段框 */
+    .activity-times {
+      width: 100%;
+      padding: 4px 8px;
+      background: #eee;
+      border-top: 1px solid #ddd;
+      border-bottom: 1px solid #ddd;
+      text-align: center;
+      font-size: 0.8rem;
+      margin-top: 6px;
+    }
+    .activity-times span.label {
       display: block;
+      font-weight: bold;
+      color: #555;
+      margin-bottom: 2px;
     }
-    .right-area {
-      flex-grow: 1;
+    /* 右欄 - 調整為比例 60% */
+    .right-column {
+      flex: 0 0 60%;
       padding: 12px;
+      min-width: 0;
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      justify-content: space-between;
     }
-    .top-row { display: flex; gap: 12px; }
     .data-area {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
+      text-align: left;
+      margin-bottom: 8px;
     }
-    .name {
+    .data-area .name {
       font-size: 1rem;
       font-weight: bold;
-      margin: 0;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .details, .price { font-size: 0.875rem; color: #555; margin: 0; white-space: nowrap; }
-    .intro-area {
-      flex: 1;
-      border-left: 1px solid #ddd;
-      padding-left: 12px;
-      display: flex;
-      align-items: center;
-    }
-    /* 介紹區塊固定最大高度約4行，啟用垂直滾動 */
-    .intro-area p { 
-      font-size: 0.875rem; 
-      color: #333; 
-      margin: 0; 
-      max-height: 4.5em; 
-      overflow-y: auto; 
-    }
-    .bottom-row {
-      background: #eee;
-      padding: 6px 12px;
-      border-radius: 4px;
-      font-size: 0.875rem;
-      text-align: left;
-    }
-    .bottom-row .availability-title {
-      font-weight: bold;
+      color: #000;
       margin-bottom: 4px;
+    }
+    .data-area .details,
+    .data-area .price {
+      font-size: 0.85rem;
+      color: #555;
+      margin-bottom: 4px;
+    }
+    .intro-area {
+      font-size: 0.85rem;
+      color: #333;
+      margin: 8px 0;
     }
     .action-buttons {
       display: flex;
       justify-content: flex-end;
       gap: 8px;
-      margin-top: 6px;
+      margin-top: 8px;
     }
     .reservation-btn, .comments-btn {
-      min-width: 100px;
+      min-width: 90px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      font-size: 0.875rem;
+      font-size: 0.85rem;
       background-color: transparent;
       border: none;
       cursor: pointer;
@@ -185,56 +265,81 @@
     /* 側邊面板 */
     #sidePanel {
       position: fixed;
-      top: 130px;
+      top: 50px;
       right: -320px;
       width: 300px;
-      height: calc(100vh - 260px);
+      height: calc(100vh - 50px);
       background-color: #fff;
       box-shadow: -2px 0 5px rgba(0,0,0,0.2);
-      overflow-y: auto;
       transition: right 0.3s ease;
       z-index: 2000;
-      padding: 20px;
       box-sizing: border-box;
-      display: none;
       border-top-left-radius: 10px;
       border-bottom-left-radius: 10px;
+      font-size: 1.1rem;
+      display: none;
     }
-    #sidePanel.active { right: 0; }
-    #sidePanel h3 { margin-top: 0; font-size: 1rem; }
+    #sidePanel.active { right: 0; display: block; }
+    #sidePanelHeader {
+      padding: 10px;
+      border-bottom: 1px solid #ddd;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #f5f5f5;
+    }
+    #sidePanelHeader h3 {
+      margin: 0;
+      font-size: 1.2rem;
+    }
+    #reviewToggleBtn {
+      font-size: 1.1rem;
+      padding: 4px 8px;
+      background-color: #009900;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
     #sidePanelTabs {
       display: flex;
       justify-content: space-around;
-      margin-bottom: 10px;
       border-bottom: 1px solid #ddd;
     }
     .side-tab {
       flex: 1;
       padding: 6px 0;
-      font-size: 0.875rem;
+      font-size: 1.1rem;
       background: none;
       border: none;
       cursor: pointer;
     }
     .side-tab.active {
-      border-bottom: 2px solid #007bff;
-      color: #007bff;
+      border-bottom: 2px solid #008f00;
+      color: #008f00;
     }
-    .side-tab-content { display: none; text-align: left; font-size: 0.875rem; }
-    .side-tab-content.active { display: block; }
+    #sidePanelContent {
+      overflow-y: auto;
+      text-align: left;
+      font-size: 1.1rem;
+    }
+    #sidePanelContent .side-tab-content {
+      display: none;
+    }
+    #sidePanelContent .side-tab-content.active { display: block; padding: 10px; }
     #sidePanel .close-btn {
       position: absolute;
       bottom: 10px;
       right: 10px;
       border: none;
       background: none;
-      font-size: 1rem;
+      font-size: 1.1rem;
       cursor: pointer;
     }
     /* 漸變遮罩 */
     #overlay {
       position: fixed;
-      top: 130px;
+      top: 50px;
       left: 0;
       right: 0;
       bottom: 0;
@@ -246,8 +351,8 @@
       display: none;
     }
     #overlay.active { display: block; opacity: 1; }
-    /* 心得表單內部樣式 */
-    .form-section { margin-bottom: 12px; text-align: left; }
+    /* 表單內部樣式 */
+    .form-section { margin-bottom: 12px; text-align: left; padding: 0 10px; }
     .form-section label { display: block; margin-bottom: 4px; font-weight: bold; }
     input[type="range"],
     select,
@@ -258,6 +363,7 @@
       box-sizing: border-box;
       border: 1px solid #ccc;
       border-radius: 4px;
+      font-size: 1.1rem;
     }
     .chip-container {
       display: flex;
@@ -271,19 +377,11 @@
       cursor: pointer;
       user-select: none;
       transition: background-color 0.2s;
+      font-size: 1.1rem;
     }
-    .chip.selected {
-      background-color: #007bff;
-      color: #fff;
-    }
-    .chip.disabled {
-      opacity: 0.5;
-      pointer-events: none;
-    }
-    .rating {
-      display: flex;
-      flex-direction: row;
-    }
+    .chip.selected { background-color: #007bff; color: #fff; }
+    .chip.disabled { opacity: 0.5; pointer-events: none; }
+    .rating { display: flex; flex-direction: row; }
     .rating span {
       font-size: 1.5em;
       cursor: pointer;
@@ -296,6 +394,7 @@
       display: grid;
       grid-template-columns: auto 1fr;
       gap: 5px 10px;
+      font-size: 1.1rem;
     }
     .review-label {
       text-align: right;
@@ -315,7 +414,7 @@
     .review-header {
       display: flex;
       justify-content: space-between;
-      font-size: 0.9rem;
+      font-size: 1rem;
       margin-bottom: 4px;
     }
     .review-rating span { color: gold; }
@@ -332,12 +431,12 @@
     .review-scale-title {
       font-weight: bold;
       margin-bottom: 4px;
-      font-size: 0.85rem;
+      font-size: 0.95rem;
       border-bottom: 1px solid #ccc;
       padding-bottom: 2px;
       text-align: center;
     }
-    .review-scale-content { font-size: 0.85rem; text-align: center; }
+    .review-scale-content { font-size: 0.95rem; text-align: center; }
     .scale-container {
       display: flex;
       flex-wrap: nowrap;
@@ -356,105 +455,155 @@
       font-weight: bold;
       margin-bottom: 4px;
       text-align: center;
-      font-size: 0.9rem;
+      font-size: 0.95rem;
     }
     button[type="submit"] {
       padding: 10px 20px;
-      font-size: 1em;
-      background-color: #007bff;
+      font-size: 1.1rem;
+      background-color: #009900;
       color: #fff;
       border: none;
       border-radius: 4px;
       cursor: pointer;
     }
-    button[type="submit"]:hover { background-color: #0056b3; }
+    button[type="submit"]:hover { background-color: #007700; }
+    /* 響應式調整 */
     @media (max-width:480px) {
+      /* 手機版館別縮小 */
+      #branchesContainer {
+        width: 60px;
+      }
+      #cardsContainer {
+        left: 70px;
+      }
       .card { flex-direction: row; }
-      .photo img { width: 120px; height: 170px; }
+      .left-column { 
+        flex: 0 0 40%; 
+        align-items: flex-start;
+      }
+      .right-column { flex: 0 0 60%; padding: 8px; }
+      .photo { width: 100%; object-fit: cover; margin: 5px; }
       #sidePanel { width: 80%; }
     }
   </style>
 </head>
 <body>
-  <!-- Header -->
-  <div id="header" class="container">
-    <h2>動物園介紹</h2>
-    <div id="branchesContainer"></div>
+  <!-- 首頁選單按鈕 -->
+  <button id="menuButton" onclick="openMenuPanel()">選單</button>
+  <!-- 選單側邊面板 -->
+  <div id="menuPanel">
+    <button class="close-menu" onclick="closeMenuPanel()">×</button>
+    <h3>選單</h3>
+    <ul>
+      <li onclick="alert('首頁')">首頁</li>
+      <li onclick="alert('關於我們')">關於我們</li>
+      <li onclick="alert('聯絡我們')">聯絡我們</li>
+    </ul>
   </div>
-  <!-- 資料卡區 -->
-  <div id="cardsContainer" class="container"></div>
+  <!-- Header -->
+  <div id="header">
+    <h2>介紹</h2>
+  </div>
+  <!-- 左側垂直館別選單 -->
+  <div id="branchesContainer"></div>
+  <!-- 資訊卡區 -->
+  <div id="cardsContainer"></div>
   <!-- 漸變遮罩 -->
   <div id="overlay"></div>
-  <!-- 側邊面板 -->
+  <!-- 右側面板 -->
   <div id="sidePanel">
     <button class="close-btn" onclick="closeSidePanel()">×</button>
-    <h3 id="sidePanelTitle">心得</h3>
+    <!-- 側邊面板上方：館別標題與心得填寫按鈕 -->
+    <div id="sidePanelHeader">
+      <h3 id="sidePanelTitle"></h3>
+      <button id="reviewToggleBtn" onclick="toggleReviewForm()">心得填寫</button>
+    </div>
+    <!-- 側邊面板固定標籤 -->
     <div id="sidePanelTabs">
       <button class="side-tab active" id="sideTabBtn_comments" onclick="switchSideTab('comments')">心得</button>
-      <button class="side-tab" id="sideTabBtn_rename" onclick="switchSideTab('rename')">改名</button>
       <button class="side-tab" id="sideTabBtn_reservation" onclick="switchSideTab('reservation')">下週搶約</button>
+      <button class="side-tab" id="sideTabBtn_rename" onclick="switchSideTab('rename')">改名紀錄</button>
     </div>
+    <!-- 側邊面板下方 -->
     <div id="sidePanelContent">
-      <div id="sideTabComments" class="side-tab-content active"></div>
-      <div id="sideTabRename" class="side-tab-content" style="display:none;"></div>
+      <div id="sideTabComments" class="side-tab-content active">
+        <div id="reviewFormContainer" style="display:none;"></div>
+        <div id="reviewList"></div>
+      </div>
       <div id="sideTabReservation" class="side-tab-content" style="display:none;"></div>
+      <div id="sideTabRename" class="side-tab-content" style="display:none;"></div>
     </div>
   </div>
   
   <script>
-    // 產生 10 個館別
-    const branches = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
-    let currentBranch = branches[0];
+    // 更新館別名稱（共10個），直接採用清單中的名稱
+    const branchList = [
+      "樂鑽",
+      "手中情",
+      "潘朵拉",
+      "茶湯會",
+      "芯苑",
+      "八五",
+      "寶可夢",
+      "愛寶",
+      "芯店",
+      "水沙連"
+    ];
+    let currentBranch = branchList[0];
+    
+    // 為避免使用前未定義，先宣告 branchesContainer 與 cardsContainer
     const branchesContainer = document.getElementById('branchesContainer');
+    const cardsContainer = document.getElementById('cardsContainer');
+    
+    // 產生館別選單，每個按鈕包含名稱與徽章
     let branchesHTML = "";
-    branches.forEach(branch => {
-      branchesHTML += `<button class="branch-tab" data-branch="${branch}">動物園 ${branch} (30)</button> `;
+    branchList.forEach(branch => {
+      branchesHTML += `<button class="branch-tab" data-branch="${branch}"><span class="branch-name">${branch}</span><span class="badge">30</span></button>`;
     });
     branchesContainer.innerHTML = branchesHTML;
     const branchTabs = document.querySelectorAll('.branch-tab');
     branchTabs.forEach(tab => {
-      tab.addEventListener('click', function(){
+      tab.addEventListener('click', function() {
         currentBranch = tab.getAttribute('data-branch');
         branchTabs.forEach(t => t.classList.remove('active'));
         tab.classList.add('active');
-        tab.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+        tab.scrollIntoView({ behavior: "smooth", block: "nearest" });
         updateCards();
       });
     });
     
-    // 產生資訊卡
-    const cardsContainer = document.getElementById('cardsContainer');
-    function updateCards(){
+    // 調整卡片結構
+    function updateCards() {
       let cardsHTML = "";
-      for (let i = 1; i <= 30; i++){
+      for (let i = 1; i <= 30; i++) {
         const numComments = Math.floor(Math.random() * 6) + 5;
         const numReservation = Math.floor(Math.random() * 3) + 1;
         cardsHTML += `
           <div class="card">
-            <div class="photo">
-              <img src="https://picsum.photos/130/180?random=${currentBranch.charCodeAt(0)}${i}" alt="動物照片">
-            </div>
-            <div class="right-area">
-              <div class="top-row">
-                <div class="data-area">
-                  <div class="name">動物園 ${currentBranch} - 動物 ${i}</div>
-                  <div class="details">100 / 50 / 1</div>
-                  <div class="price">💰 3000</div>
-                </div>
-                <div class="intro-area">
-                  <p>動物園介紹：本動物園擁有多樣化的動物，歡迎前來參觀！若介紹內容過多，您可以在此區域內滾動閱讀完整內容。</p>
-                </div>
+            <div class="left-column">
+              <div class="photo">
+                <img src="https://picsum.photos/130/180?random=${currentBranch.charCodeAt(0)}${i}" alt="動物照片">
               </div>
-              <div class="bottom-row">
-                <div class="availability-title">活動時段：</div>
+              <div class="activity-times">
+                <span class="label">活動時段</span>
                 <div>12-13-14-15-16-17-18-19-20-21-22-23-24-01-02-03-04-05</div>
               </div>
+            </div>
+            <div class="right-column">
+              <div class="data-area">
+                <div class="name">${currentBranch} - 動物 ${i}</div>
+                <div class="details">100 / 50 / 1</div>
+                <div class="price">💰 3000</div>
+                <div class="intro-area">
+                  <p>介紹：本館擁有多樣化的動物，歡迎前來參觀！</p>
+                </div>
+              </div>
               <div class="action-buttons">
-                <button class="reservation-btn" onclick="openSidePanel('動物園 ${currentBranch} - 動物 ${i}', ${numReservation}, 'reservation')">
+                <button class="reservation-btn" onclick="openSidePanel('${currentBranch} - 動物 ${i}', ${numReservation}, 'reservation')">
                   下週搶約 <span class="badge">${numReservation}</span>
                 </button>
-                <button class="comments-btn" onclick="openSidePanel('動物園 ${currentBranch} - 動物 ${i}', ${numComments}, 'comments')">
-                  心得 <span class="badge">${numComments}</span>
+                <button class="comments-btn" onclick="openSidePanel('${currentBranch} - 動物 ${i}', ${numComments}, 'comments')">
+                  體驗心得 <span class="badge">${numComments}</span>
                 </button>
               </div>
             </div>
@@ -477,17 +626,17 @@
       let endX = e.changedTouches[0].pageX;
       let diff = endX - startX;
       if (Math.abs(diff) > swipeThreshold) {
-        let currentIndex = branches.indexOf(currentBranch);
+        let currentIndex = branchList.indexOf(currentBranch);
         if (diff < 0) {
-          currentIndex = (currentIndex + 1) % branches.length;
+          currentIndex = (currentIndex + 1) % branchList.length;
         } else {
-          currentIndex = (currentIndex - 1 + branches.length) % branches.length;
+          currentIndex = (currentIndex - 1 + branchList.length) % branchList.length;
         }
-        currentBranch = branches[currentIndex];
+        currentBranch = branchList[currentIndex];
         branchTabs.forEach(t => t.classList.remove('active'));
         const activeTab = document.querySelector(`.branch-tab[data-branch="${currentBranch}"]`);
         activeTab.classList.add('active');
-        activeTab.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+        activeTab.scrollIntoView({ behavior: "smooth", block: "nearest" });
         updateCards();
         cardsContainer.scrollTop = 0;
       }
@@ -496,29 +645,46 @@
     // 側邊面板標籤切換
     function switchSideTab(tabName) {
       document.querySelectorAll('.side-tab').forEach(btn => btn.classList.remove('active'));
-      document.querySelectorAll('.side-tab-content').forEach(div => div.style.display = "none");
+      document.querySelectorAll('.side-tab-content').forEach(div => div.classList.remove('active'));
       if (tabName === 'comments') {
-        document.getElementById('sideTabComments').style.display = "block";
+        document.getElementById('sideTabComments').classList.add('active');
         document.getElementById('sideTabBtn_comments').classList.add('active');
-      } else if (tabName === 'rename') {
-        document.getElementById('sideTabRename').style.display = "block";
-        document.getElementById('sideTabBtn_rename').classList.add('active');
       } else if (tabName === 'reservation') {
-        document.getElementById('sideTabReservation').style.display = "block";
+        document.getElementById('sideTabReservation').classList.add('active');
         document.getElementById('sideTabBtn_reservation').classList.add('active');
+      } else if (tabName === 'rename') {
+        document.getElementById('sideTabRename').classList.add('active');
+        document.getElementById('sideTabBtn_rename').classList.add('active');
       }
     }
     
-    // 側邊面板功能
-    function openSidePanel(cardTitle, count, actionType) {
-      const sidePanel = document.getElementById('sidePanel');
-      const overlay = document.getElementById('overlay');
-      if (actionType === 'comments') {
-        document.getElementById('sidePanelTitle').textContent = `心得 - ${cardTitle} (${count}則)`;
-        const reviewContent = `
-          <div id="reviewList" style="margin-bottom:20px;"></div>
-          <hr>
-          <form id="reviewForm">
+    // 側邊面板內滑動切換標籤
+    const sidePanelContentEl = document.getElementById('sidePanelContent');
+    sidePanelContentEl.addEventListener('touchstart', function(e) {
+      sideStartX = e.changedTouches[0].pageX;
+    }, false);
+    sidePanelContentEl.addEventListener('touchend', function(e) {
+      const endX = e.changedTouches[0].pageX;
+      const diff = endX - sideStartX;
+      if (Math.abs(diff) > swipeThreshold) {
+        let currentIndex = tabOrder.findIndex(name => {
+          return document.getElementById('sideTabBtn_' + name).classList.contains('active');
+        });
+        if (diff < 0) {
+          currentIndex = (currentIndex + 1) % tabOrder.length;
+        } else {
+          currentIndex = (currentIndex - 1 + tabOrder.length) % tabOrder.length;
+        }
+        switchSideTab(tabOrder[currentIndex]);
+      }
+    }, false);
+    
+    // 切換心得填寫表單顯示/隱藏
+    function toggleReviewForm() {
+      const container = document.getElementById('reviewFormContainer');
+      if (container.style.display === "none" || container.style.display === "") {
+        container.innerHTML = `
+          <form id="reviewForm" onsubmit="return handleReviewFormSubmit(event);">
             <div class="form-section">
               <label for="ageRange">年紀 (18~40)：<span id="ageValue">18</span></label>
               <input type="range" id="ageRange" name="age" min="18" max="40" value="18" oninput="document.getElementById('ageValue').innerText=this.value">
@@ -603,43 +769,46 @@
               <input type="number" id="sportsFee" name="sportsFee" placeholder="請輸入金額">
             </div>
             <div class="form-section">
-              <label for="ratingInput">評分：</label>
-              <div class="rating" id="ratingInput">
-                <span data-value="1" onclick="selectRating(this)">&#9733;</span>
-                <span data-value="2" onclick="selectRating(this)">&#9733;</span>
-                <span data-value="3" onclick="selectRating(this)">&#9733;</span>
-                <span data-value="4" onclick="selectRating(this)">&#9733;</span>
-                <span data-value="5" onclick="selectRating(this)">&#9733;</span>
-              </div>
-            </div>
-            <div class="form-section">
               <label for="reviewText">心得：</label>
               <textarea id="reviewText" name="reviewText" rows="4" placeholder="請輸入您的心得..."></textarea>
             </div>
             <button type="submit">提交心得</button>
           </form>
         `;
-        document.getElementById('sideTabComments').innerHTML = reviewContent;
+        container.style.display = "block";
         generateCupSizeOptions();
-        const stars = document.querySelectorAll('#ratingInput span');
-        stars.forEach(star => {
-          star.addEventListener('click', function(){ selectRating(this); });
-        });
-        document.getElementById('reviewForm').addEventListener('submit', function(e) {
-          e.preventDefault();
-          handleReviewFormSubmit();
-        });
+      } else {
+        container = document.getElementById('reviewFormContainer');
+        container.style.display = "none";
+        container.innerHTML = "";
+      }
+    }
+    
+    // 側邊面板功能 – 根據不同 actionType 更新內容
+    function openSidePanel(cardTitle, count, actionType) {
+      const sidePanel = document.getElementById('sidePanel');
+      const overlay = document.getElementById('overlay');
+      document.getElementById('sidePanelTitle').textContent = cardTitle;
+      
+      if (actionType === 'comments') {
+        document.getElementById('sideTabBtn_comments').textContent = `心得 (${count})`;
+        document.getElementById('sideTabComments').innerHTML = '<div id="reviewFormContainer" style="display:none;"></div><div id="reviewList"></div>';
       } else if (actionType === 'reservation') {
-        document.getElementById('sidePanelTitle').textContent = `下週搶約 - ${cardTitle} (${count}則)`;
-        let html = `<table style="width:100%; font-size:0.875rem; text-align:left; border-collapse: collapse;">`;
+        document.getElementById('sideTabBtn_reservation').textContent = `下週搶約`;
+        let html = `<table style="width:100%; font-size:1.1rem; text-align:left; border-collapse: collapse;">`;
         html += `<tr><th>Date</th><th>Time</th></tr>`;
         for (let i = 1; i <= count; i++){
           html += `<tr><td>2023-09-${i+10}</td><td>${9+i}:00 - ${10+i}:00</td></tr>`;
         }
         html += `</table>`;
         document.getElementById('sideTabReservation').innerHTML = html;
+      } else if (actionType === 'rename') {
+        document.getElementById('sideTabBtn_rename').textContent = `改名紀錄`;
+        document.getElementById('sideTabRename').innerHTML = `<p>暫無改名紀錄</p>`;
       }
+      
       switchSideTab(actionType);
+      
       overlay.style.display = "block";
       setTimeout(() => { overlay.classList.add('active'); }, 10);
       sidePanel.style.display = "block";
@@ -666,53 +835,9 @@
       }
     }
     
-    function selectRating(selectedSpan) {
-      const ratingContainer = document.getElementById('ratingInput');
-      const ratingValue = selectedSpan.getAttribute('data-value');
-      ratingContainer.querySelectorAll('span').forEach(span => {
-        if (span.getAttribute('data-value') <= ratingValue) { 
-          span.classList.add('selected'); 
-        } else { 
-          span.classList.remove('selected'); 
-        }
-      });
-    }
-    
-    function toggleChip(element) {
-      if (element.classList.contains('disabled')) return;
-      element.classList.toggle('selected');
-      const groupId = element.parentElement.id;
-      const optionText = element.textContent.trim();
-      let otherGroupId = "";
-      if (groupId === 'valueAddedBeforeContainer') { 
-        otherGroupId = 'valueAddedAfterContainer'; 
-      } else if (groupId === 'valueAddedAfterContainer') { 
-        otherGroupId = 'valueAddedBeforeContainer'; 
-      } else { 
-        return; 
-      }
-      const otherChips = document.querySelectorAll(`#${otherGroupId} .chip`);
-      otherChips.forEach(chip => {
-        if (chip.textContent.trim() === optionText) {
-          if (element.classList.contains('selected')) { 
-            chip.classList.add('disabled'); 
-          } else { 
-            chip.classList.remove('disabled'); 
-          }
-        }
-      });
-    }
-    
-    function selectSingleChip(element, containerId) {
-      const container = document.getElementById(containerId);
-      const chips = container.getElementsByClassName("chip");
-      for (let i = 0; i < chips.length; i++) {
-        chips[i].classList.remove("selected");
-      }
-      element.classList.add("selected");
-    }
-    
-    function handleReviewFormSubmit(){
+    // 表單提交處理：將心得追加到 reviewList 區域
+    function handleReviewFormSubmit(e) {
+      e.preventDefault();
       const age = document.getElementById('ageRange').value;
       const appearanceElems = document.querySelectorAll('#appearanceContainer .chip.selected');
       let appearance = [];
@@ -732,16 +857,10 @@
       valueAddedAfterElems.forEach(elem => { valueAddedAfter.push(elem.textContent); });
       const musicFee = document.getElementById('musicFee').value;
       const sportsFee = document.getElementById('sportsFee').value;
-      const ratingSpans = document.querySelectorAll('#ratingInput span.selected');
-      let rating = ratingSpans.length;
       const reviewText = document.getElementById('reviewText').value;
       
       const reviewList = document.getElementById('reviewList');
       const newReviewHTML = `
-        <div class="review-header">
-          <strong>新心得</strong>
-          <span class="review-rating">${generateStars(rating)}</span>
-        </div>
         <div class="review-details">
           <div class="review-label">年紀：</div>
           <div class="review-content">${age}</div>
@@ -784,16 +903,13 @@
       document.getElementById('reviewForm').reset();
       document.querySelectorAll('.chip.selected').forEach(chip => chip.classList.remove('selected'));
       document.querySelectorAll('.chip.disabled').forEach(chip => chip.classList.remove('disabled'));
-      document.querySelectorAll('#ratingInput span').forEach(s => s.classList.remove('selected'));
       document.getElementById('ageValue').innerText = "18";
-    }
-    
-    function generateStars(rating) {
-      let starsHtml = "";
-      for (let i = 1; i <= 5; i++){
-        starsHtml += (i <= rating) ? "&#9733;" : "&#9734;";
-      }
-      return starsHtml;
+      
+      // 隱藏表單區
+      document.getElementById('reviewFormContainer').style.display = "none";
+      document.getElementById('reviewFormContainer').innerHTML = "";
+      
+      return false;
     }
   </script>
 </body>

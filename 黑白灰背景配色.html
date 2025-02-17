@@ -13,8 +13,8 @@
     html { font-size: 16px; }
     body {
       font-family: Arial, sans-serif;
-      /* 使用 LINE 綠色背景 */
-      background-color: #00c300;
+      /* 整體背景採用淺灰 */
+      background-color: #ECF0F1;
       margin: 0;
       padding: 0;
       text-align: center;
@@ -33,8 +33,8 @@
       transform: translateX(-50%);
       width: 100%;
       max-width: 600px;
-      /* 改為 LINE 綠色 */
-      background-color: #00c300;
+      /* Header 採用深灰藍 */
+      background-color: #2C3E50;
       z-index: 1001;
       box-sizing: border-box;
       padding-top: 10px;
@@ -43,7 +43,6 @@
       margin: 0;
       padding: 10px;
       font-size: 1.25rem;
-      /* 文字顏色調整為白色 */
       color: white;
     }
     #branchesContainer {
@@ -59,21 +58,22 @@
       margin: 0 4px;
       padding: 6px 12px;
       font-size: 1rem;
-      /* 不活躍狀態用較淺綠背景 */
-      background-color: #e6ffe6;
-      border: none;
+      /* 未選取狀態：白色背景、邊框與深灰文字 */
+      background-color: white;
+      border: 1px solid #BDC3C7;
       border-radius: 4px;
       cursor: pointer;
       flex-shrink: 0;
       scroll-snap-align: start;
-      color: #000;
+      color: #2C3E50;
     }
     .branch-tab.active {
-      /* 活躍狀態用較深綠色 */
-      background-color: #008f00;
+      /* 選取狀態：藍色背景、白色文字 */
+      background-color: #3498DB;
+      border: none;
       color: #fff;
     }
-    /* 首頁選單按鈕 */
+    /* 首頁選單按鈕 - 採用亮藍點綴 */
     #menuButton {
       position: fixed;
       top: 10px;
@@ -81,8 +81,7 @@
       z-index: 1100;
       padding: 8px 12px;
       font-size: 1rem;
-      /* 使用較深的綠色 */
-      background-color: #009900;
+      background-color: #1ABC9C;
       color: #fff;
       border: none;
       border-radius: 4px;
@@ -226,7 +225,7 @@
       background-color: transparent;
       border: none;
       cursor: pointer;
-      color: #000;
+      color: #2C3E50;
     }
     .reservation-btn .badge {
       background-color: #28a745;
@@ -250,7 +249,7 @@
       min-width: 30px;
       text-align: center;
     }
-    /* 右側面板 - 還原至原本隱藏、且高度較低的效果 */
+    /* 右側面板 */
     #sidePanel {
       position: fixed;
       top: 130px;
@@ -271,24 +270,25 @@
       right: 0; 
       display: block;
     }
-    /* 上方固定區：僅修改此區背景與內部排版，風格與下方館別標籤相似 */
+    /* 上方固定區 */
     #sidePanelHeader {
       padding: 10px;
       border-bottom: 1px solid #ddd;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background-color: #f5f5f5;
+      background-color: #fff;
     }
     #sidePanelHeader h3 {
       margin: 0;
       font-size: 1.2rem;
+      color: #2C3E50;
     }
-    /* 將心得填寫按鈕也改為綠色調 */
+    /* 心得填寫按鈕採用亮藍 */
     #reviewToggleBtn {
       font-size: 1.1rem;
       padding: 4px 8px;
-      background-color: #009900;
+      background-color: #1ABC9C;
       color: #fff;
       border: none;
       border-radius: 4px;
@@ -306,10 +306,11 @@
       background: none;
       border: none;
       cursor: pointer;
+      color: #2C3E50;
     }
     .side-tab.active {
-      border-bottom: 2px solid #008f00;
-      color: #008f00;
+      border-bottom: 2px solid #3498DB;
+      color: #3498DB;
     }
     /* 下方可滾動內容區 */
     #sidePanelContent {
@@ -334,7 +335,7 @@
       font-size: 1.1rem;
       cursor: pointer;
     }
-    /* 漸變遮罩 - 只覆蓋底層資料區 */
+    /* 漸變遮罩 */
     #overlay {
       position: fixed;
       top: 130px;
@@ -349,9 +350,9 @@
       display: none;
     }
     #overlay.active { display: block; opacity: 1; }
-    /* 體驗心得表單內部樣式 */
+    /* 體驗心得表單 */
     .form-section { margin-bottom: 12px; text-align: left; padding: 0 10px; }
-    .form-section label { display: block; margin-bottom: 4px; font-weight: bold; }
+    .form-section label { display: block; margin-bottom: 4px; font-weight: bold; color: #2C3E50; }
     input[type="range"],
     select,
     input[type="number"],
@@ -376,8 +377,9 @@
       user-select: none;
       transition: background-color 0.2s;
       font-size: 1.1rem;
+      color: #2C3E50;
     }
-    .chip.selected { background-color: #007bff; color: #fff; }
+    .chip.selected { background-color: #3498DB; color: #fff; }
     .chip.disabled { opacity: 0.5; pointer-events: none; }
     .rating { display: flex; flex-direction: row; }
     .rating span {
@@ -399,10 +401,12 @@
       font-weight: bold;
       padding-right: 5px;
       word-break: break-all;
+      color: #2C3E50;
     }
     .review-content {
       text-align: left;
       word-break: break-all;
+      color: #2C3E50;
     }
     .review {
       margin-bottom: 10px;
@@ -458,14 +462,14 @@
     button[type="submit"] {
       padding: 10px 20px;
       font-size: 1.1rem;
-      /* 提交按鈕使用綠色調 */
-      background-color: #009900;
+      /* 提交按鈕使用深灰藍 */
+      background-color: #2C3E50;
       color: #fff;
       border: none;
       border-radius: 4px;
       cursor: pointer;
     }
-    button[type="submit"]:hover { background-color: #007700; }
+    button[type="submit"]:hover { background-color: #1A252F; }
     @media (max-width:480px) {
       .card { flex-direction: row; }
       .photo img { width: 120px; height: 170px; }
@@ -493,12 +497,12 @@
   </div>
   <!-- 資訊卡區 -->
   <div id="cardsContainer" class="container"></div>
-  <!-- 漸變遮罩 (覆蓋底層資料區) -->
+  <!-- 漸變遮罩 -->
   <div id="overlay"></div>
   <!-- 右側面板 -->
   <div id="sidePanel">
     <button class="close-btn" onclick="closeSidePanel()">×</button>
-    <!-- 上方固定區：館別標題與心得填寫按鈕 -->
+    <!-- 上方固定區 -->
     <div id="sidePanelHeader">
       <h3 id="sidePanelTitle"></h3>
       <button id="reviewToggleBtn" onclick="toggleReviewForm()">心得填寫</button>
@@ -521,7 +525,20 @@
   </div>
   
   <script>
-    // 用於右側面板滑動切換標籤
+    // 補充切換 chip 的功能
+    function toggleChip(el) {
+      el.classList.toggle('selected');
+    }
+    function selectSingleChip(el, containerId) {
+      const container = document.getElementById(containerId);
+      const chips = container.getElementsByClassName('chip');
+      for (let chip of chips) {
+        chip.classList.remove('selected');
+      }
+      el.classList.add('selected');
+    }
+    
+    // 右側面板滑動切換標籤設定
     let sideStartX = 0;
     const sideSwipeThreshold = 50;
     const tabOrder = ['comments', 'reservation', 'rename'];
@@ -605,7 +622,7 @@
     updateCards();
     document.querySelector(`.branch-tab[data-branch="${currentBranch}"]`).classList.add('active');
     
-    // 行動裝置左右滑動切換館別
+    // 手機左右滑動切換館別
     let startX = 0;
     const swipeThreshold = 50;
     cardsContainer.addEventListener('touchstart', function(e) {
@@ -647,7 +664,7 @@
       }
     }
     
-    // 右側面板內滑動切換標籤（左右滑動）
+    // 右側面板內滑動切換標籤（左右滑動）—使用 sidePanelContent 變數
     const sidePanelContent = document.getElementById('sidePanelContent');
     sidePanelContent.addEventListener('touchstart', function(e) {
       sideStartX = e.changedTouches[0].pageX;
@@ -773,37 +790,15 @@
       }
     }
     
-    // 右側面板內滑動切換標籤（左右滑動）
-    const sidePanelContentEl = document.getElementById('sidePanelContent');
-    sidePanelContentEl.addEventListener('touchstart', function(e) {
-      sideStartX = e.changedTouches[0].pageX;
-    }, false);
-    sidePanelContentEl.addEventListener('touchend', function(e) {
-      const endX = e.changedTouches[0].pageX;
-      const diff = endX - sideStartX;
-      if (Math.abs(diff) > sideSwipeThreshold) {
-        let currentIndex = tabOrder.findIndex(name => {
-          return document.getElementById('sideTabBtn_' + name).classList.contains('active');
-        });
-        if (diff < 0) {
-          currentIndex = (currentIndex + 1) % tabOrder.length;
-        } else {
-          currentIndex = (currentIndex - 1 + tabOrder.length) % tabOrder.length;
-        }
-        switchSideTab(tabOrder[currentIndex]);
-      }
-    }, false);
-    
     // 右側面板功能 – 根據不同 actionType 更新內容
     function openSidePanel(cardTitle, count, actionType) {
       const sidePanel = document.getElementById('sidePanel');
       const overlay = document.getElementById('overlay');
-      // 更新上方館別標題（完整 cardTitle）
+      // 更新上方館別標題
       document.getElementById('sidePanelTitle').textContent = cardTitle;
       
       if (actionType === 'comments') {
         document.getElementById('sideTabBtn_comments').textContent = `心得 (${count})`;
-        // 初始化心得區，保留 reviewFormContainer 與 reviewList
         document.getElementById('sideTabComments').innerHTML = '<div id="reviewFormContainer" style="display:none;"></div><div id="reviewList"></div>';
       } else if (actionType === 'reservation') {
         document.getElementById('sideTabBtn_reservation').textContent = `下週搶約`;
@@ -847,7 +842,7 @@
       }
     }
     
-    // 表單提交處理：防止頁面刷新，將心得追加到 reviewList 區域
+    // 表單提交處理
     function handleReviewFormSubmit(e) {
       e.preventDefault();
       const age = document.getElementById('ageRange').value;

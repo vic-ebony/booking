@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>動物園介紹 - 優化排版</title>
+  <title>動物園介紹 - 左右兩欄調整對齊</title>
   <!-- 引入 Font Awesome 圖示庫（可選） -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" 
         integrity="sha512-2T5G0sRV0QEj2QZqOCiD/f3pZpXk/q1c6eJZe9g/s4fPPpBy/jF37sx6jK0S5FqgQ7b0jwJJYOrpZhdk+sQF8g==" 
@@ -16,53 +16,55 @@
       background-color: #00c300; /* LINE 綠色背景 */
       margin: 0;
       padding: 0;
+      text-align: center;
       overflow-y: auto;
     }
     .container {
+      max-width: 600px;
+      margin: auto;
       box-sizing: border-box;
     }
-    /* Header 區塊 */
+    /* Header 與館別標籤 */
     #header {
       position: fixed;
       top: 0;
-      left: 0;
-      right: 0;
-      height: 50px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 600px;
       background-color: #00c300;
       z-index: 1001;
-      text-align: center;
-      line-height: 50px;
+      box-sizing: border-box;
+      padding-top: 10px;
     }
     #header h2 {
       margin: 0;
+      padding: 10px;
       font-size: 1.25rem;
       color: white;
     }
-    /* 左側垂直館別選單 */
+    /* 修改 #branchesContainer 將館別選單靠左對齊 */
     #branchesContainer {
-      position: fixed;
-      top: 50px;
-      left: 0;
-      bottom: 0;
-      width: 120px;
-      background-color: #00c300;
-      padding: 5px;
-      box-sizing: border-box;
-      overflow-y: auto;
-      z-index: 1000;
+      padding: 10px 10px 10px 0; /* 左側內距調為 0 */
       display: flex;
-      flex-direction: column;
+      justify-content: flex-start;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scroll-snap-type: x mandatory;
+      scroll-padding-left: 0;
+      scroll-padding-right: 10px;
     }
     .branch-tab {
-      margin: 4px 0;
-      padding: 6px 8px;
-      font-size: 0.9rem;
+      margin: 0 4px;
+      padding: 6px 12px;
+      font-size: 1rem;
       background-color: #e6ffe6;
       border: none;
       border-radius: 4px;
       cursor: pointer;
+      flex-shrink: 0;
+      scroll-snap-align: start;
       color: #000;
-      text-align: left;
     }
     .branch-tab.active {
       background-color: #008f00;
@@ -85,10 +87,10 @@
     /* 選單側邊面板 */
     #menuPanel {
       position: fixed;
-      top: 50px;
+      top: 130px;
       left: -250px;
       width: 250px;
-      height: calc(100vh - 50px);
+      height: calc(100vh - 260px);
       background-color: #fff;
       box-shadow: 2px 0 5px rgba(0,0,0,0.2);
       transition: left 0.3s ease;
@@ -112,16 +114,18 @@
       font-size: 1.2rem;
       cursor: pointer;
     }
-    /* 資訊卡區：利用 left:120px, right:0 完全展開 */
+    /* 資訊卡區 */
     #cardsContainer {
       position: absolute;
-      top: 50px;
-      left: 120px;
-      right: 0;
+      top: 130px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 600px;
       bottom: 0;
       overflow-y: auto;
-      padding: 10px;
       box-sizing: border-box;
+      padding: 0 10px;
     }
     /* 卡片結構：左右兩欄 */
     .card {
@@ -129,7 +133,7 @@
       background: white;
       border-radius: 8px;
       box-shadow: 0 2px 5px rgba(0,0,0,0.15);
-      margin: 8px 0;
+      margin: 12px 0;
       overflow: hidden;
       text-align: left;
       position: relative;
@@ -143,38 +147,43 @@
       border-right: 1px solid #ddd;
       padding: 10px;
       overflow: hidden;
+      position: relative;
     }
     .photo {
       width: 140px;
+      height: auto;
       margin-bottom: 6px;
     }
     .photo img {
       width: 100%;
+      height: auto;
       object-fit: cover;
       border-radius: 8px;
     }
-    /* 活動時段框 */
+    /* 活動時段框：將「活動時段」文字放在框內上方，然後顯示排程 */
     .activity-times {
       width: 100%;
       padding: 4px 8px;
       background: #eee;
       border-top: 1px solid #ddd;
       border-bottom: 1px solid #ddd;
+      border-left: none;
+      border-right: none;
       text-align: center;
-      font-size: 0.8rem;
+      font-size: 0.875rem;
+      border-radius: 0;
       margin-top: 6px;
     }
     .activity-times span.label {
       display: block;
       font-weight: bold;
       color: #555;
-      margin-bottom: 2px;
+      margin-bottom: 4px;
     }
     /* 右欄：包含基本資料、介紹與按鈕 */
     .right-column {
       flex: 1;
       padding: 12px;
-      min-width: 0; /* 允許收縮 */
       display: flex;
       flex-direction: column;
       justify-content: space-between;
@@ -191,13 +200,14 @@
     }
     .data-area .details,
     .data-area .price {
-      font-size: 0.85rem;
+      font-size: 0.875rem;
       color: #555;
       margin-bottom: 4px;
     }
     .intro-area {
-      font-size: 0.85rem;
+      font-size: 0.875rem;
       color: #333;
+      text-align: left;
       margin: 8px 0;
     }
     .action-buttons {
@@ -207,11 +217,11 @@
       margin-top: 8px;
     }
     .reservation-btn, .comments-btn {
-      min-width: 90px;
+      min-width: 100px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      font-size: 0.85rem;
+      font-size: 0.875rem;
       background-color: transparent;
       border: none;
       cursor: pointer;
@@ -239,13 +249,13 @@
       min-width: 30px;
       text-align: center;
     }
-    /* 側邊面板 */
+    /* 側邊面板（保留原樣） */
     #sidePanel {
       position: fixed;
-      top: 50px;
+      top: 130px;
       right: -320px;
       width: 300px;
-      height: calc(100vh - 50px);
+      height: calc(100vh - 130px);
       background-color: #fff;
       box-shadow: -2px 0 5px rgba(0,0,0,0.2);
       transition: right 0.3s ease;
@@ -316,7 +326,7 @@
     /* 漸變遮罩 */
     #overlay {
       position: fixed;
-      top: 50px;
+      top: 130px;
       left: 0;
       right: 0;
       bottom: 0;
@@ -449,7 +459,7 @@
       .card { flex-direction: row; }
       .left-column { flex: 0 0 40%; }
       .right-column { flex: 1; padding: 8px; }
-      .photo { width: 100%; object-fit: cover; margin: 5px; }
+      .photo { width: 100%; height: auto; margin: 5px; }
       #sidePanel { width: 80%; }
     }
   </style>
@@ -468,13 +478,12 @@
     </ul>
   </div>
   <!-- Header -->
-  <div id="header">
+  <div id="header" class="container">
     <h2>動物園介紹</h2>
+    <div id="branchesContainer"></div>
   </div>
-  <!-- 左側垂直館別選單 -->
-  <div id="branchesContainer"></div>
   <!-- 資訊卡區 -->
-  <div id="cardsContainer"></div>
+  <div id="cardsContainer" class="container"></div>
   <!-- 漸變遮罩 -->
   <div id="overlay"></div>
   <!-- 右側面板 -->
@@ -503,10 +512,6 @@
   </div>
   
   <script>
-    // 為避免使用前未定義，先宣告 branchesContainer 與 cardsContainer
-    const branchesContainer = document.getElementById('branchesContainer');
-    const cardsContainer = document.getElementById('cardsContainer');
-
     // 切換 chip 的功能
     function toggleChip(el) {
       el.classList.toggle('selected');
@@ -542,9 +547,10 @@
     // 產生 10 個館別
     const branchList = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
     let currentBranch = branchList[0];
+    const branchesContainer = document.getElementById('branchesContainer');
     let branchesHTML = "";
     branchList.forEach(branch => {
-      branchesHTML += `<button class="branch-tab" data-branch="${branch}">動物園 ${branch} (30)</button>`;
+      branchesHTML += `<button class="branch-tab" data-branch="${branch}">動物園 ${branch} (30)</button> `;
     });
     branchesContainer.innerHTML = branchesHTML;
     const branchTabs = document.querySelectorAll('.branch-tab');
@@ -553,12 +559,12 @@
         currentBranch = tab.getAttribute('data-branch');
         branchTabs.forEach(t => t.classList.remove('active'));
         tab.classList.add('active');
-        tab.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        tab.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "start" });
         updateCards();
       });
     });
     
-    // 調整卡片結構
+    // 調整卡片結構：左右兩欄，將活動時段文字放入活動時段框內，顯示在上方
     function updateCards() {
       let cardsHTML = "";
       for (let i = 1; i <= 30; i++) {
@@ -622,7 +628,7 @@
         branchTabs.forEach(t => t.classList.remove('active'));
         const activeTab = document.querySelector(`.branch-tab[data-branch="${currentBranch}"]`);
         activeTab.classList.add('active');
-        activeTab.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        activeTab.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "start" });
         updateCards();
         cardsContainer.scrollTop = 0;
       }

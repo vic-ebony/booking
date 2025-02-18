@@ -9,6 +9,9 @@
         integrity="sha512-2T5G0sRV0QEj2QZqOCiD/f3pZpXk/q1c6eJZe9g/s4fPPpBy/jF37sx6jK0S5FqgQ7b0jwJJYOrpZhdk+sQF8g==" 
         crossorigin="anonymous" referrerpolicy="no-referrer" />
   <style>
+    /* 通用 box-sizing */
+    * { box-sizing: border-box; }
+    
     /* 全局與版面設定 */
     html { font-size: 16px; }
     body {
@@ -17,15 +20,16 @@
       margin: 0;
       padding: 0;
       overflow-y: auto;
+      color: #333;
     }
-    .container {
-      box-sizing: border-box;
-    }
-    /* Header 區塊 - 現代深色，左側從 60px 開始 */
+    
+    .container { }
+    
+    /* Header 區塊 */
     #header {
       position: fixed;
       top: 0;
-      left: 60px; /* 與資訊卡容器對齊 */
+      left: 60px; /* 與資訊卡容器左對齊 */
       right: 0;
       height: 50px;
       background-color: #2c3e50;
@@ -35,10 +39,11 @@
     }
     #header h2 {
       margin: 0;
-      font-size: 1.25rem;
+      font-size: 1.5rem;
       color: #fff;
     }
-    /* 左側垂直館別選單 - 背景改為深藍灰，延伸至頂 */
+    
+    /* 左側垂直館別選單 */
     #branchesContainer {
       position: fixed;
       top: 0;
@@ -46,22 +51,21 @@
       bottom: 0;
       width: 60px;
       background-color: #34495e;
-      padding: 5px; /* 統一內距 */
-      box-sizing: border-box;
+      padding: 5px;
       overflow-y: auto;
       overflow-x: visible;
       touch-action: pan-y;
       z-index: 1000;
       display: flex;
       flex-direction: column;
-      align-items: flex-start;
+      align-items: center;
     }
     .branch-tab {
       position: relative;
       width: 45px;
       height: 45px;
       border-radius: 50%;
-      background-color: #ecf0f1; /* 預設背景：淺灰藍 */
+      background-color: #ecf0f1;
       border: none;
       cursor: pointer;
       margin: 5px 0;
@@ -70,32 +74,23 @@
       justify-content: center;
       align-items: center;
       font-size: 0.8rem;
-      color: #2c3e50; /* 文字深藍灰 */
-      overflow: visible;
+      color: #2c3e50;
     }
     .branch-tab .branch-name {
       white-space: normal;
       word-break: break-all;
       text-align: center;
       line-height: 1.2;
-      /* 預設文字陰影與過渡效果 */
-      text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
-      transition: all 0.3s ease;
-    }
-    .branch-tab:hover .branch-name {
-      transform: scale(1.1);
-      text-shadow: 2px 2px 4px rgba(0,0,0,0.4);
-      color: #fff;
     }
     .branch-tab.active {
-      background-color: #3498db; /* 選取時背景亮藍 */
+      background-color: #3498db;
       color: #fff;
     }
     .branch-tab .badge {
       position: absolute;
-      top: -3px;  /* 移至按鈕右上方 */
+      top: -3px;
       right: -3px;
-      background: #e74c3c; /* 徽章：橘紅色 */
+      background: #e74c3c;
       color: #fff;
       border-radius: 50%;
       width: 16px;
@@ -105,6 +100,7 @@
       line-height: 16px;
       z-index: 2;
     }
+    
     /* 選單側邊面板 */
     #menuPanel {
       position: fixed;
@@ -117,35 +113,33 @@
       transition: left 0.3s ease;
       z-index: 2000;
       padding: 20px;
-      box-sizing: border-box;
       border-top-right-radius: 10px;
       border-bottom-right-radius: 10px;
       font-size: 1.1rem;
     }
     #menuPanel.active { left: 0; }
-    #menuPanel h3 { margin-top: 0; font-size: 1.2rem; }
+    #menuPanel h3 { margin-top: 0; font-size: 1.3rem; }
     #menuPanel ul { list-style: none; padding: 0; }
     #menuPanel ul li { margin: 10px 0; cursor: pointer; }
-    /* 移除選單面板右上角的打X按鈕 */
+    
+    /* 資訊卡容器 */
     #cardsContainer {
       position: absolute;
       top: 50px;
-      left: 60px; /* 與 Header、資訊卡容器對齊 */
+      left: 60px;
       right: 0;
       bottom: 0;
       overflow-y: auto;
-      padding: 10px;
-      box-sizing: border-box;
+      padding: 12px 16px;
     }
     .card {
       display: flex;
-      background: white;
+      background: #fff;
       border-radius: 8px;
       box-shadow: 0 2px 5px rgba(0,0,0,0.15);
-      margin: 8px 0;
+      margin: 12px 0;
       overflow: hidden;
       text-align: left;
-      position: relative;
     }
     .left-column {
       flex: 0 0 160px;
@@ -153,28 +147,30 @@
       flex-direction: column;
       align-items: center;
       border-right: 1px solid #ddd;
-      padding: 10px 10px 10px 0;
-      overflow: hidden;
-      position: relative;
+      padding: 12px 10px 12px 0;
     }
     .photo {
       width: 140px;
-      margin-bottom: 6px;
+      margin-bottom: 8px;
     }
     .photo img {
       width: 100%;
       object-fit: cover;
       border-radius: 8px;
     }
+    /* 調整活動時段容器，左右邊界與左側欄對齊 */
     .activity-times {
-      width: 100%;
-      padding: 4px 8px;
+      width: calc(100% + 10px);
+      margin-right: -10px;
+      padding: 6px 8px;
       background: #eee;
       border-top: 1px solid #ddd;
       border-bottom: 1px solid #ddd;
       text-align: center;
-      font-size: 0.875rem;
-      margin-top: 6px;
+      font-size: 0.9rem;
+      margin-top: 8px;
+      white-space: normal;
+      overflow-wrap: anywhere;
     }
     .activity-times span.label {
       display: block;
@@ -183,66 +179,66 @@
       margin-bottom: 4px;
     }
     .right-column {
-      flex: 0 0 60%;
-      padding: 12px;
-      min-width: 0;
+      flex: 1;
+      padding: 16px;
       display: flex;
       flex-direction: column;
+      justify-content: space-between;
+      overflow: hidden;
     }
-    .info-area {
-      text-align: left;
-      width: 100%;
-    }
-    .data-area {
-      margin-bottom: 8px;
-    }
+    .info-area { width: 100%; }
+    .data-area { margin-bottom: 8px; }
     .data-area .name {
-      font-size: 1rem;
+      font-size: 1.2rem;
       font-weight: bold;
-      color: #000;
-      margin-bottom: 4px;
+      margin-bottom: 6px;
     }
     .data-area .details,
     .data-area .price {
-      font-size: 0.85rem;
-      color: #555;
-      margin-bottom: 4px;
+      font-size: 1rem;
+      margin-bottom: 6px;
     }
     .intro-area {
-      font-size: 0.85rem;
-      color: #333;
-      margin: 8px 0;
+      font-size: 1rem;
+      line-height: 1.4;
+      margin: 10px 0;
     }
-    /* 新增按鈕區容器 */
+    
+    /* 按鈕區塊 */
     .action-container {
       width: 100%;
       display: flex;
-      justify-content: flex-start;
-      margin-top: auto;
+      justify-content: space-around;
+      margin-top: 12px;
     }
-    .action-buttons {
-      display: flex;
-      gap: 8px;
-      flex-shrink: 0;
+    .action-group {
+      flex: 1;
+      text-align: center;
+      padding: 0 4px;
+    }
+    .action-label {
+      font-size: 0.9rem;
+      margin-bottom: 4px;
+      color: #333;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
     .reservation-btn, .comments-btn {
       min-width: 90px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      font-size: 0.85rem;
+      font-size: 0.95rem;
       background-color: transparent;
-      border: none;
+      border: 1px solid #ccc;
+      padding: 6px 10px;
+      border-radius: 4px;
       cursor: pointer;
-      color: #000;
-      white-space: normal;
+      color: #333;
     }
-    .btn-text {
-      display: inline-block;
-      max-width: 2em;
-      white-space: normal;
-      word-break: break-all;
-      text-align: center;
+    .reservation-btn:hover, .comments-btn:hover {
+      border-color: #888;
     }
     .reservation-btn .badge {
       background-color: #28a745;
@@ -251,7 +247,7 @@
       border-radius: 12px;
       padding: 2px 6px;
       font-size: 0.75rem;
-      margin-left: 4px;
+      margin-left: 6px;
       min-width: 30px;
       text-align: center;
     }
@@ -262,10 +258,11 @@
       border-radius: 12px;
       padding: 2px 6px;
       font-size: 0.75rem;
-      margin-left: 4px;
+      margin-left: 6px;
       min-width: 30px;
       text-align: center;
     }
+    
     /* 側邊面板 */
     #sidePanel {
       position: fixed;
@@ -277,10 +274,10 @@
       box-shadow: -2px 0 5px rgba(0,0,0,0.2);
       transition: right 0.3s ease;
       z-index: 2000;
-      box-sizing: border-box;
+      padding-bottom: 10px;
       border-top-left-radius: 10px;
       border-bottom-left-radius: 10px;
-      font-size: 1.1rem;
+      font-size: 1rem;
       display: none;
     }
     #sidePanel.active { right: 0; display: block; }
@@ -297,7 +294,7 @@
       font-size: 1.2rem;
     }
     #reviewToggleBtn {
-      font-size: 1.1rem;
+      font-size: 1rem;
       padding: 4px 8px;
       background-color: #009900;
       color: #fff;
@@ -313,7 +310,7 @@
     .side-tab {
       flex: 1;
       padding: 6px 0;
-      font-size: 1.1rem;
+      font-size: 1rem;
       background: none;
       border: none;
       cursor: pointer;
@@ -325,12 +322,13 @@
     #sidePanelContent {
       overflow-y: auto;
       text-align: left;
-      font-size: 1.1rem;
+      font-size: 1rem;
     }
     #sidePanelContent .side-tab-content {
       display: none;
     }
     #sidePanelContent .side-tab-content.active { display: block; padding: 10px; }
+    
     /* 漸變遮罩 */
     #overlay {
       position: fixed;
@@ -346,6 +344,8 @@
       display: none;
     }
     #overlay.active { display: block; opacity: 1; }
+    
+    /* 表單區塊 */
     .form-section { margin-bottom: 12px; text-align: left; padding: 0 10px; }
     .form-section label { display: block; margin-bottom: 4px; font-weight: bold; }
     input[type="range"],
@@ -354,10 +354,9 @@
     textarea {
       width: 100%;
       padding: 8px;
-      box-sizing: border-box;
       border: 1px solid #ccc;
       border-radius: 4px;
-      font-size: 1.1rem;
+      font-size: 1rem;
     }
     .chip-container {
       display: flex;
@@ -371,7 +370,7 @@
       cursor: pointer;
       user-select: none;
       transition: background-color 0.2s;
-      font-size: 1.1rem;
+      font-size: 1rem;
     }
     .chip.selected { background-color: #007bff; color: #fff; }
     .chip.disabled { opacity: 0.5; pointer-events: none; }
@@ -388,7 +387,7 @@
       display: grid;
       grid-template-columns: auto 1fr;
       gap: 5px 10px;
-      font-size: 1.1rem;
+      font-size: 0.95rem;
     }
     .review-label {
       text-align: right;
@@ -439,7 +438,6 @@
     }
     .scale-group {
       flex: 1;
-      min-width: 0;
       border: 1px solid #ddd;
       border-radius: 4px;
       padding: 8px;
@@ -453,7 +451,7 @@
     }
     button[type="submit"] {
       padding: 10px 20px;
-      font-size: 1.1rem;
+      font-size: 1rem;
       background-color: #009900;
       color: #fff;
       border: none;
@@ -461,31 +459,22 @@
       cursor: pointer;
     }
     button[type="submit"]:hover { background-color: #007700; }
+    
     @media (max-width:480px) {
       #branchesContainer { width: 60px; }
-      #cardsContainer { left: 60px; }
+      #cardsContainer { left: 60px; padding: 8px; }
       .card { flex-direction: row; }
       .left-column { flex: 0 0 40%; align-items: flex-start; }
       .right-column { flex: 0 0 60%; padding: 8px; }
       .photo { width: 100%; object-fit: cover; margin: 5px; }
       #sidePanel { width: 80%; }
-      .action-container {
-        width: 100%;
-        display: flex;
-        justify-content: flex-start;
-      }
-      #branchesContainer {
-        border-right: 1px solid #ddd;
-      }
-      #cardsContainer {
-        border-top: 1px solid #ddd;
-      }
+      .action-container { justify-content: space-around; }
+      #branchesContainer { border-right: 1px solid #ddd; }
+      #cardsContainer { border-top: 1px solid #ddd; }
     }
   </style>
 </head>
 <body>
-  <!-- 移除了左上角的漢堡圖示按鈕 -->
-  
   <!-- 選單側邊面板 -->
   <div id="menuPanel">
     <h3>選單</h3>
@@ -495,11 +484,11 @@
       <li onclick="alert('聯絡我們')">聯絡我們</li>
     </ul>
   </div>
-  <!-- Header (從左側 60px 開始，與資訊卡容器對齊) -->
+  <!-- Header -->
   <div id="header">
     <h2>介紹</h2>
   </div>
-  <!-- 左側垂直館別選單 -->
+  <!-- 左側館別選單 -->
   <div id="branchesContainer"></div>
   <!-- 資訊卡區 -->
   <div id="cardsContainer"></div>
@@ -593,12 +582,16 @@
                 </div>
               </div>
               <div class="action-container">
-                <div class="action-buttons">
+                <div class="action-group">
+                  <div class="action-label">下週搶約</div>
                   <button class="reservation-btn" onclick="openSidePanel('${currentBranch} - 動物 ${i}', ${numReservation}, 'reservation')">
-                    <span class="btn-text">下週搶約</span> <span class="badge">${numReservation}</span>
+                    <span class="badge">${numReservation}</span>
                   </button>
+                </div>
+                <div class="action-group">
+                  <div class="action-label">體驗心得</div>
                   <button class="comments-btn" onclick="openSidePanel('${currentBranch} - 動物 ${i}', ${numComments}, 'comments')">
-                    <span class="btn-text">體驗心得</span> <span class="badge">${numComments}</span>
+                    <span class="badge">${numComments}</span>
                   </button>
                 </div>
               </div>

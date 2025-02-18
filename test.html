@@ -13,7 +13,7 @@
     html { font-size: 16px; }
     body {
       font-family: Arial, sans-serif;
-      background-color: #00c300; /* LINE 綠色背景 */
+      background-color: #f4f7f6;
       margin: 0;
       padding: 0;
       overflow-y: auto;
@@ -21,14 +21,14 @@
     .container {
       box-sizing: border-box;
     }
-    /* Header 區塊 */
+    /* Header 區塊 - 現代深色，左側從 60px 開始 */
     #header {
       position: fixed;
       top: 0;
-      left: 0;
+      left: 60px; /* 與資訊卡容器左對齊 */
       right: 0;
       height: 50px;
-      background-color: #00c300;
+      background-color: #2c3e50;
       z-index: 1001;
       text-align: center;
       line-height: 50px;
@@ -36,17 +36,17 @@
     #header h2 {
       margin: 0;
       font-size: 1.25rem;
-      color: white;
+      color: #fff;
     }
-    /* 左側垂直館別選單 - 延伸至頂 */
+    /* 左側垂直館別選單 - 背景改為深藍灰，延伸至頂 */
     #branchesContainer {
       position: fixed;
       top: 0;
       left: 0;
       bottom: 0;
       width: 60px;
-      background-color: #00c300;
-      padding: 55px 5px 5px 5px; /* 上內距留給 header */
+      background-color: #34495e;
+      padding: 5px; /* 統一內距 */
       box-sizing: border-box;
       overflow-y: auto;
       overflow-x: visible;
@@ -61,7 +61,7 @@
       width: 45px;
       height: 45px;
       border-radius: 50%;
-      background-color: #e6ffe6;
+      background-color: #ecf0f1; /* 預設背景：淺灰藍 */
       border: none;
       cursor: pointer;
       margin: 5px 0;
@@ -70,7 +70,7 @@
       justify-content: center;
       align-items: center;
       font-size: 0.8rem;
-      color: #000;
+      color: #2c3e50; /* 文字深藍灰 */
       overflow: visible;
     }
     .branch-tab .branch-name {
@@ -80,15 +80,15 @@
       line-height: 1.2;
     }
     .branch-tab.active {
-      background-color: #008f00;
+      background-color: #3498db; /* 選取時背景亮藍 */
       color: #fff;
     }
     .branch-tab .badge {
       position: absolute;
-      bottom: -3px;
+      top: -3px;  /* 移至按鈕右上方 */
       right: -3px;
-      background: red;
-      color: white;
+      background: #e74c3c; /* 徽章：橘紅色 */
+      color: #fff;
       border-radius: 50%;
       width: 16px;
       height: 16px;
@@ -97,7 +97,6 @@
       line-height: 16px;
       z-index: 2;
     }
-    /* 移除漢堡圖示，因此這裡不再有 menuButton */
     /* 選單側邊面板 */
     #menuPanel {
       position: fixed;
@@ -119,11 +118,11 @@
     #menuPanel h3 { margin-top: 0; font-size: 1.2rem; }
     #menuPanel ul { list-style: none; padding: 0; }
     #menuPanel ul li { margin: 10px 0; cursor: pointer; }
-    /* 移除了選單面板右上角的打X按鈕 */
+    /* 移除選單面板右上角的打X按鈕 */
     #cardsContainer {
       position: absolute;
       top: 50px;
-      left: 60px;
+      left: 60px; /* 與 Header、資訊卡容器左對齊 */
       right: 0;
       bottom: 0;
       overflow-y: auto;
@@ -206,7 +205,7 @@
       color: #333;
       margin: 8px 0;
     }
-    /* 新增按鈕區容器，設定靠左對齊 */
+    /* 新增按鈕區容器 */
     .action-container {
       width: 100%;
       display: flex;
@@ -467,11 +466,9 @@
         display: flex;
         justify-content: flex-start;
       }
-      /* 手機版：左側館別選單右側分隔線延伸至頂 */
       #branchesContainer {
         border-right: 1px solid #ddd;
       }
-      /* 手機版：右側資訊區上方分隔線 */
       #cardsContainer {
         border-top: 1px solid #ddd;
       }
@@ -490,7 +487,7 @@
       <li onclick="alert('聯絡我們')">聯絡我們</li>
     </ul>
   </div>
-  <!-- Header -->
+  <!-- Header (從左側 60px 開始，與資訊卡容器對齊) -->
   <div id="header">
     <h2>介紹</h2>
   </div>
@@ -503,18 +500,15 @@
   <!-- 右側面板 -->
   <div id="sidePanel">
     <button class="close-btn" onclick="closeSidePanel()">×</button>
-    <!-- 側邊面板上方：館別標題與心得填寫按鈕 -->
     <div id="sidePanelHeader">
       <h3 id="sidePanelTitle"></h3>
       <button id="reviewToggleBtn" onclick="toggleReviewForm()">心得填寫</button>
     </div>
-    <!-- 側邊面板固定標籤 -->
     <div id="sidePanelTabs">
       <button class="side-tab active" id="sideTabBtn_comments" onclick="switchSideTab('comments')">心得</button>
       <button class="side-tab" id="sideTabBtn_reservation" onclick="switchSideTab('reservation')">下週搶約</button>
       <button class="side-tab" id="sideTabBtn_rename" onclick="switchSideTab('rename')">改名紀錄</button>
     </div>
-    <!-- 側邊面板下方 -->
     <div id="sidePanelContent">
       <div id="sideTabComments" class="side-tab-content active">
         <div id="reviewFormContainer" style="display:none;"></div>

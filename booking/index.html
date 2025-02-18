@@ -58,7 +58,6 @@
       flex-direction: column;
       align-items: center;
     }
-    /* 選單按鈕：使用「選單」二字，尺寸與館別按鈕同寬，並強制水平顯示 */
     .hamburger {
       width: 45px;
       height: 45px;
@@ -81,7 +80,7 @@
       position: relative;
       width: 45px;
       height: 45px;
-      border-radius: 8px; /* 方形圓角 */
+      border-radius: 8px;
       background-color: #ecf0f1;
       border: none;
       cursor: pointer;
@@ -175,7 +174,6 @@
       object-fit: cover;
       border-radius: 8px;
     }
-    /* 修改活動時段內容靠左對齊 */
     .activity-times {
       width: calc(100% + 10px);
       margin-right: -10px;
@@ -221,7 +219,7 @@
       margin: 10px 0;
     }
     
-    /* 按鈕區塊 - 修改下週搶約和體驗心得按鈕為按鈕+徽章組合 */
+    /* 按鈕區塊 - 下週搶約與體驗心得按鈕，風格類似館別按鈕 */
     .action-container {
       width: 100%;
       display: flex;
@@ -229,40 +227,37 @@
       margin-top: 12px;
       justify-content: center;
     }
-    .reservation-btn, .comments-btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.95rem;
-      background-color: transparent;
-      border: 1px solid #ccc;
-      padding: 6px 10px;
-      border-radius: 4px;
-      cursor: pointer;
-      color: #333;
-    }
-    .reservation-btn:hover, .comments-btn:hover {
-      border-color: #888;
-    }
-    .btn-text {
-      display: inline-block;
-    }
-    .reservation-btn .badge, .comments-btn .badge {
-      background-color: #28a745;
-      color: #fff;
+    .action-btn {
+      position: relative;
+      width: 45px;
+      height: 45px;
+      border-radius: 8px;
+      background-color: #ecf0f1;
       border: none;
-      border-radius: 12px;
-      padding: 2px 6px;
-      font-size: 0.75rem;
-      margin-left: 6px;
-      min-width: 30px;
-      text-align: center;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      font-size: 0.7rem;
+      color: #2c3e50;
     }
-    .comments-btn .badge {
-      background-color: #007bff;
+    .action-btn .badge {
+      position: absolute;
+      top: -3px;
+      right: -3px;
+      background: #e74c3c;
+      color: #fff;
+      border-radius: 50%;
+      width: 16px;
+      height: 16px;
+      font-size: 0.65rem;
+      text-align: center;
+      line-height: 16px;
+      z-index: 2;
     }
     
-    /* 側邊面板 */
+    /* 側邊面板 - 優化右側面板字體大小及配色 */
     #sidePanel {
       position: fixed;
       top: 50px;
@@ -276,8 +271,10 @@
       padding-bottom: 10px;
       border-top-left-radius: 10px;
       border-bottom-left-radius: 10px;
-      font-size: 1rem;
+      font-size: 0.95rem;
       display: none;
+      /* 右側面板內文字顏色統一 */
+      color: #333;
     }
     #sidePanel.active { right: 0; display: block; }
     #sidePanelHeader {
@@ -286,16 +283,17 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background-color: #f5f5f5;
+      background-color: #f0f0f0;
     }
     #sidePanelHeader h3 {
       margin: 0;
-      font-size: 1.2rem;
+      font-size: 1.3rem;
+      color: #333;
     }
     #reviewToggleBtn {
-      font-size: 1rem;
+      font-size: 0.95rem;
       padding: 4px 8px;
-      background-color: #009900;
+      background-color: #2c3e50;
       color: #fff;
       border: none;
       border-radius: 4px;
@@ -305,28 +303,32 @@
       display: flex;
       justify-content: space-around;
       border-bottom: 1px solid #ddd;
+      background-color: #f7f7f7;
     }
     .side-tab {
       flex: 1;
-      padding: 6px 0;
+      padding: 8px 0;
       font-size: 1rem;
       background: none;
       border: none;
       cursor: pointer;
+      color: #333;
     }
     .side-tab.active {
-      border-bottom: 2px solid #008f00;
-      color: #008f00;
+      border-bottom: 2px solid #333;
+      color: #333;
     }
     #sidePanelContent {
       overflow-y: auto;
       text-align: left;
-      font-size: 1rem;
+      font-size: 0.95rem;
+      color: #333;
+      padding: 10px;
     }
     #sidePanelContent .side-tab-content {
       display: none;
     }
-    #sidePanelContent .side-tab-content.active { display: block; padding: 10px; }
+    #sidePanelContent .side-tab-content.active { display: block; }
     
     /* 漸變遮罩 */
     #overlay {
@@ -588,11 +590,11 @@
                 </div>
               </div>
               <div class="action-container">
-                <button class="reservation-btn" onclick="openSidePanel('${currentBranch} - 動物 ${i}', ${numReservation}, 'reservation')">
+                <button class="action-btn reservation-btn" onclick="openSidePanel('${currentBranch} - 動物 ${i}', ${numReservation}, 'reservation')">
                   <span class="btn-text">下週搶約</span>
                   <span class="badge">${numReservation}</span>
                 </button>
-                <button class="comments-btn" onclick="openSidePanel('${currentBranch} - 動物 ${i}', ${numComments}, 'comments')">
+                <button class="action-btn comments-btn" onclick="openSidePanel('${currentBranch} - 動物 ${i}', ${numComments}, 'comments')">
                   <span class="btn-text">體驗心得</span>
                   <span class="badge">${numComments}</span>
                 </button>

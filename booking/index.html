@@ -157,33 +157,46 @@
       overflow: hidden;
       text-align: left;
     }
+    /* 將左側欄拆分成兩個容器 */
     .left-column {
-      flex: 0 0 160px;
+      flex: 0 0 165px;
       display: flex;
       flex-direction: column;
-      align-items: center;
+      align-items: center;  /* 置中所有內部內容 */
       border-right: 1px solid #ddd;
-      padding: 12px 10px 12px 0;
+      padding: 12px 0; /* 移除左右內邊距 */
     }
-    .photo {
-      width: 140px;
+    /* 照片容器 */
+    .photo-container {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
       margin-bottom: 8px;
     }
+    .photo {
+      width: 145px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
     .photo img {
+      display: block;
       width: 100%;
       object-fit: cover;
       border-radius: 8px;
     }
+    /* 活動時段容器 */
+    .activity-times-container {
+      width: 100%;
+      text-align: center;
+    }
     .activity-times {
-      width: calc(100% + 10px);
-      margin-right: -10px;
+      width: 100%;
       padding: 6px 8px;
       background: #eee;
-      border-top: 1px solid #ddd;
-      border-bottom: 1px solid #ddd;
-      text-align: left;
+      border: 1px solid #ddd;
       font-size: 0.9rem;
-      margin-top: 8px;
       white-space: normal;
       overflow-wrap: anywhere;
     }
@@ -193,6 +206,7 @@
       color: #555;
       margin-bottom: 4px;
     }
+    
     .right-column {
       flex: 1;
       padding: 16px;
@@ -222,7 +236,7 @@
       margin: 0;
     }
     .intro-area p::after {
-      content: "介紹：本館收藏珍禽異獸種類繁多，各具特色，每隻皆傳承動人故事，歡迎蒞臨賞析探索。";
+      content: "本館收藏珍禽異獸種類繁多，各具特色，每隻皆傳承動人故事，歡迎蒞臨賞析探索。";
     }
     
     /* 按鈕區塊 - 將下週搶約、體驗心得按鈕靠左對齊 */
@@ -297,13 +311,12 @@
       font-size: 1.3rem;
       color: #333;
     }
-    /* 新增 #headerButtons 區塊，並將按鈕並排 */
+    /* 將下方 #headerButtons 內按鈕並排 */
     #headerButtons {
       display: flex;
       gap: 10px;
       align-items: center;
     }
-    /* 將 #reviewToggleBtn 與 .close-btn 統一樣式 */
     #reviewToggleBtn, .close-btn {
       font-size: 0.95rem;
       padding: 4px 8px;
@@ -312,6 +325,7 @@
       border: none;
       border-radius: 4px;
       cursor: pointer;
+      white-space: nowrap;
     }
     
     #sidePanelTabs {
@@ -486,9 +500,10 @@
       #branchesContainer { width: 60px; }
       #cardsContainer { left: 60px; padding: 8px; }
       .card { flex-direction: row; }
-      .left-column { flex: 0 0 40%; align-items: flex-start; }
-      .right-column { flex: 0 0 60%; padding: 8px; }
-      .photo { width: 100%; object-fit: cover; margin: 5px; }
+      /* 在手機版左側欄也保持 165px */
+      .left-column { flex: 0 0 165px; align-items: center; }
+      .right-column { flex: 0 0 calc(100% - 165px); padding: 8px; }
+      .photo { width: 145px; object-fit: cover; margin: 5px auto; }
       #sidePanel { width: 80%; }
       .action-container { justify-content: space-around; }
       #branchesContainer { border-right: 1px solid #ddd; }
@@ -593,12 +608,16 @@
         cardsHTML += `
           <div class="card">
             <div class="left-column">
-              <div class="photo">
-                <img src="https://picsum.photos/130/180?random=${currentBranch.charCodeAt(0)}${i}" alt="動物照片">
+              <div class="photo-container">
+                <div class="photo">
+                  <img src="https://picsum.photos/130/180?random=${currentBranch.charCodeAt(0)}${i}" alt="動物照片">
+                </div>
               </div>
-              <div class="activity-times">
-                <span class="label">活動時段</span>
-                <div>12-13-14-15-16-17-18-19-20-21-22-23-24-01-02-03-04-05</div>
+              <div class="activity-times-container">
+                <div class="activity-times">
+                  <span class="label">活動時段</span>
+                  <div>12-13-14-15-16-17-18-19-20-21-22-23-24-01-02-03-04-05</div>
+                </div>
               </div>
             </div>
             <div class="right-column">

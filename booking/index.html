@@ -4,16 +4,17 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>介紹 - 優化排版</title>
-  <!-- 引入 Font Awesome 圖示庫（可選） -->
+  <!-- 引入 Font Awesome 圖示庫 -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" 
         integrity="sha512-2T5G0sRV0QEj2QZqOCiD/f3pZpXk/q1c6eJZe9g/s4fPPpBy/jF37sx6jK0S5FqgQ7b0jwJJYOrpZhdk+sQF8g==" 
         crossorigin="anonymous" referrerpolicy="no-referrer" />
   <style>
     /* 全局與版面設定 */
     html { font-size: 16px; }
+    /* 採用較淺的背景色 */
     body {
       font-family: Arial, sans-serif;
-      background-color: #00c300; /* LINE 綠色背景 */
+      background-color: #f4f7f6;
       margin: 0;
       padding: 0;
       overflow-y: auto;
@@ -21,14 +22,14 @@
     .container {
       box-sizing: border-box;
     }
-    /* Header 區塊 */
+    /* Header 區塊 - 現代深色 */
     #header {
       position: fixed;
       top: 0;
       left: 0;
       right: 0;
       height: 50px;
-      background-color: #00c300;
+      background-color: #2c3e50;
       z-index: 1001;
       text-align: center;
       line-height: 50px;
@@ -36,17 +37,17 @@
     #header h2 {
       margin: 0;
       font-size: 1.25rem;
-      color: white;
+      color: #fff;
     }
-    /* 左側垂直館別選單 - 桌機版 */
+    /* 左側垂直館別選單 - 背景改為深藍灰，延伸至頂，內距留給 header */
     #branchesContainer {
       position: fixed;
-      top: 50px;
+      top: 0;
       left: 0;
       bottom: 0;
       width: 60px;
-      background-color: #00c300;
-      padding: 5px;
+      background-color: #34495e;
+      padding: 55px 5px 5px 5px; /* 上內距留給 header */
       box-sizing: border-box;
       overflow-y: auto;
       overflow-x: visible;
@@ -61,7 +62,8 @@
       width: 45px;
       height: 45px;
       border-radius: 50%;
-      background-color: #e6ffe6;
+      /* 預設背景改為淺灰藍 */
+      background-color: #ecf0f1;
       border: none;
       cursor: pointer;
       margin: 5px 0;
@@ -70,7 +72,8 @@
       justify-content: center;
       align-items: center;
       font-size: 0.8rem;
-      color: #000;
+      /* 文字顏色深藍灰 */
+      color: #2c3e50;
       overflow: visible;
     }
     .branch-tab .branch-name {
@@ -80,15 +83,14 @@
       line-height: 1.2;
     }
     .branch-tab.active {
-      background-color: #008f00;
+      /* 選取時背景變亮藍 */
+      background-color: #3498db;
       color: #fff;
     }
     .branch-tab .badge {
-      position: absolute;
-      bottom: -3px;
-      right: -3px;
-      background: red;
-      color: white;
+      /* 徽章背景使用橘紅色 */
+      background: #e74c3c;
+      color: #fff;
       border-radius: 50%;
       width: 16px;
       height: 16px;
@@ -96,20 +98,12 @@
       text-align: center;
       line-height: 16px;
       z-index: 2;
+      position: absolute;
+      bottom: -3px;
+      right: -3px;
     }
-    #menuButton {
-      position: fixed;
-      top: 10px;
-      left: 10px;
-      z-index: 1100;
-      padding: 8px 12px;
-      font-size: 1rem;
-      background-color: #009900;
-      color: #fff;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-    }
+    /* 移除漢堡圖示，因此這裡不再有 menuButton */
+    /* 選單側邊面板 */
     #menuPanel {
       position: fixed;
       top: 50px;
@@ -130,15 +124,7 @@
     #menuPanel h3 { margin-top: 0; font-size: 1.2rem; }
     #menuPanel ul { list-style: none; padding: 0; }
     #menuPanel ul li { margin: 10px 0; cursor: pointer; }
-    #menuPanel .close-menu {
-      position: fixed;
-      top: 10px;
-      right: 10px;
-      border: none;
-      background: none;
-      font-size: 1.2rem;
-      cursor: pointer;
-    }
+    /* 移除了選單面板右上角的打X按鈕 */
     #cardsContainer {
       position: absolute;
       top: 50px;
@@ -343,15 +329,6 @@
       display: none;
     }
     #sidePanelContent .side-tab-content.active { display: block; padding: 10px; }
-    #sidePanel .close-btn {
-      position: absolute;
-      bottom: 10px;
-      right: 10px;
-      border: none;
-      background: none;
-      font-size: 1.1rem;
-      cursor: pointer;
-    }
     /* 漸變遮罩 */
     #overlay {
       position: fixed;
@@ -495,15 +472,22 @@
         display: flex;
         justify-content: flex-start;
       }
+      /* 手機版：左側館別選單右側分隔線延伸至頂 */
+      #branchesContainer {
+        border-right: 1px solid #ddd;
+      }
+      /* 手機版：右側資訊區上方分隔線 */
+      #cardsContainer {
+        border-top: 1px solid #ddd;
+      }
     }
   </style>
 </head>
 <body>
-  <!-- 首頁選單按鈕 -->
-  <button id="menuButton" onclick="openMenuPanel()">選單</button>
+  <!-- 移除了左上角的漢堡圖示按鈕 -->
+  
   <!-- 選單側邊面板 -->
   <div id="menuPanel">
-    <button class="close-menu" onclick="closeMenuPanel()">×</button>
     <h3>選單</h3>
     <ul>
       <li onclick="alert('首頁')">首頁</li>
@@ -631,6 +615,9 @@
     updateCards();
     document.querySelector(`.branch-tab[data-branch="${currentBranch}"]`).classList.add('active');
     
+    // 定義側邊面板標籤的排列順序
+    const tabOrder = ['comments','reservation','rename'];
+    
     // 手機滑動切換館別
     let startX = 0;
     const swipeThreshold = 50;
@@ -675,6 +662,7 @@
     
     // 側邊面板內滑動切換標籤
     const sidePanelContentEl = document.getElementById('sidePanelContent');
+    let sideStartX = 0;
     sidePanelContentEl.addEventListener('touchstart', function(e) {
       sideStartX = e.changedTouches[0].pageX;
     }, false);

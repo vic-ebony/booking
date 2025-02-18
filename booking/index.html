@@ -218,12 +218,11 @@
       line-height: 1.4;
       margin: 10px 0;
     }
-    /* 修改介紹內容為40字 */
     .intro-area p {
       margin: 0;
     }
     .intro-area p::after {
-      content: "介紹：本館收藏珍禽異獸種類繁多，各具特色，每隻皆傳承動人故事，歡迎蒞臨賞析探索。樂無窮";
+      content: "介紹：本館收藏珍禽異獸種類繁多，各具特色，每隻皆傳承動人故事，歡迎蒞臨賞析探索。";
     }
     
     /* 按鈕區塊 - 將下週搶約、體驗心得按鈕靠左對齊 */
@@ -264,7 +263,7 @@
       z-index: 2;
     }
     
-    /* 右側面板（其他部分不變） */
+    /* 右側面板（不修改其他程式碼） */
     #sidePanel {
       position: fixed;
       top: 50px;
@@ -298,12 +297,13 @@
       font-size: 1.3rem;
       color: #333;
     }
-    /* 將下方 #headerButtons 內按鈕並排，按鈕大小統一 */
+    /* 新增 #headerButtons 區塊，並將按鈕並排 */
     #headerButtons {
       display: flex;
       gap: 10px;
       align-items: center;
     }
+    /* 將 #reviewToggleBtn 與 .close-btn 統一樣式 */
     #reviewToggleBtn, .close-btn {
       font-size: 0.95rem;
       padding: 4px 8px;
@@ -558,7 +558,7 @@
       "寶可夢",
       "愛寶",
       "芯店",
-      "水沙連",
+      "水沙連"
     ];
     let currentBranch = branchList[0];
     
@@ -608,17 +608,17 @@
                   <div class="details">100 / 50 / 1</div>
                   <div class="price">💰 3000</div>
                   <div class="intro-area">
-                    <p>介紹：本館收藏珍禽異獸種類繁多，各具特色，每隻皆傳承動人故事，歡迎蒞臨賞析探索。樂無窮</p>
+                    <p>介紹：本館收藏珍禽異獸種類繁多，各具特色，每隻皆傳承動人故事，歡迎蒞臨賞析探索。</p>
                   </div>
                 </div>
               </div>
               <div class="action-container">
                 <button class="action-btn reservation-btn" onclick="openSidePanel('${currentBranch} - 動物 ${i}', ${numReservation}, 'reservation')">
-                  <span class="btn-text">下週搶約</span>
+                  <span class="btn-text">下週<br>搶約</span>
                   <span class="badge">${numReservation}</span>
                 </button>
                 <button class="action-btn comments-btn" onclick="openSidePanel('${currentBranch} - 動物 ${i}', ${numComments}, 'comments')">
-                  <span class="btn-text">體驗心得</span>
+                  <span class="btn-text">體驗<br>心得</span>
                   <span class="badge">${numComments}</span>
                 </button>
               </div>

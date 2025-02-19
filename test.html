@@ -3,106 +3,75 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>介紹 - 優化排版</title>
-  <!-- 引入 Font Awesome 圖示庫 (使用 FA6) -->
+  <title>班表系統首頁</title>
+  <!-- 引入 Font Awesome 圖示庫 -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" 
         integrity="sha512-2T5G0sRV0QEj2QZqOCiD/f3pZpXk/q1c6eJZe9g/s4fPPpBy/jF37sx6jK0S5FqgQ7b0jwJJYOrpZhdk+sQF8g==" 
         crossorigin="anonymous" referrerpolicy="no-referrer" />
   <style>
-    /* 通用 box-sizing */
+    /* 全域設定 */
     * { box-sizing: border-box; }
-    
-    /* 全局與版面設定 */
-    html { font-size: 16px; }
     body {
+      margin: 0;
       font-family: Arial, sans-serif;
       background-color: #778899;
-      margin: 0;
-      padding: 0;
-      overflow-y: auto;
       color: #333;
     }
-    
-    /* Header 區塊 */
-    #header {
-      position: fixed;
-      top: 0;
-      left: 60px; /* 與資訊卡容器左對齊 */
-      right: 0;
-      height: 50px;
-      background-color: #2c3e50;
-      z-index: 1001;
-      text-align: center;
-      line-height: 50px;
-    }
-    #header h2 {
-      margin: 0;
-      font-size: 1.5rem;
-      color: #fff;
-    }
-    
-    /* 左側館別選單 */
-    #branchesContainer {
+    /* 左側導航區（固定 65px） */
+    #leftNav {
       position: fixed;
       top: 0;
       left: 0;
-      bottom: 0;
-      width: 60px;
+      width: 65px;
+      height: 100vh;
       background-color: #34495e;
-      padding: 5px;
-      overflow-y: auto;
-      overflow-x: visible;
-      touch-action: pan-y;
-      z-index: 1000;
       display: flex;
       flex-direction: column;
       align-items: center;
+      padding-top: 10px;
+      overflow-y: auto;
+      z-index: 1100;
     }
-    .hamburger {
-      width: 45px;
-      height: 45px;
-      border-radius: 8px;
-      background: rgba(255, 255, 255, 0.2);
-      border: 1px solid rgba(255, 255, 255, 0.5);
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    /* 頁面切換按鈕 */
+    #pageNav button {
+      width: 55px;
+      margin: 5px 0;
+      padding: 8px;
+      font-size: 0.9rem;
       color: #fff;
-      font-size: 1rem;
+      background-color: transparent;
+      border: none;
       cursor: pointer;
-      margin-bottom: 8px;
-      z-index: 2;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.3);
-      white-space: nowrap;
-      writing-mode: horizontal-tb;
     }
-    .branch-tab {
+    #pageNav button.active {
+      background-color: #2c3e50;
+      border-radius: 4px;
+    }
+    /* 館別按鈕（僅在每日班表頁面顯示） */
+    #branchNav {
+      margin-top: 20px;
+      width: 100%;
+      display: none; /* 當非每日班表頁面時隱藏 */
+    }
+    #branchNav button {
       position: relative;
       width: 45px;
       height: 45px;
+      margin: 5px auto;
+      border: none;
       border-radius: 8px;
       background-color: #ecf0f1;
-      border: none;
-      cursor: pointer;
-      margin: 5px 0;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      font-size: 0.8rem;
+      font-size: 0.9rem;
       color: #2c3e50;
-    }
-    .branch-tab .branch-name {
-      white-space: normal;
-      word-break: break-all;
+      cursor: pointer;
+      display: block;
       text-align: center;
-      line-height: 1.2;
     }
-    .branch-tab.active {
+    #branchNav button.active {
       background-color: #3498db;
       color: #fff;
     }
-    .branch-tab .badge {
+    #branchNav button .badge {
       position: absolute;
       top: -3px;
       right: -3px;
@@ -116,38 +85,42 @@
       line-height: 16px;
       z-index: 2;
     }
-    
-    /* 選單側邊面板 */
-    #menuPanel {
-      position: fixed;
-      top: 50px;
-      left: -250px;
-      width: 250px;
-      height: calc(100vh - 50px);
-      background-color: #fff;
-      box-shadow: 2px 0 5px rgba(0,0,0,0.2);
-      transition: left 0.3s ease;
-      z-index: 2000;
+    /* 右側主要內容 */
+    #mainContent {
+      margin-left: 65px;
       padding: 20px;
-      border-top-right-radius: 10px;
-      border-bottom-right-radius: 10px;
-      font-size: 1.1rem;
+      min-height: 100vh;
     }
-    #menuPanel.active { left: 0; }
-    #menuPanel h3 { margin-top: 0; font-size: 1.3rem; }
-    #menuPanel ul { list-style: none; padding: 0; }
-    #menuPanel ul li { margin: 10px 0; cursor: pointer; }
-    
-    /* 資訊卡容器 */
-    #cardsContainer {
-      position: absolute;
-      top: 50px;
-      left: 60px;
+    /* 各頁面預設隱藏 */
+    .page { display: none; }
+    .page.active { display: block; }
+    /* 首頁 */
+    #homePage { background-color: #fff; }
+    /* 每週班表 */
+    #weeklySchedule { background-color: #fff; }
+    /* 每日班表頁面 */
+    #dailySchedule {
+      background-color: #fff;
+    }
+    /* 每日班表頁面中的 Header（從左側導覽右側開始） */
+    #dailyHeader {
+      position: fixed;
+      top: 0;
+      left: 65px;
       right: 0;
-      bottom: 0;
-      overflow-y: auto;
-      padding: 12px 16px;
+      height: 50px;
+      background-color: #2c3e50;
+      color: #fff;
+      text-align: center;
+      line-height: 50px;
+      z-index: 1001;
     }
+    /* 每日班表頁面的卡片區 */
+    #dailyCardsContainer {
+      margin-top: 50px;
+      /* 內容區由 left:65px 開始 */
+    }
+    /* 卡片樣式，參考先前版本 */
     .card {
       display: flex;
       background: #fff;
@@ -157,43 +130,43 @@
       overflow: hidden;
       text-align: left;
     }
-    .left-column {
-      flex: 0 0 160px;
+    .left-card {
+      flex: 0 0 165px;
       display: flex;
       flex-direction: column;
       align-items: center;
       border-right: 1px solid #ddd;
-      padding: 12px 10px 12px 0;
+      padding: 12px 0;
+    }
+    .photo-container {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 8px;
     }
     .photo {
-      width: 140px;
-      margin-bottom: 8px;
+      width: 145px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
     .photo img {
       width: 100%;
       object-fit: cover;
       border-radius: 8px;
+      display: block;
     }
     .activity-times {
-      width: calc(100% + 10px);
-      margin-right: -10px;
+      width: 100%;
       padding: 6px 8px;
       background: #eee;
-      border-top: 1px solid #ddd;
-      border-bottom: 1px solid #ddd;
-      text-align: left;
+      border: 1px solid #ddd;
       font-size: 0.9rem;
-      margin-top: 8px;
-      white-space: normal;
+      text-align: center;
       overflow-wrap: anywhere;
     }
-    .activity-times span.label {
-      display: block;
-      font-weight: bold;
-      color: #555;
-      margin-bottom: 4px;
-    }
-    .right-column {
+    .right-card {
       flex: 1;
       padding: 16px;
       display: flex;
@@ -208,8 +181,7 @@
       font-weight: bold;
       margin-bottom: 6px;
     }
-    .data-area .details,
-    .data-area .price {
+    .data-area .details, .data-area .price {
       font-size: 1rem;
       margin-bottom: 6px;
     }
@@ -218,14 +190,10 @@
       line-height: 1.4;
       margin: 10px 0;
     }
-    .intro-area p {
-      margin: 0;
-    }
+    .intro-area p { margin: 0; }
     .intro-area p::after {
-      content: "介紹：本館收藏珍禽異獸種類繁多，各具特色，每隻皆傳承動人故事，歡迎蒞臨賞析探索。";
+      content: "本館收藏珍禽異獸種類繁多，各具特色，每隻皆傳承動人故事，歡迎蒞臨賞析探索。";
     }
-    
-    /* 按鈕區塊 - 將下週搶約、體驗心得按鈕靠左對齊 */
     .action-container {
       width: 100%;
       display: flex;
@@ -262,349 +230,120 @@
       line-height: 16px;
       z-index: 2;
     }
-    
-    /* 右側面板（不修改其他程式碼） */
-    #sidePanel {
-      position: fixed;
-      top: 50px;
-      right: -320px;
-      width: 300px;
-      height: calc(100vh - 50px);
-      background-color: #fff;
-      box-shadow: -2px 0 5px rgba(0,0,0,0.2);
-      transition: right 0.3s ease;
-      z-index: 2000;
-      padding-bottom: 10px;
-      border-top-left-radius: 10px;
-      border-bottom-left-radius: 10px;
-      font-size: 0.95rem;
-      display: none;
-      color: #333;
-    }
-    #sidePanel.active { right: 0; display: block; }
-    
-    /* 右側面板標頭與按鈕區塊 */
-    #sidePanelHeader {
-      padding: 10px;
-      border-bottom: 1px solid #ddd;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background-color: #f0f0f0;
-    }
-    #sidePanelHeader h3 {
-      margin: 0;
-      font-size: 1.3rem;
-      color: #333;
-    }
-    /* 新增 #headerButtons 區塊，並將按鈕並排 */
-    #headerButtons {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-    }
-    /* 將 #reviewToggleBtn 與 .close-btn 統一樣式 */
-    #reviewToggleBtn, .close-btn {
-      font-size: 0.95rem;
-      padding: 4px 8px;
-      background-color: #2c3e50;
-      color: #fff;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-    
-    #sidePanelTabs {
-      display: flex;
-      justify-content: space-around;
-      border-bottom: 1px solid #ddd;
-      background-color: #f7f7f7;
-    }
-    .side-tab {
-      flex: 1;
-      padding: 8px 0;
-      font-size: 1rem;
-      background: none;
-      border: none;
-      cursor: pointer;
-      color: #333;
-    }
-    .side-tab.active {
-      border-bottom: 2px solid #333;
-      color: #333;
-    }
-    #sidePanelContent {
-      overflow-y: auto;
-      text-align: left;
-      font-size: 0.95rem;
-      color: #333;
-      padding: 10px;
-    }
-    #sidePanelContent .side-tab-content {
-      display: none;
-    }
-    #sidePanelContent .side-tab-content.active { display: block; }
-    
-    /* 心得填寫表單容器 */
-    #reviewFormContainer {
-      max-height: 80vh;
-      overflow-y: auto;
-    }
-    
-    /* 漸變遮罩 */
-    #overlay {
-      position: fixed;
-      top: 50px;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: linear-gradient(to bottom, rgba(0,0,0,0.2), rgba(0,0,0,0.5));
-      z-index: 1500;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-      pointer-events: none;
-      display: none;
-    }
-    #overlay.active { display: block; opacity: 1; }
-    
-    /* 表單區塊 */
-    .form-section { margin-bottom: 12px; text-align: left; padding: 0 10px; }
-    .form-section label { display: block; margin-bottom: 4px; font-weight: bold; }
-    input[type="range"],
-    select,
-    input[type="number"],
-    textarea {
-      width: 100%;
-      padding: 8px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      font-size: 1rem;
-    }
-    .chip-container {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-    .chip {
-      padding: 6px 10px;
-      background-color: #eee;
-      border-radius: 16px;
-      cursor: pointer;
-      user-select: none;
-      transition: background-color 0.2s;
-      font-size: 1rem;
-    }
-    .chip.selected { background-color: #007bff; color: #fff; }
-    .chip.disabled { opacity: 0.5; pointer-events: none; }
-    .rating { display: flex; flex-direction: row; }
-    .rating span {
-      font-size: 1.5em;
-      cursor: pointer;
-      color: #ccc;
-      user-select: none;
-      transition: color 0.2s;
-    }
-    .rating span.selected { color: gold; }
-    .review-details {
-      display: grid;
-      grid-template-columns: auto 1fr;
-      gap: 5px 10px;
-      font-size: 0.95rem;
-    }
-    .review-label {
-      text-align: right;
-      font-weight: bold;
-      padding-right: 5px;
-      word-break: break-all;
-    }
-    .review-content {
-      text-align: left;
-      word-break: break-all;
-    }
-    .review {
-      margin-bottom: 10px;
-      padding: 8px;
-      border-bottom: 1px solid #eee;
-    }
-    .review-header {
-      display: flex;
-      justify-content: space-between;
-      font-size: 1rem;
-      margin-bottom: 4px;
-    }
-    .review-rating span { color: gold; }
-    .scale-row {
-      grid-column: 1 / -1;
-      display: flex;
-      gap: 10px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      padding: 4px;
-      background-color: #fafafa;
-    }
-    .review-scale-group { flex: 1; }
-    .review-scale-title {
-      font-weight: bold;
-      margin-bottom: 4px;
-      font-size: 0.95rem;
-      border-bottom: 1px solid #ccc;
-      padding-bottom: 2px;
-      text-align: center;
-    }
-    .review-scale-content { font-size: 0.95rem; text-align: center; }
-    .scale-container {
-      display: flex;
-      flex-wrap: nowrap;
-      gap: 10px;
-      margin-bottom: 12px;
-    }
-    .scale-group {
-      flex: 1;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      padding: 8px;
-      background-color: #fafafa;
-    }
-    .scale-title {
-      font-weight: bold;
-      margin-bottom: 4px;
-      text-align: center;
-      font-size: 0.95rem;
-    }
-    button[type="submit"] {
-      padding: 10px 20px;
-      font-size: 1rem;
-      background-color: #009900;
-      color: #fff;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-    button[type="submit"]:hover { background-color: #007700; }
-    
-    @media (max-width:480px) {
-      #branchesContainer { width: 60px; }
-      #cardsContainer { left: 60px; padding: 8px; }
-      .card { flex-direction: row; }
-      .left-column { flex: 0 0 40%; align-items: flex-start; }
-      .right-column { flex: 0 0 60%; padding: 8px; }
-      .photo { width: 100%; object-fit: cover; margin: 5px; }
-      #sidePanel { width: 80%; }
-      .action-container { justify-content: space-around; }
-      #branchesContainer { border-right: 1px solid #ddd; }
-      #cardsContainer { border-top: 1px solid #ddd; }
-    }
+    /* 以下其他原有側邊面板、表單等區域可保留，這裡省略詳細樣式 */
+    /* (實際使用時，可將原有相關程式碼加入此區) */
   </style>
 </head>
 <body>
-  <!-- 選單側邊面板 -->
-  <div id="menuPanel">
-    <h3>選單</h3>
-    <ul>
-      <li onclick="alert('首頁')">首頁</li>
-      <li onclick="alert('關於我們')">關於我們</li>
-      <li onclick="alert('聯絡我們')">聯絡我們</li>
-    </ul>
+  <!-- 左側導航區：包含頁面切換及館別按鈕 -->
+  <div id="leftNav">
+    <div id="pageNav">
+      <button id="navHome" class="active" onclick="showPage('homePage')">首頁</button>
+      <button id="navDaily" onclick="showPage('dailySchedule')">每日班表</button>
+      <button id="navWeekly" onclick="showPage('weeklySchedule')">每週班表</button>
+    </div>
+    <div id="branchNav">
+      <!-- 館別按鈕將在每日班表頁面時產生 -->
+    </div>
   </div>
-  <!-- Header -->
-  <div id="header">
-    <h2>介紹</h2>
-  </div>
-  <!-- 左側館別選單 -->
-  <div id="branchesContainer"></div>
-  <!-- 資訊卡容器 -->
-  <div id="cardsContainer"></div>
-  <!-- 漸變遮罩 -->
-  <div id="overlay"></div>
-  <!-- 右側面板 -->
-  <div id="sidePanel">
-    <div id="sidePanelHeader">
-      <h3 id="sidePanelTitle"></h3>
-      <div id="headerButtons">
-        <button id="reviewToggleBtn" onclick="toggleReviewForm()">心得填寫</button>
-        <button class="close-btn" onclick="closeSidePanel()">×</button>
+  
+  <!-- 右側主要內容 -->
+  <div id="mainContent">
+    <!-- 首頁 -->
+    <div id="homePage" class="page active">
+      <h1>歡迎光臨！</h1>
+      <p>這是首頁內容，暫無資料。</p>
+    </div>
+    <!-- 每日班表頁面 -->
+    <div id="dailySchedule" class="page">
+      <div id="dailyHeader">
+        <h2>每日班表</h2>
+      </div>
+      <div id="dailyCardsContainer">
+        <!-- 每日班表的資訊卡會在此處產生 -->
       </div>
     </div>
-    <div id="sidePanelTabs">
-      <button class="side-tab active" id="sideTabBtn_comments" onclick="switchSideTab('comments')">心得</button>
-      <button class="side-tab" id="sideTabBtn_reservation" onclick="switchSideTab('reservation')">下週搶約</button>
-      <button class="side-tab" id="sideTabBtn_rename" onclick="switchSideTab('rename')">改名紀錄</button>
-    </div>
-    <div id="sidePanelContent">
-      <div id="sideTabComments" class="side-tab-content active">
-        <div id="reviewFormContainer" style="display:none;"></div>
-        <div id="reviewList"></div>
-      </div>
-      <div id="sideTabReservation" class="side-tab-content" style="display:none;"></div>
-      <div id="sideTabRename" class="side-tab-content" style="display:none;"></div>
+    <!-- 每週班表頁面 -->
+    <div id="weeklySchedule" class="page">
+      <h1>每週班表</h1>
+      <p>目前每週班表資料暫無內容。</p>
     </div>
   </div>
   
   <script>
-    // 定義切換選單側邊面板的函數
-    function toggleMenuPanel() {
-      const menuPanel = document.getElementById('menuPanel');
-      menuPanel.classList.toggle('active');
+    // 頁面切換
+    function showPage(pageId) {
+      // 隱藏所有頁面
+      const pages = document.querySelectorAll('.page');
+      pages.forEach(p => p.classList.remove('active'));
+      document.getElementById(pageId).classList.add('active');
+      
+      // 更新左側頁面按鈕 active 狀態
+      document.getElementById('navHome').classList.remove('active');
+      document.getElementById('navDaily').classList.remove('active');
+      document.getElementById('navWeekly').classList.remove('active');
+      if(pageId==='homePage') document.getElementById('navHome').classList.add('active');
+      else if(pageId==='dailySchedule') document.getElementById('navDaily').classList.add('active');
+      else if(pageId==='weeklySchedule') document.getElementById('navWeekly').classList.add('active');
+      
+      // 如果切換到每日班表頁面，初始化館別按鈕及卡片
+      if(pageId==='dailySchedule'){
+        initDailySchedule();
+      } else {
+        document.getElementById('branchNav').style.display = 'none';
+      }
     }
     
-    // 更新館別名稱（共10個）
-    const branchList = [
-      "樂鑽",
-      "手中情",
-      "潘朵拉",
-      "茶湯會",
-      "芯苑",
-      "八五",
-      "寶可夢",
-      "愛寶",
-      "芯店",
-      "水沙連"
-    ];
-    let currentBranch = branchList[0];
-    
-    // 取得相關容器
-    const branchesContainer = document.getElementById('branchesContainer');
-    const cardsContainer = document.getElementById('cardsContainer');
-    
-    // 在館別選單最上方加入「選單」按鈕，接著再加入館別按鈕
-    let branchesHTML = `<button class="hamburger" onclick="toggleMenuPanel()">選單</button>`;
-    branchList.forEach(branch => {
-      branchesHTML += `<button class="branch-tab" data-branch="${branch}"><span class="branch-name">${branch}</span><span class="badge">30</span></button>`;
-    });
-    branchesContainer.innerHTML = branchesHTML;
-    
-    const branchTabs = document.querySelectorAll('.branch-tab');
-    branchTabs.forEach(tab => {
-      tab.addEventListener('click', function() {
-        currentBranch = tab.getAttribute('data-branch');
-        branchTabs.forEach(t => t.classList.remove('active'));
-        tab.classList.add('active');
-        tab.scrollIntoView({ behavior: "smooth", block: "nearest" });
-        updateCards();
+    // 初始化每日班表頁面：產生館別按鈕及資訊卡
+    function initDailySchedule(){
+      // 顯示館別導航
+      document.getElementById('branchNav').style.display = 'block';
+      const branchList = ["樂鑽", "手中情", "潘朵拉", "茶湯會", "芯苑", "八五", "寶可夢", "愛寶", "芯店", "水沙連"];
+      let branchHTML = "";
+      branchList.forEach(branch => {
+        branchHTML += `<button class="branch-tab" data-branch="${branch}">${branch}</button>`;
       });
-    });
+      document.getElementById('branchNav').innerHTML = branchHTML;
+      
+      // 加入館別按鈕點擊事件
+      const branchButtons = document.querySelectorAll('#branchNav .branch-tab');
+      branchButtons.forEach(btn => {
+        btn.addEventListener('click', function(){
+          branchButtons.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          updateDailyCards(btn.getAttribute('data-branch'));
+        });
+      });
+      // 預設選擇第一個館別
+      if(branchButtons.length) {
+         branchButtons[0].classList.add('active');
+         updateDailyCards(branchList[0]);
+      }
+    }
     
-    // 產生卡片，右欄拆分為資訊區與按鈕區
-    function updateCards() {
-      let cardsHTML = "";
-      for (let i = 1; i <= 30; i++) {
-        const numComments = Math.floor(Math.random() * 6) + 5;
-        const numReservation = Math.floor(Math.random() * 3) + 1;
-        cardsHTML += `
+    // 更新每日班表卡片，依據所選館別
+    function updateDailyCards(branch){
+      const container = document.getElementById('dailyCardsContainer');
+      let html = "";
+      // 產生 10 筆示範卡片
+      for(let i=1; i<=10; i++){
+        html += `
           <div class="card">
-            <div class="left-column">
-              <div class="photo">
-                <img src="https://picsum.photos/130/180?random=${currentBranch.charCodeAt(0)}${i}" alt="動物照片">
+            <div class="left-card">
+              <div class="photo-container">
+                <div class="photo">
+                  <img src="https://picsum.photos/130/180?random=${branch.charCodeAt(0)}${i}" alt="動物照片">
+                </div>
               </div>
               <div class="activity-times">
                 <span class="label">活動時段</span>
                 <div>12-13-14-15-16-17-18-19-20-21-22-23-24-01-02-03-04-05</div>
               </div>
             </div>
-            <div class="right-column">
+            <div class="right-card">
               <div class="info-area">
                 <div class="data-area">
-                  <div class="name">${currentBranch} - 動物 ${i}</div>
+                  <div class="name">${branch} - 動物 ${i}</div>
                   <div class="details">100 / 50 / 1</div>
                   <div class="price">💰 3000</div>
                   <div class="intro-area">
@@ -613,318 +352,20 @@
                 </div>
               </div>
               <div class="action-container">
-                <button class="action-btn reservation-btn" onclick="openSidePanel('${currentBranch} - 動物 ${i}', ${numReservation}, 'reservation')">
+                <button class="action-btn" onclick="alert('下週搶約')">
                   <span class="btn-text">下週<br>搶約</span>
-                  <span class="badge">${numReservation}</span>
+                  <span class="badge">5</span>
                 </button>
-                <button class="action-btn comments-btn" onclick="openSidePanel('${currentBranch} - 動物 ${i}', ${numComments}, 'comments')">
+                <button class="action-btn" onclick="alert('體驗心得')">
                   <span class="btn-text">體驗<br>心得</span>
-                  <span class="badge">${numComments}</span>
+                  <span class="badge">8</span>
                 </button>
               </div>
             </div>
           </div>
         `;
       }
-      cardsContainer.innerHTML = cardsHTML;
-      cardsContainer.scrollTop = 0;
-    }
-    updateCards();
-    document.querySelector(`.branch-tab[data-branch="${currentBranch}"]`).classList.add('active');
-    
-    // 定義側邊面板標籤的排列順序
-    const tabOrder = ['comments','reservation','rename'];
-    
-    // 手機滑動切換館別
-    let startX = 0;
-    const swipeThreshold = 50;
-    cardsContainer.addEventListener('touchstart', function(e) {
-      startX = e.changedTouches[0].pageX;
-    }, false);
-    cardsContainer.addEventListener('touchend', function(e) {
-      let endX = e.changedTouches[0].pageX;
-      let diff = endX - startX;
-      if (Math.abs(diff) > swipeThreshold) {
-        let currentIndex = branchList.indexOf(currentBranch);
-        if (diff < 0) {
-          currentIndex = (currentIndex + 1) % branchList.length;
-        } else {
-          currentIndex = (currentIndex - 1 + branchList.length) % branchList.length;
-        }
-        currentBranch = branchList[currentIndex];
-        branchTabs.forEach(t => t.classList.remove('active'));
-        const activeTab = document.querySelector(`.branch-tab[data-branch="${currentBranch}"]`);
-        activeTab.classList.add('active');
-        activeTab.scrollIntoView({ behavior: "smooth", block: "nearest" });
-        updateCards();
-        cardsContainer.scrollTop = 0;
-      }
-    }, false);
-    
-    // 側邊面板標籤切換
-    function switchSideTab(tabName) {
-      document.querySelectorAll('.side-tab').forEach(btn => btn.classList.remove('active'));
-      document.querySelectorAll('.side-tab-content').forEach(div => div.classList.remove('active'));
-      if (tabName === 'comments') {
-        document.getElementById('sideTabComments').classList.add('active');
-        document.getElementById('sideTabBtn_comments').classList.add('active');
-      } else if (tabName === 'reservation') {
-        document.getElementById('sideTabReservation').classList.add('active');
-        document.getElementById('sideTabBtn_reservation').classList.add('active');
-      } else if (tabName === 'rename') {
-        document.getElementById('sideTabRename').classList.add('active');
-        document.getElementById('sideTabBtn_rename').classList.add('active');
-      }
-    }
-    
-    const sidePanelContentEl = document.getElementById('sidePanelContent');
-    let sideStartX = 0;
-    sidePanelContentEl.addEventListener('touchstart', function(e) {
-      sideStartX = e.changedTouches[0].pageX;
-    }, false);
-    sidePanelContentEl.addEventListener('touchend', function(e) {
-      const endX = e.changedTouches[0].pageX;
-      const diff = endX - sideStartX;
-      if (Math.abs(diff) > swipeThreshold) {
-        let currentIndex = tabOrder.findIndex(name => {
-          return document.getElementById('sideTabBtn_' + name).classList.contains('active');
-        });
-        if (diff < 0) {
-          currentIndex = (currentIndex + 1) % tabOrder.length;
-        } else {
-          currentIndex = (currentIndex - 1 + tabOrder.length) % tabOrder.length;
-        }
-        switchSideTab(tabOrder[currentIndex]);
-      }
-    }, false);
-    
-    // 切換心得填寫表單顯示/隱藏
-    function toggleReviewForm() {
-      const container = document.getElementById('reviewFormContainer');
-      if (container.style.display === "none" || container.style.display === "") {
-        container.innerHTML = `
-          <form id="reviewForm" onsubmit="return handleReviewFormSubmit(event);">
-            <div class="form-section">
-              <label for="ageRange">年紀 (18~40)：<span id="ageValue">18</span></label>
-              <input type="range" id="ageRange" name="age" min="18" max="40" value="18" oninput="document.getElementById('ageValue').innerText=this.value">
-            </div>
-            <div class="form-section">
-              <label>外型 (可複選)：</label>
-              <div class="chip-container" id="appearanceContainer">
-                <span class="chip" onclick="toggleChip(this)">甜美</span>
-                <span class="chip" onclick="toggleChip(this)">可愛</span>
-                <span class="chip" onclick="toggleChip(this)">氣質</span>
-                <span class="chip" onclick="toggleChip(this)">漂亮</span>
-                <span class="chip" onclick="toggleChip(this)">艷麗</span>
-                <span class="chip" onclick="toggleChip(this)">鄰家</span>
-                <span class="chip" onclick="toggleChip(this)">素人</span>
-              </div>
-            </div>
-            <div class="form-section">
-              <label>身材：</label>
-              <div class="chip-container" id="bodyTypeContainer">
-                <span class="chip" onclick="selectSingleChip(this, 'bodyTypeContainer')">骨感</span>
-                <span class="chip" onclick="selectSingleChip(this, 'bodyTypeContainer')">瘦</span>
-                <span class="chip" onclick="selectSingleChip(this, 'bodyTypeContainer')">均勻</span>
-                <span class="chip" onclick="selectSingleChip(this, 'bodyTypeContainer')">微肉</span>
-                <span class="chip" onclick="selectSingleChip(this, 'bodyTypeContainer')">棉花糖</span>
-              </div>
-            </div>
-            <div class="form-section">
-              <label for="cupSize">罩杯：</label>
-              <select id="cupSize" name="cupSize">
-                <option value="">請選擇</option>
-              </select>
-            </div>
-            <div class="form-section">
-              <label>膚質：</label>
-              <div class="chip-container" id="skinQualityContainer">
-                <span class="chip" onclick="selectSingleChip(this, 'skinQualityContainer')">絲滑</span>
-                <span class="chip" onclick="selectSingleChip(this, 'skinQualityContainer')">普通</span>
-                <span class="chip" onclick="selectSingleChip(this, 'skinQualityContainer')">差</span>
-              </div>
-            </div>
-            <div class="form-section">
-              <label>膚色：</label>
-              <div class="chip-container" id="skinColorContainer">
-                <span class="chip" onclick="selectSingleChip(this, 'skinColorContainer')">白皙</span>
-                <span class="chip" onclick="selectSingleChip(this, 'skinColorContainer')">偏白</span>
-                <span class="chip" onclick="selectSingleChip(this, 'skinColorContainer')">正常</span>
-                <span class="chip" onclick="selectSingleChip(this, 'skinColorContainer')">偏黃</span>
-                <span class="chip" onclick="selectSingleChip(this, 'skinColorContainer')">黑</span>
-              </div>
-            </div>
-            <div class="form-section">
-              <label>尺度：</label>
-              <div class="scale-container">
-                <div class="scale-group">
-                  <div class="scale-title">加值前</div>
-                  <div class="chip-container" id="valueAddedBeforeContainer">
-                    <span class="chip" onclick="toggleChip(this)">LG</span>
-                    <span class="chip" onclick="toggleChip(this)">三光</span>
-                    <span class="chip" onclick="toggleChip(this)">摳</span>
-                    <span class="chip" onclick="toggleChip(this)">舔</span>
-                    <span class="chip" onclick="toggleChip(this)">親</span>
-                  </div>
-                </div>
-                <div class="scale-group">
-                  <div class="scale-title">加值後</div>
-                  <div class="chip-container" id="valueAddedAfterContainer">
-                    <span class="chip" onclick="toggleChip(this)">LG</span>
-                    <span class="chip" onclick="toggleChip(this)">三光</span>
-                    <span class="chip" onclick="toggleChip(this)">摳</span>
-                    <span class="chip" onclick="toggleChip(this)">舔</span>
-                    <span class="chip" onclick="toggleChip(this)">親</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="form-section">
-              <label for="musicFee">音樂 (金額)：</label>
-              <input type="number" id="musicFee" name="musicFee" placeholder="請輸入金額">
-            </div>
-            <div class="form-section">
-              <label for="sportsFee">體育 (金額)：</label>
-              <input type="number" id="sportsFee" name="sportsFee" placeholder="請輸入金額">
-            </div>
-            <div class="form-section">
-              <label for="reviewText">心得：</label>
-              <textarea id="reviewText" name="reviewText" rows="4" placeholder="請輸入您的心得..."></textarea>
-            </div>
-            <button type="submit">提交心得</button>
-          </form>
-        `;
-        container.style.display = "block";
-        generateCupSizeOptions();
-      } else {
-        container.style.display = "none";
-        container.innerHTML = "";
-      }
-    }
-    
-    function openSidePanel(cardTitle, count, actionType) {
-      const sidePanel = document.getElementById('sidePanel');
-      const overlay = document.getElementById('overlay');
-      document.getElementById('sidePanelTitle').textContent = cardTitle;
-      
-      if (actionType === 'comments') {
-        document.getElementById('sideTabBtn_comments').textContent = `心得 (${count})`;
-        document.getElementById('sideTabComments').innerHTML = '<div id="reviewFormContainer" style="display:none;"></div><div id="reviewList"></div>';
-      } else if (actionType === 'reservation') {
-        document.getElementById('sideTabBtn_reservation').textContent = `下週搶約`;
-        let html = `<table style="width:100%; font-size:1.1rem; text-align:left; border-collapse: collapse;">`;
-        html += `<tr><th>Date</th><th>Time</th></tr>`;
-        for (let i = 1; i <= count; i++){
-          html += `<tr><td>2023-09-${i+10}</td><td>${9+i}:00 - ${10+i}:00</td></tr>`;
-        }
-        html += `</table>`;
-        document.getElementById('sideTabReservation').innerHTML = html;
-      } else if (actionType === 'rename') {
-        document.getElementById('sideTabBtn_rename').textContent = `改名紀錄`;
-        document.getElementById('sideTabRename').innerHTML = `<p>暫無改名紀錄</p>`;
-      }
-      
-      switchSideTab(actionType);
-      
-      overlay.style.display = "block";
-      setTimeout(() => { overlay.classList.add('active'); }, 10);
-      sidePanel.style.display = "block";
-      setTimeout(() => { sidePanel.classList.add('active'); }, 10);
-    }
-    
-    function closeSidePanel(){
-      const sidePanel = document.getElementById('sidePanel');
-      const overlay = document.getElementById('overlay');
-      sidePanel.classList.remove('active');
-      overlay.classList.remove('active');
-      setTimeout(() => { 
-        sidePanel.style.display = "none"; 
-        overlay.style.display = "none";
-      }, 300);
-    }
-    
-    function generateCupSizeOptions() {
-      const cupSizeSelect = document.getElementById('cupSize');
-      cupSizeSelect.innerHTML = '<option value="">請選擇</option>';
-      for (let c = 65; c <= 90; c++){
-        let letter = String.fromCharCode(c);
-        cupSizeSelect.innerHTML += `<option value="${letter}">${letter}</option>`;
-      }
-    }
-    
-    function handleReviewFormSubmit(e) {
-      e.preventDefault();
-      const age = document.getElementById('ageRange').value;
-      const appearanceElems = document.querySelectorAll('#appearanceContainer .chip.selected');
-      let appearance = [];
-      appearanceElems.forEach(elem => { appearance.push(elem.textContent); });
-      const bodyChip = document.querySelector('#bodyTypeContainer .chip.selected');
-      const bodyText = bodyChip ? bodyChip.textContent : "";
-      const cupSize = document.getElementById('cupSize').value;
-      const skinQualityChip = document.querySelector('#skinQualityContainer .chip.selected');
-      const skinQuality = skinQualityChip ? skinQualityChip.textContent : "";
-      const skinColorChip = document.querySelector('#skinColorContainer .chip.selected');
-      const skinColor = skinColorChip ? skinColorChip.textContent : "";
-      const valueAddedBeforeElems = document.querySelectorAll('#valueAddedBeforeContainer .chip.selected');
-      let valueAddedBefore = [];
-      valueAddedBeforeElems.forEach(elem => { valueAddedBefore.push(elem.textContent); });
-      const valueAddedAfterElems = document.querySelectorAll('#valueAddedAfterContainer .chip.selected');
-      let valueAddedAfter = [];
-      valueAddedAfterElems.forEach(elem => { valueAddedAfter.push(elem.textContent); });
-      const musicFee = document.getElementById('musicFee').value;
-      const sportsFee = document.getElementById('sportsFee').value;
-      const reviewText = document.getElementById('reviewText').value;
-      
-      const reviewList = document.getElementById('reviewList');
-      const newReviewHTML = `
-        <div class="review-details">
-          <div class="review-label">年紀：</div>
-          <div class="review-content">${age}</div>
-          <div class="review-label">外型：</div>
-          <div class="review-content">${appearance.join(', ')}</div>
-          <div class="review-label">身材：</div>
-          <div class="review-content">${bodyText}</div>
-          <div class="review-label">罩杯：</div>
-          <div class="review-content">${cupSize}</div>
-          <div class="review-label">膚質：</div>
-          <div class="review-content">${skinQuality}</div>
-          <div class="review-label">膚色：</div>
-          <div class="review-content">${skinColor}</div>
-          <div class="review-label">尺度：</div>
-          <div class="review-content">
-            <div class="scale-row">
-              <div class="review-scale-group">
-                <div class="review-scale-title">加值前</div>
-                <div class="review-scale-content">${valueAddedBefore.join(', ') || '-'}</div>
-              </div>
-              <div class="review-scale-group">
-                <div class="review-scale-title">加值後</div>
-                <div class="review-scale-content">${valueAddedAfter.join(', ') || '-'}</div>
-              </div>
-            </div>
-          </div>
-          <div class="review-label">音樂：</div>
-          <div class="review-content">${musicFee}</div>
-          <div class="review-label">體育：</div>
-          <div class="review-content">${sportsFee}</div>
-          <div class="review-label">心得：</div>
-          <div class="review-content">${reviewText}</div>
-        </div>
-      `;
-      const newReview = document.createElement('div');
-      newReview.className = "review";
-      newReview.innerHTML = newReviewHTML;
-      reviewList.innerHTML += newReview.outerHTML;
-      
-      document.getElementById('reviewForm').reset();
-      document.querySelectorAll('.chip.selected').forEach(chip => chip.classList.remove('selected'));
-      document.querySelectorAll('.chip.disabled').forEach(chip => chip.classList.remove('disabled'));
-      document.getElementById('ageValue').innerText = "18";
-      
-      document.getElementById('reviewFormContainer').style.display = "none";
-      document.getElementById('reviewFormContainer').innerHTML = "";
-      
-      return false;
+      container.innerHTML = html;
     }
   </script>
 </body>

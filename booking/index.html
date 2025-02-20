@@ -3,27 +3,24 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>首頁 - 班表系統</title>
-  <!-- 引入 Font Awesome 圖示庫 (使用 FA6) -->
+  <title>班表系統</title>
+  <!-- 引入 Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" 
         integrity="sha512-2T5G0sRV0QEj2QZqOCiD/f3pZpXk/q1c6eJZe9g/s4fPPpBy/jF37sx6jK0S5FqgQ7b0jwJJYOrpZhdk+sQF8g==" 
         crossorigin="anonymous" referrerpolicy="no-referrer" />
   <style>
-    /* 通用 box-sizing */
+    /* 通用 */
     * { box-sizing: border-box; }
-    
-    /* 全局與版面設定 */
     html { font-size: 16px; }
     body {
-      font-family: Arial, sans-serif;
-      background-color: #778899;
       margin: 0;
       padding: 0;
-      overflow-y: auto;
+      font-family: Arial, sans-serif;
+      background-color: #778899;
       color: #333;
+      overflow-y: auto;
     }
-    
-    /* Header 區塊 */
+    /* 頂部 header */
     #header {
       position: fixed;
       top: 0;
@@ -36,37 +33,9 @@
       text-align: center;
       line-height: 50px;
     }
-    #header h2 {
-      margin: 0;
-      font-size: 1.5rem;
-      color: #000;
-    }
+    #header h2 { margin: 0; font-size: 1.5rem; }
     
-    /* 上方滑出選單面板：直接覆蓋 header 區 */
-    #topPanel {
-      position: fixed;
-      top: 0;
-      left: 65px;
-      right: 0;
-      height: 50px;
-      background-color: #fff;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-      transition: transform 0.3s ease;
-      z-index: 2100;
-      transform: translateY(-100%);
-      display: none;
-      align-items: center;
-      justify-content: space-around;
-    }
-    #topPanel button {
-      background: none;
-      border: none;
-      font-size: 1rem;
-      color: #333;
-      cursor: pointer;
-    }
-    
-    /* 左側導覽區 */
+    /* 左側導覽區，保持滿版高度 */
     #branchesContainer {
       position: fixed;
       top: 0;
@@ -75,36 +44,34 @@
       width: 65px;
       background-color: #34495e;
       padding: 5px;
-      overflow-y: auto;
       z-index: 1000;
       display: flex;
       flex-direction: column;
       align-items: center;
+      overflow: visible;
+      /* 由 top 與 bottom 決定高度，保持滿版 */
     }
-    /* 左側導覽按鈕 (只保留一個「選單」按鈕) */
-    #branchesContainer > .nav-btn {
+    /* 預設「選單」按鈕 */
+    .nav-btn {
       width: 55px;
       margin: 5px 0;
       padding: 8px;
       font-size: 0.9rem;
       color: #fff;
-      background-color: transparent;
+      background: transparent;
       border: none;
       cursor: pointer;
     }
-    #branchesContainer > .nav-btn.active {
-      background-color: #2c3e50;
-      border-radius: 4px;
-    }
-    /* 館別按鈕（每日班表頁面下才會出現） */
+    .nav-btn.active { background: #2c3e50; border-radius: 4px; }
+    /* 其他按鈕（館別、新按鈕），樣式相同 */
     .branch-tab {
       position: relative;
       width: 45px;
       height: 45px;
       margin: 5px 0;
-      border-radius: 8px;
-      background-color: #ecf0f1;
+      background: #ecf0f1;
       border: none;
+      border-radius: 8px;
       cursor: pointer;
       display: flex;
       flex-direction: column;
@@ -113,15 +80,8 @@
       font-size: 0.9rem;
       color: #2c3e50;
     }
-    .branch-tab .branch-name {
-      white-space: normal;
-      text-align: center;
-      line-height: 1.2;
-    }
-    .branch-tab.active {
-      background-color: #3498db;
-      color: #fff;
-    }
+    .branch-tab .branch-name { white-space: normal; text-align: center; line-height: 1.2; }
+    .branch-tab.active { background: #3498db; color: #fff; }
     .branch-tab .badge {
       position: absolute;
       top: -3px;
@@ -136,21 +96,34 @@
       line-height: 16px;
     }
     
-    /* 右側主要內容區 */
+    /* 用於非首頁時滑出選單的容器，保持與左側導覽區同高 */
+    #menuOptionsContainer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 65px;
+      height: 100%;  /* 改為 100%，不改變左側面板原本滿版高度 */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transform: translateX(-100%);
+      transition: transform 0.5s ease;
+      z-index: 1100;
+    }
+    
+    /* 右側主要內容 */
     #mainContent {
       position: absolute;
       top: 50px;
       left: 65px;
       right: 0;
       bottom: 0;
-      overflow-y: auto;
       padding: 12px 16px;
+      overflow-y: auto;
     }
-    /* 頁面容器 */
     #homeContent, #cardsContainer, #weeklyContent { display: none; }
-    #homeContent { }
     
-    /* 資訊卡容器 (每日班表) */
+    /* 資訊卡 */
     #cardsContainer .card {
       display: flex;
       background: #fff;
@@ -168,25 +141,9 @@
       border-right: 1px solid #ddd;
       padding: 12px 0;
     }
-    .photo-container {
-      width: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin-bottom: 8px;
-    }
-    .photo {
-      width: 145px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-    .photo img {
-      display: block;
-      width: 100%;
-      object-fit: cover;
-      border-radius: 8px;
-    }
+    .photo-container { width: 100%; display: flex; justify-content: center; align-items: center; margin-bottom: 8px; }
+    .photo { width: 145px; display: flex; justify-content: center; align-items: center; }
+    .photo img { width: 100%; display: block; object-fit: cover; border-radius: 8px; }
     .activity-times-container { width: 100%; text-align: center; }
     .activity-times {
       width: 100%;
@@ -194,14 +151,9 @@
       background: #eee;
       border: 1px solid #ddd;
       font-size: 0.9rem;
-      overflow-wrap: anywhere;
+      overflow-wrap: break-word;
     }
-    .activity-times span.label {
-      display: block;
-      font-weight: bold;
-      color: #555;
-      margin-bottom: 4px;
-    }
+    .activity-times span.label { display: block; font-weight: bold; color: #555; margin-bottom: 4px; }
     .right-column {
       flex: 1;
       padding: 16px;
@@ -211,22 +163,13 @@
       overflow: hidden;
     }
     .data-area .name {
-      font-size: 1.2rem;
+      font-size: 1.1rem;
       font-weight: bold;
       margin-bottom: 6px;
     }
-    .data-area .details,
-    .data-area .price {
-      font-size: 1rem;
-      margin-bottom: 6px;
-    }
-    .intro-area {
-      font-size: 1rem;
-      line-height: 1.4;
-      margin: 10px 0;
-    }
+    .data-area .details, .data-area .price { font-size: 1rem; margin-bottom: 6px; }
+    .intro-area { font-size: 1rem; line-height: 1.4; margin: 10px 0; }
     .intro-area p { margin: 0; }
-    
     .action-container {
       width: 100%;
       display: flex;
@@ -239,7 +182,7 @@
       width: 45px;
       height: 45px;
       border-radius: 8px;
-      background-color: #ecf0f1;
+      background: #ecf0f1;
       border: none;
       cursor: pointer;
       display: flex;
@@ -249,7 +192,6 @@
       font-size: 1rem;
       line-height: 1.2;
       color: #2c3e50;
-      pointer-events: auto;
     }
     .action-btn .badge {
       position: absolute;
@@ -266,17 +208,14 @@
       z-index: 2;
     }
     
-    /* 每週班表頁面（目前空白） */
-    #weeklyContent { }
-    
-    /* 右側面板 (#sidePanel) */
+    /* 右側面板（保留原有） */
     #sidePanel {
       position: fixed;
       top: 50px;
       left: 65px;
       right: 0;
       height: calc(100vh - 50px);
-      background-color: #fff;
+      background: #fff;
       box-shadow: -2px 0 5px rgba(0,0,0,0.2);
       transition: transform 0.3s ease;
       z-index: 2000;
@@ -284,35 +223,25 @@
       border-top-left-radius: 10px;
       border-bottom-left-radius: 10px;
       font-size: 1.1rem;
-      display: block;
       color: #333;
       transform: translateX(100%);
+      display: block;
     }
     #sidePanel.active { transform: translateX(0); }
-    
-    /* 右側面板標頭與按鈕區塊 */
     #sidePanelHeader {
       padding: 10px;
       border-bottom: 1px solid #ddd;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background-color: #f0f0f0;
+      background: #f0f0f0;
     }
-    #sidePanelHeader h3 {
-      margin: 0;
-      font-size: 1.3rem;
-      color: #333;
-    }
-    #headerButtons {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-    }
+    #sidePanelHeader h3 { margin: 0; font-size: 1.3rem; }
+    #headerButtons { display: flex; gap: 10px; align-items: center; }
     #reviewToggleBtn, .close-btn {
       font-size: 0.95rem;
       padding: 4px 8px;
-      background-color: #2c3e50;
+      background: #2c3e50;
       color: #fff;
       border: none;
       border-radius: 4px;
@@ -323,7 +252,7 @@
       display: flex;
       justify-content: space-around;
       border-bottom: 1px solid #ddd;
-      background-color: #f7f7f7;
+      background: #f7f7f7;
     }
     .side-tab {
       flex: 1;
@@ -334,31 +263,23 @@
       cursor: pointer;
       color: #333;
     }
-    .side-tab.active {
-      border-bottom: 2px solid #333;
-      color: #333;
-    }
+    .side-tab.active { border-bottom: 2px solid #333; }
     #sidePanelContent {
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
-      text-align: left;
       font-size: 0.95rem;
-      color: #333;
       padding: 10px;
+      color: #333;
+      text-align: left;
     }
-    #sidePanelContent .side-tab-content {
-      display: none;
-    }
+    #sidePanelContent .side-tab-content { display: none; }
     #sidePanelContent .side-tab-content.active { display: block; }
     #sideTabComments {
-      max-height: calc(100vh - 50px - 100px);
+      max-height: calc(100vh - 150px);
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
     }
-    #reviewFormContainer {
-      max-height: 80vh;
-      overflow-y: auto;
-    }
+    #reviewFormContainer { max-height: 80vh; overflow-y: auto; }
     
     /* 漸變遮罩 */
     #overlay {
@@ -376,8 +297,8 @@
     }
     #overlay.active { display: block; opacity: 1; pointer-events: auto; }
     
-    /* 表單區塊 */
-    .form-section { margin-bottom: 12px; text-align: left; padding: 0 10px; }
+    /* 表單 */
+    .form-section { margin-bottom: 12px; padding: 0 10px; text-align: left; }
     .form-section label { display: block; margin-bottom: 4px; font-weight: bold; }
     input[type="range"],
     select,
@@ -389,28 +310,23 @@
       border-radius: 4px;
       font-size: 1rem;
     }
-    .chip-container {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
+    .chip-container { display: flex; flex-wrap: wrap; gap: 8px; }
     .chip {
       padding: 6px 10px;
-      background-color: #eee;
+      background: #eee;
       border-radius: 16px;
       cursor: pointer;
       user-select: none;
-      transition: background-color 0.2s;
+      transition: background 0.2s;
       font-size: 1rem;
     }
-    .chip.selected { background-color: #007bff; color: #fff; }
+    .chip.selected { background: #007bff; color: #fff; }
     .chip.disabled { opacity: 0.5; pointer-events: none; }
-    .rating { display: flex; flex-direction: row; }
+    .rating { display: flex; }
     .rating span {
       font-size: 1.5em;
       cursor: pointer;
       color: #ccc;
-      user-select: none;
       transition: color 0.2s;
     }
     .rating span.selected { color: gold; }
@@ -420,36 +336,18 @@
       gap: 5px 10px;
       font-size: 0.95rem;
     }
-    .review-label {
-      text-align: right;
-      font-weight: bold;
-      padding-right: 5px;
-      word-break: break-all;
-    }
-    .review-content {
-      text-align: left;
-      word-break: break-all;
-    }
-    .review {
-      margin-bottom: 10px;
-      padding: 8px;
-      border-bottom: 1px solid #eee;
-    }
-    .review-header {
-      display: flex;
-      justify-content: space-between;
-      font-size: 1rem;
-      margin-bottom: 4px;
-    }
+    .review-label { text-align: right; font-weight: bold; padding-right: 5px; word-break: break-all; }
+    .review-content { text-align: left; word-break: break-all; }
+    .review { margin-bottom: 10px; padding: 8px; border-bottom: 1px solid #eee; }
+    .review-header { display: flex; justify-content: space-between; margin-bottom: 4px; font-size: 1rem; }
     .review-rating span { color: gold; }
     .scale-row {
-      grid-column: 1 / -1;
       display: flex;
       gap: 10px;
       border: 1px solid #ddd;
       border-radius: 4px;
       padding: 4px;
-      background-color: #fafafa;
+      background: #fafafa;
     }
     .review-scale-group { flex: 1; }
     .review-scale-title {
@@ -461,61 +359,21 @@
       text-align: center;
     }
     .review-scale-content { font-size: 0.95rem; text-align: center; }
-    .scale-container {
-      display: flex;
-      flex-wrap: nowrap;
-      gap: 10px;
-      margin-bottom: 12px;
-    }
+    .scale-container { display: flex; gap: 10px; margin-bottom: 12px; }
     .scale-group {
       flex: 1;
       border: 1px solid #ddd;
       border-radius: 4px;
       padding: 8px;
-      background-color: #fafafa;
+      background: #fafafa;
     }
-    .scale-title {
-      font-weight: bold;
-      margin-bottom: 4px;
-      text-align: center;
-      font-size: 0.95rem;
-    }
+    .scale-title { font-weight: bold; margin-bottom: 4px; text-align: center; font-size: 0.95rem; }
   </style>
 </head>
 <body onload="showPage('homePage')">
-  <!-- 右側面板 -->
-  <div id="sidePanel">
-    <div id="sidePanelHeader">
-      <h3 id="sidePanelTitle"></h3>
-      <div id="headerButtons">
-        <button id="reviewToggleBtn" onclick="toggleReviewForm()">心得填寫</button>
-        <button class="close-btn" onclick="closeSidePanel()">×</button>
-      </div>
-    </div>
-    <div id="sidePanelTabs">
-      <button class="side-tab active" id="sideTabBtn_comments" onclick="switchSideTab('comments')">心得</button>
-      <button class="side-tab" id="sideTabBtn_reservation" onclick="switchSideTab('reservation')">下週搶約</button>
-      <button class="side-tab" id="sideTabBtn_rename" onclick="switchSideTab('rename')">改名紀錄</button>
-    </div>
-    <div id="sidePanelContent">
-      <div id="sideTabComments" class="side-tab-content active">
-        <div id="reviewFormContainer" style="display:none;"></div>
-        <div id="reviewList"></div>
-      </div>
-      <div id="sideTabReservation" class="side-tab-content" style="display:none;"></div>
-      <div id="sideTabRename" class="side-tab-content" style="display:none;"></div>
-    </div>
-  </div>
-  
-  <!-- Header -->
+  <!-- 頂部 header -->
   <div id="header">
-    <h2>介紹</h2>
-  </div>
-  
-  <!-- 上方滑出選單面板（初始隱藏，直接覆蓋 header） -->
-  <div id="topPanel">
-    <button onclick="menuSelect('dailySchedule')">每日班表</button>
-    <button onclick="menuSelect('weeklySchedule')">每週班表</button>
+    <h2>首頁</h2>
   </div>
   
   <!-- 左側導覽區 -->
@@ -528,42 +386,95 @@
     <div id="weeklyContent"></div>
   </div>
   
+  <!-- 右側面板 -->
+  <div id="sidePanel">
+    <div id="sidePanelHeader">
+      <h3 id="sidePanelTitle"></h3>
+      <div id="headerButtons">
+        <button id="reviewToggleBtn" onclick="toggleReviewForm()">心得填寫</button>
+        <button class="close-btn" onclick="closeSidePanel()">×</button>
+      </div>
+    </div>
+    <div id="sidePanelTabs">
+      <button class="side-tab" id="sideTabBtn_comments" onclick="switchSideTab('comments')">心得</button>
+      <button class="side-tab" id="sideTabBtn_reservation" onclick="switchSideTab('reservation')">下週搶約</button>
+      <button class="side-tab" id="sideTabBtn_rename" onclick="switchSideTab('rename')">改名紀錄</button>
+    </div>
+    <div id="sidePanelContent">
+      <div id="sideTabComments" class="side-tab-content">
+        <div id="reviewFormContainer" style="display:none;"></div>
+        <div id="reviewList"></div>
+      </div>
+      <div id="sideTabReservation" class="side-tab-content" style="display:none;"></div>
+      <div id="sideTabRename" class="side-tab-content" style="display:none;"></div>
+    </div>
+  </div>
+  
   <!-- 漸變遮罩 -->
   <div id="overlay"></div>
   
   <script>
-    // 全域變數：分頁與館別列表
-    const branchList = ["樂鑽","手中情","潘朵拉","茶湯會","芯苑","八五","寶可夢","愛寶","芯店","水沙連"];
+    // 全域變數
+    let currentPage = "homePage";  // 初始為首頁
+    let menuVisible = false;
+    const branchList = ["樂鑽", "手中情", "潘朵拉", "茶湯會", "芯苑", "八五", "寶可夢", "愛寶", "芯店", "水沙連"];
     let currentBranch = branchList[0];
     
+    // 更新 header 標題
+    function updateHeaderTitle(pageId) {
+      const headerTitle = document.querySelector("#header h2");
+      if (pageId === "homePage") headerTitle.textContent = "首頁";
+      else if (pageId === "dailySchedule") headerTitle.textContent = "每日班表";
+      else if (pageId === "weeklySchedule") headerTitle.textContent = "每週班表";
+      else headerTitle.textContent = "班表系統";
+    }
+    
     function showPage(pageId) {
+      currentPage = pageId;
+      updateHeaderTitle(pageId);
       document.getElementById('homeContent').style.display = "none";
       document.getElementById('cardsContainer').style.display = "none";
       document.getElementById('weeklyContent').style.display = "none";
-      if(pageId === "homePage") {
+      if (pageId === "homePage") {
         document.getElementById('homeContent').style.display = "block";
-      } else if(pageId === "dailySchedule") {
+      } else if (pageId === "dailySchedule") {
         document.getElementById('cardsContainer').style.display = "block";
         updateCards();
-      } else if(pageId === "weeklySchedule") {
+      } else if (pageId === "weeklySchedule") {
         document.getElementById('weeklyContent').style.display = "block";
       }
-      updateNav(pageId);
+      updateNav();
     }
     
-    function updateNav(pageId) {
-      let navHTML = `<button class="nav-btn" onclick="showTopPanel(event)">選單</button>`;
-      if(pageId === "dailySchedule") {
-        branchList.forEach(branch => {
-          navHTML += `<button class="branch-tab" data-branch="${branch}">
-                        <span class="branch-name">${branch}</span>
-                        <span class="badge">30</span>
-                      </button>`;
-        });
+    // 更新左側導覽區內容
+    function updateNav() {
+      let navHTML = "";
+      if (currentPage === "homePage") {
+        // 首頁直接顯示新按鈕
+        navHTML = `
+          <button class="branch-tab" onclick="menuSelect('dailySchedule')" title="每日班表">每日班表</button>
+          <button class="branch-tab" onclick="menuSelect('weeklySchedule')" title="每週班表">每週班表</button>
+          <button class="branch-tab" onclick="alert('最新心得')" title="最新心得">最新心得</button>
+          <button class="branch-tab" onclick="alert('熱門通知')" title="熱門通知">熱門通知</button>
+          <button class="branch-tab" onclick="alert('預約紀錄')" title="預約紀錄">預約紀錄</button>
+          <button class="branch-tab" onclick="alert('預約查詢')" title="預約查詢">預約查詢</button>
+          <button class="branch-tab" onclick="alert('收藏查詢')" title="收藏查詢">收藏查詢</button>
+        `;
+      } else {
+        // 非首頁僅顯示「選單」按鈕
+        navHTML = `<button class="nav-btn" onclick="toggleMenu(event)">選單</button>`;
+        if (currentPage === "dailySchedule") {
+          branchList.forEach(branch => {
+            navHTML += `<button class="branch-tab" data-branch="${branch}" title="${branch}">
+                          <span class="branch-name">${branch}</span>
+                          <span class="badge">30</span>
+                        </button>`;
+          });
+        }
       }
       document.getElementById('branchesContainer').innerHTML = navHTML;
       
-      if(pageId === "dailySchedule") {
+      if (currentPage === "dailySchedule" && currentPage !== "homePage") {
         const branchTabs = document.querySelectorAll('.branch-tab[data-branch]');
         branchTabs.forEach(tab => {
           tab.addEventListener('click', function() {
@@ -573,14 +484,15 @@
             updateCards();
           });
         });
-        if(branchTabs.length) {
+        if (branchTabs.length) {
           branchTabs[0].classList.add('active');
           currentBranch = branchList[0];
         }
       }
-      const navBtns = document.querySelectorAll('#branchesContainer > .nav-btn');
+      // 將左側第一個按鈕設為 active
+      const navBtns = document.querySelectorAll('#branchesContainer > .nav-btn, #branchesContainer > .branch-tab');
       navBtns.forEach(btn => btn.classList.remove('active'));
-      if(navBtns.length) navBtns[0].classList.add('active');
+      if (navBtns.length) navBtns[0].classList.add('active');
     }
     
     function updateCards() {
@@ -604,14 +516,12 @@
               </div>
             </div>
             <div class="right-column">
-              <div class="info-area">
-                <div class="data-area">
-                  <div class="name">${currentBranch} - 動物 ${i}</div>
-                  <div class="details">100 / 50 / 1</div>
-                  <div class="price">💰 3000</div>
-                  <div class="intro-area">
-                    <p>本館收藏珍禽異獸種類繁多，各具特色，每隻皆傳承動人故事，歡迎蒞臨賞析探索。</p>
-                  </div>
+              <div class="data-area">
+                <div class="name">${currentBranch} - 動物 ${i}</div>
+                <div class="details">100 / 50 / 1</div>
+                <div class="price">💰 3000</div>
+                <div class="intro-area">
+                  <p>本館收藏珍禽異獸，各具特色，歡迎蒞臨賞析探索。</p>
                 </div>
               </div>
               <div class="action-container">
@@ -632,7 +542,7 @@
       document.getElementById('cardsContainer').scrollTop = 0;
     }
     
-    const tabOrder = ['comments','reservation','rename'];
+    const tabOrder = ['comments', 'reservation', 'rename'];
     function switchSideTab(tabName) {
       document.querySelectorAll('.side-tab').forEach(btn => btn.classList.remove('active'));
       document.querySelectorAll('.side-tab-content').forEach(div => div.classList.remove('active'));
@@ -650,21 +560,14 @@
     
     const sidePanelContentEl = document.getElementById('sidePanelContent');
     let sideStartX = 0;
-    sidePanelContentEl.addEventListener('touchstart', function(e) {
-      sideStartX = e.changedTouches[0].pageX;
-    }, false);
-    sidePanelContentEl.addEventListener('touchend', function(e) {
+    sidePanelContentEl.addEventListener('touchstart', e => { sideStartX = e.changedTouches[0].pageX; }, false);
+    sidePanelContentEl.addEventListener('touchend', e => {
       const endX = e.changedTouches[0].pageX;
       const diff = endX - sideStartX;
       if (Math.abs(diff) > 50) {
-        let currentIndex = tabOrder.findIndex(name => {
-          return document.getElementById('sideTabBtn_' + name).classList.contains('active');
-        });
-        if (diff < 0) {
-          currentIndex = (currentIndex + 1) % tabOrder.length;
-        } else {
-          currentIndex = (currentIndex - 1 + tabOrder.length) % tabOrder.length;
-        }
+        let currentIndex = tabOrder.findIndex(name => document.getElementById('sideTabBtn_' + name).classList.contains('active'));
+        if (diff < 0) { currentIndex = (currentIndex + 1) % tabOrder.length; }
+        else { currentIndex = (currentIndex - 1 + tabOrder.length) % tabOrder.length; }
         switchSideTab(tabOrder[currentIndex]);
       }
     }, false);
@@ -776,7 +679,6 @@
       const sidePanel = document.getElementById('sidePanel');
       const overlay = document.getElementById('overlay');
       document.getElementById('sidePanelTitle').textContent = cardTitle;
-      
       if (actionType === 'comments') {
         document.getElementById('sideTabBtn_comments').textContent = `心得 (${count})`;
         document.getElementById('sideTabComments').innerHTML = '<div id="reviewFormContainer" style="display:none;"></div><div id="reviewList"></div>';
@@ -784,7 +686,7 @@
         document.getElementById('sideTabBtn_reservation').textContent = `下週搶約`;
         let html = `<table style="width:100%; font-size:1.1rem; text-align:left; border-collapse: collapse;">`;
         html += `<tr><th>Date</th><th>Time</th></tr>`;
-        for (let i = 1; i <= count; i++){
+        for (let i = 1; i <= count; i++) {
           html += `<tr><td>2023-09-${i+10}</td><td>${9+i}:00 - ${10+i}:00</td></tr>`;
         }
         html += `</table>`;
@@ -793,9 +695,7 @@
         document.getElementById('sideTabBtn_rename').textContent = `改名紀錄`;
         document.getElementById('sideTabRename').innerHTML = `<p>暫無改名紀錄</p>`;
       }
-      
       switchSideTab(actionType);
-      
       overlay.style.display = "block";
       sidePanel.style.display = "block";
       setTimeout(() => {
@@ -804,13 +704,13 @@
       }, 20);
     }
     
-    function closeSidePanel(){
+    function closeSidePanel() {
       const sidePanel = document.getElementById('sidePanel');
       const overlay = document.getElementById('overlay');
       sidePanel.classList.remove('active');
       overlay.classList.remove('active');
-      setTimeout(() => { 
-        sidePanel.style.display = "none"; 
+      setTimeout(() => {
+        sidePanel.style.display = "none";
         overlay.style.display = "none";
       }, 300);
     }
@@ -818,7 +718,7 @@
     function generateCupSizeOptions() {
       const cupSizeSelect = document.getElementById('cupSize');
       cupSizeSelect.innerHTML = '<option value="">請選擇</option>';
-      for (let c = 65; c <= 90; c++){
+      for (let c = 65; c <= 90; c++) {
         let letter = String.fromCharCode(c);
         cupSizeSelect.innerHTML += `<option value="${letter}">${letter}</option>`;
       }
@@ -899,41 +799,66 @@
       return false;
     }
     
-    // 以下為上方選單面板相關函式
-    function showTopPanel(e) {
-      // 阻止選單按鈕點擊冒泡，避免觸發全域點擊
-      if(e) e.stopPropagation();
-      const topPanel = document.getElementById('topPanel');
-      topPanel.style.display = "flex";
-      // 為 topPanel 自身加上阻止冒泡的監聽器
-      topPanel.addEventListener('click', function(e){ e.stopPropagation(); });
-      // 延遲綁定全域點擊監聽器
-      setTimeout(() => { 
-        document.addEventListener('click', topPanelOutsideClick);
-      }, 0);
-      setTimeout(() => { topPanel.style.transform = "translateY(0)"; }, 20);
+    // 非首頁時「選單」功能：點選「選單」按鈕後，滑出新按鈕
+    function toggleMenu(e) {
+      if (e) e.stopPropagation();
+      if (!menuVisible) { showMenu(); }
+      else { hideMenu(); }
     }
     
-    function topPanelOutsideClick(e) {
-      const topPanel = document.getElementById('topPanel');
-      if(topPanel.style.display !== "none" && !topPanel.contains(e.target)) {
-        hideTopPanel();
-        document.removeEventListener('click', topPanelOutsideClick);
+    function showMenu() {
+      menuVisible = true;
+      const container = document.getElementById('branchesContainer');
+      const menuDiv = document.createElement('div');
+      menuDiv.id = "menuOptionsContainer";
+      menuDiv.style.display = "flex";
+      menuDiv.style.flexDirection = "column";
+      menuDiv.style.alignItems = "center";
+      menuDiv.style.position = "absolute";
+      menuDiv.style.top = "0";
+      menuDiv.style.left = "0";
+      menuDiv.style.width = "65px";
+      menuDiv.style.height = "100%";
+      menuDiv.style.backgroundColor = "#34495e";
+      menuDiv.style.transform = "translateX(-100%)";
+      menuDiv.style.transition = "transform 0.5s ease";
+      menuDiv.innerHTML = `
+        <button class="branch-tab" onclick="menuSelect('dailySchedule')" title="每日班表">每日班表</button>
+        <button class="branch-tab" onclick="menuSelect('weeklySchedule')" title="每週班表">每週班表</button>
+        <button class="branch-tab" onclick="alert('最新心得')" title="最新心得">最新心得</button>
+        <button class="branch-tab" onclick="alert('熱門通知')" title="熱門通知">熱門通知</button>
+        <button class="branch-tab" onclick="alert('預約紀錄')" title="預約紀錄">預約紀錄</button>
+        <button class="branch-tab" onclick="alert('預約查詢')" title="預約查詢">預約查詢</button>
+        <button class="branch-tab" onclick="alert('收藏查詢')" title="收藏查詢">收藏查詢</button>
+      `;
+      container.appendChild(menuDiv);
+      setTimeout(() => { menuDiv.style.transform = "translateX(0)"; }, 20);
+      setTimeout(() => { document.addEventListener('click', menuOutsideClick); }, 0);
+    }
+    
+    function menuOutsideClick(e) {
+      const menuDiv = document.getElementById('menuOptionsContainer');
+      const container = document.getElementById('branchesContainer');
+      if (menuDiv && !container.contains(e.target)) {
+        hideMenu();
+        document.removeEventListener('click', menuOutsideClick);
       }
     }
     
-    function hideTopPanel() {
-      const topPanel = document.getElementById('topPanel');
-      topPanel.style.transform = "translateY(-100%)";
-      setTimeout(() => { 
-        topPanel.style.display = "none"; 
-      }, 300);
+    function hideMenu() {
+      menuVisible = false;
+      const menuDiv = document.getElementById('menuOptionsContainer');
+      if (menuDiv) {
+        menuDiv.style.transform = "translateX(-100%)";
+        setTimeout(() => { menuDiv.remove(); updateNav(); }, 500);
+      }
+      document.removeEventListener('click', menuOutsideClick);
     }
     
     function menuSelect(pageId) {
       showPage(pageId);
-      hideTopPanel();
-      document.removeEventListener('click', topPanelOutsideClick);
+      hideMenu();
+      document.removeEventListener('click', menuOutsideClick);
     }
   </script>
 </body>

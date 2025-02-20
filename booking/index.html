@@ -11,6 +11,7 @@
   <style>
     /* 通用 box-sizing */
     * { box-sizing: border-box; }
+    
     /* 全局與版面設定 */
     html { font-size: 16px; }
     body {
@@ -21,7 +22,8 @@
       overflow-y: auto;
       color: #333;
     }
-    /* Header 區塊：上方頂部區 */
+    
+    /* Header 區塊 */
     #header {
       position: fixed;
       top: 0;
@@ -39,6 +41,31 @@
       font-size: 1.5rem;
       color: #000;
     }
+    
+    /* 上方滑出選單面板：直接覆蓋 header 區 */
+    #topPanel {
+      position: fixed;
+      top: 0;
+      left: 65px;
+      right: 0;
+      height: 50px;
+      background-color: #fff;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      transition: transform 0.3s ease;
+      z-index: 2100;
+      transform: translateY(-100%);
+      display: none;
+      align-items: center;
+      justify-content: space-around;
+    }
+    #topPanel button {
+      background: none;
+      border: none;
+      font-size: 1rem;
+      color: #333;
+      cursor: pointer;
+    }
+    
     /* 左側導覽區 */
     #branchesContainer {
       position: fixed;
@@ -50,12 +77,11 @@
       padding: 5px;
       overflow-y: auto;
       z-index: 1000;
-      /* 補回 flex 設定，使內部按鈕置中 */
       display: flex;
       flex-direction: column;
       align-items: center;
     }
-    /* 導覽按鈕（僅適用於左側最上方的三個按鈕） */
+    /* 左側導覽按鈕 (只保留一個「選單」按鈕) */
     #branchesContainer > .nav-btn {
       width: 55px;
       margin: 5px 0;
@@ -70,7 +96,7 @@
       background-color: #2c3e50;
       border-radius: 4px;
     }
-    /* 分隔：每日班表頁面時會在下方加入館別按鈕 */
+    /* 館別按鈕（每日班表頁面下才會出現） */
     .branch-tab {
       position: relative;
       width: 45px;
@@ -109,6 +135,7 @@
       text-align: center;
       line-height: 16px;
     }
+    
     /* 右側主要內容區 */
     #mainContent {
       position: absolute;
@@ -119,13 +146,10 @@
       overflow-y: auto;
       padding: 12px 16px;
     }
-    /* 三個頁面容器，預設首頁空白 */
-    #homeContent, #cardsContainer, #weeklyContent {
-      display: none;
-    }
-    #homeContent {
-      /* 預設首頁內容空白 */
-    }
+    /* 頁面容器 */
+    #homeContent, #cardsContainer, #weeklyContent { display: none; }
+    #homeContent { }
+    
     /* 資訊卡容器 (每日班表) */
     #cardsContainer .card {
       display: flex;
@@ -163,10 +187,7 @@
       object-fit: cover;
       border-radius: 8px;
     }
-    .activity-times-container {
-      width: 100%;
-      text-align: center;
-    }
+    .activity-times-container { width: 100%; text-align: center; }
     .activity-times {
       width: 100%;
       padding: 6px 8px;
@@ -187,6 +208,7 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
+      overflow: hidden;
     }
     .data-area .name {
       font-size: 1.2rem;
@@ -203,12 +225,8 @@
       line-height: 1.4;
       margin: 10px 0;
     }
-    .intro-area p {
-      margin: 0;
-    }
-    .intro-area p::after {
-      content: "本館收藏珍禽異獸種類繁多，各具特色，每隻皆傳承動人故事，歡迎蒞臨賞析探索。";
-    }
+    .intro-area p { margin: 0; }
+    
     .action-container {
       width: 100%;
       display: flex;
@@ -229,7 +247,9 @@
       justify-content: center;
       align-items: center;
       font-size: 1rem;
+      line-height: 1.2;
       color: #2c3e50;
+      pointer-events: auto;
     }
     .action-btn .badge {
       position: absolute;
@@ -243,28 +263,34 @@
       font-size: 0.65rem;
       text-align: center;
       line-height: 16px;
+      z-index: 2;
     }
-    /* 每週班表頁面（目前暫空） */
+    
+    /* 每週班表頁面（目前空白） */
     #weeklyContent { }
-    /* 右側面板（保留原有設定） */
+    
+    /* 右側面板 (#sidePanel) */
     #sidePanel {
       position: fixed;
       top: 50px;
-      right: -320px;
-      width: 300px;
+      left: 65px;
+      right: 0;
       height: calc(100vh - 50px);
       background-color: #fff;
       box-shadow: -2px 0 5px rgba(0,0,0,0.2);
-      transition: right 0.3s ease;
+      transition: transform 0.3s ease;
       z-index: 2000;
-      padding-bottom: 10px;
+      padding: 20px;
       border-top-left-radius: 10px;
       border-bottom-left-radius: 10px;
-      font-size: 0.95rem;
-      display: none;
+      font-size: 1.1rem;
+      display: block;
       color: #333;
+      transform: translateX(100%);
     }
-    #sidePanel.active { right: 0; display: block; }
+    #sidePanel.active { transform: translateX(0); }
+    
+    /* 右側面板標頭與按鈕區塊 */
     #sidePanelHeader {
       padding: 10px;
       border-bottom: 1px solid #ddd;
@@ -333,6 +359,8 @@
       max-height: 80vh;
       overflow-y: auto;
     }
+    
+    /* 漸變遮罩 */
     #overlay {
       position: fixed;
       top: 50px;
@@ -346,7 +374,8 @@
       pointer-events: none;
       display: none;
     }
-    #overlay.active { display: block; opacity: 1; }
+    #overlay.active { display: block; opacity: 1; pointer-events: auto; }
+    
     /* 表單區塊 */
     .form-section { margin-bottom: 12px; text-align: left; padding: 0 10px; }
     .form-section label { display: block; margin-bottom: 4px; font-weight: bold; }
@@ -454,21 +483,6 @@
   </style>
 </head>
 <body onload="showPage('homePage')">
-  <!-- Header -->
-  <div id="header">
-    <h2>介紹</h2>
-  </div>
-  <!-- 左側導覽區 -->
-  <div id="branchesContainer"></div>
-  <!-- 右側主要內容區 -->
-  <div id="mainContent">
-    <!-- 首頁內容（預設空白） -->
-    <div id="homeContent"></div>
-    <!-- 每日班表內容 -->
-    <div id="cardsContainer"></div>
-    <!-- 每週班表內容（目前空白） -->
-    <div id="weeklyContent"></div>
-  </div>
   <!-- 右側面板 -->
   <div id="sidePanel">
     <div id="sidePanelHeader">
@@ -493,25 +507,36 @@
     </div>
   </div>
   
+  <!-- Header -->
+  <div id="header">
+    <h2>介紹</h2>
+  </div>
+  
+  <!-- 上方滑出選單面板（初始隱藏，直接覆蓋 header） -->
+  <div id="topPanel">
+    <button onclick="menuSelect('dailySchedule')">每日班表</button>
+    <button onclick="menuSelect('weeklySchedule')">每週班表</button>
+  </div>
+  
+  <!-- 左側導覽區 -->
+  <div id="branchesContainer"></div>
+  
+  <!-- 右側主要內容區 -->
+  <div id="mainContent">
+    <div id="homeContent"></div>
+    <div id="cardsContainer"></div>
+    <div id="weeklyContent"></div>
+  </div>
+  
+  <!-- 漸變遮罩 -->
+  <div id="overlay"></div>
+  
   <script>
     // 全域變數：分頁與館別列表
-    const branchList = [
-      "樂鑽",
-      "手中情",
-      "潘朵拉",
-      "茶湯會",
-      "芯苑",
-      "八五",
-      "寶可夢",
-      "愛寶",
-      "芯店",
-      "水沙連"
-    ];
+    const branchList = ["樂鑽","手中情","潘朵拉","茶湯會","芯苑","八五","寶可夢","愛寶","芯店","水沙連"];
     let currentBranch = branchList[0];
     
-    // 根據所選頁面更新左側導覽與右側內容
     function showPage(pageId) {
-      // 更新右側內容顯示
       document.getElementById('homeContent').style.display = "none";
       document.getElementById('cardsContainer').style.display = "none";
       document.getElementById('weeklyContent').style.display = "none";
@@ -523,17 +548,12 @@
       } else if(pageId === "weeklySchedule") {
         document.getElementById('weeklyContent').style.display = "block";
       }
-      // 更新左側導覽按鈕
       updateNav(pageId);
     }
     
-    // 更新左側導覽區內容：若為每日班表，顯示分館按鈕
     function updateNav(pageId) {
-      let navHTML = `<button class="nav-btn" onclick="showPage('homePage')">首頁</button>
-                     <button class="nav-btn" onclick="showPage('dailySchedule')">每日班表</button>
-                     <button class="nav-btn" onclick="showPage('weeklySchedule')">每週班表</button>`;
+      let navHTML = `<button class="nav-btn" onclick="showTopPanel(event)">選單</button>`;
       if(pageId === "dailySchedule") {
-        // 加入館別按鈕
         branchList.forEach(branch => {
           navHTML += `<button class="branch-tab" data-branch="${branch}">
                         <span class="branch-name">${branch}</span>
@@ -542,7 +562,7 @@
         });
       }
       document.getElementById('branchesContainer').innerHTML = navHTML;
-      // 若為每日班表，設定館別按鈕點擊事件與預設第一個 active
+      
       if(pageId === "dailySchedule") {
         const branchTabs = document.querySelectorAll('.branch-tab[data-branch]');
         branchTabs.forEach(tab => {
@@ -558,15 +578,11 @@
           currentBranch = branchList[0];
         }
       }
-      // 更新 nav 按鈕 active 狀態
       const navBtns = document.querySelectorAll('#branchesContainer > .nav-btn');
       navBtns.forEach(btn => btn.classList.remove('active'));
-      if(pageId === "homePage") document.querySelector('#branchesContainer > .nav-btn:nth-child(1)').classList.add('active');
-      else if(pageId === "dailySchedule") document.querySelector('#branchesContainer > .nav-btn:nth-child(2)').classList.add('active');
-      else if(pageId === "weeklySchedule") document.querySelector('#branchesContainer > .nav-btn:nth-child(3)').classList.add('active');
+      if(navBtns.length) navBtns[0].classList.add('active');
     }
     
-    // 產生每日班表資訊卡
     function updateCards() {
       let cardsHTML = "";
       for (let i = 1; i <= 30; i++) {
@@ -594,7 +610,7 @@
                   <div class="details">100 / 50 / 1</div>
                   <div class="price">💰 3000</div>
                   <div class="intro-area">
-                    <p></p>
+                    <p>本館收藏珍禽異獸種類繁多，各具特色，每隻皆傳承動人故事，歡迎蒞臨賞析探索。</p>
                   </div>
                 </div>
               </div>
@@ -613,9 +629,9 @@
         `;
       }
       document.getElementById('cardsContainer').innerHTML = cardsHTML;
+      document.getElementById('cardsContainer').scrollTop = 0;
     }
     
-    // 側邊面板處理（保留原有程式碼）
     const tabOrder = ['comments','reservation','rename'];
     function switchSideTab(tabName) {
       document.querySelectorAll('.side-tab').forEach(btn => btn.classList.remove('active'));
@@ -631,6 +647,7 @@
         document.getElementById('sideTabBtn_rename').classList.add('active');
       }
     }
+    
     const sidePanelContentEl = document.getElementById('sidePanelContent');
     let sideStartX = 0;
     sidePanelContentEl.addEventListener('touchstart', function(e) {
@@ -654,7 +671,7 @@
     
     function toggleReviewForm() {
       const container = document.getElementById('reviewFormContainer');
-      if (container.style.display === "none" || container.style.display === "") {
+      if (container.style.display === "" || container.style.display === "none") {
         container.innerHTML = `
           <form id="reviewForm" onsubmit="return handleReviewFormSubmit(event);">
             <div class="form-section">
@@ -747,11 +764,11 @@
             <button type="submit">提交心得</button>
           </form>
         `;
-        container.style.display = "block";
+        document.getElementById('reviewFormContainer').style.display = "block";
         generateCupSizeOptions();
       } else {
-        container.style.display = "none";
-        container.innerHTML = "";
+        document.getElementById('reviewFormContainer').style.display = "none";
+        document.getElementById('reviewFormContainer').innerHTML = "";
       }
     }
     
@@ -780,9 +797,11 @@
       switchSideTab(actionType);
       
       overlay.style.display = "block";
-      setTimeout(() => { overlay.classList.add('active'); }, 10);
       sidePanel.style.display = "block";
-      setTimeout(() => { sidePanel.classList.add('active'); }, 10);
+      setTimeout(() => {
+        overlay.classList.add('active');
+        sidePanel.classList.add('active');
+      }, 20);
     }
     
     function closeSidePanel(){
@@ -878,6 +897,43 @@
       document.getElementById('reviewFormContainer').innerHTML = "";
       
       return false;
+    }
+    
+    // 以下為上方選單面板相關函式
+    function showTopPanel(e) {
+      // 阻止選單按鈕點擊冒泡，避免觸發全域點擊
+      if(e) e.stopPropagation();
+      const topPanel = document.getElementById('topPanel');
+      topPanel.style.display = "flex";
+      // 為 topPanel 自身加上阻止冒泡的監聽器
+      topPanel.addEventListener('click', function(e){ e.stopPropagation(); });
+      // 延遲綁定全域點擊監聽器
+      setTimeout(() => { 
+        document.addEventListener('click', topPanelOutsideClick);
+      }, 0);
+      setTimeout(() => { topPanel.style.transform = "translateY(0)"; }, 20);
+    }
+    
+    function topPanelOutsideClick(e) {
+      const topPanel = document.getElementById('topPanel');
+      if(topPanel.style.display !== "none" && !topPanel.contains(e.target)) {
+        hideTopPanel();
+        document.removeEventListener('click', topPanelOutsideClick);
+      }
+    }
+    
+    function hideTopPanel() {
+      const topPanel = document.getElementById('topPanel');
+      topPanel.style.transform = "translateY(-100%)";
+      setTimeout(() => { 
+        topPanel.style.display = "none"; 
+      }, 300);
+    }
+    
+    function menuSelect(pageId) {
+      showPage(pageId);
+      hideTopPanel();
+      document.removeEventListener('click', topPanelOutsideClick);
     }
   </script>
 </body>

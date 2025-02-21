@@ -35,7 +35,7 @@
     }
     #header h2 { margin: 0; font-size: 1.5rem; }
     
-    /* 左側導覽區，保持滿版高度 */
+    /* 左側導覽區 */
     #branchesContainer {
       position: fixed;
       top: 0;
@@ -49,9 +49,7 @@
       flex-direction: column;
       align-items: center;
       overflow: visible;
-      /* 由 top 與 bottom 決定高度，保持滿版 */
     }
-    /* 預設「選單」按鈕 */
     .nav-btn {
       width: 55px;
       margin: 5px 0;
@@ -63,7 +61,6 @@
       cursor: pointer;
     }
     .nav-btn.active { background: #2c3e50; border-radius: 4px; }
-    /* 其他按鈕（館別、新按鈕），樣式相同 */
     .branch-tab {
       position: relative;
       width: 45px;
@@ -96,13 +93,13 @@
       line-height: 16px;
     }
     
-    /* 用於非首頁時滑出選單的容器，保持與左側導覽區同高 */
+    /* 非首頁時滑出選單容器 */
     #menuOptionsContainer {
       position: absolute;
       top: 0;
       left: 0;
       width: 65px;
-      height: 100%;  /* 改為 100%，不改變左側面板原本滿版高度 */
+      height: 100%;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -123,16 +120,36 @@
     }
     #homeContent, #cardsContainer, #weeklyContent { display: none; }
     
-    /* 資訊卡 */
+    /* 資訊卡 - 使用偽元素呈現玻璃質感，但保留原版排版 */
     #cardsContainer .card {
+      position: relative;
       display: flex;
-      background: #fff;
+      /* 原本背景 #fff 改為透明，由偽元素呈現玻璃效果 */
+      background: transparent;
       border-radius: 8px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.15);
       margin: 12px 0;
       overflow: hidden;
       text-align: left;
     }
+    #cardsContainer .card::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: inherit;
+      z-index: 0;
+      /* 原本 box-shadow: 0 2px 5px rgba(0,0,0,0.15); */
+      box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+    }
+    /* 將資訊卡內所有子元素提升至偽元素上層 */
+    #cardsContainer .card > * {
+      position: relative;
+      z-index: 1;
+    }
+    
     .left-column {
       flex: 0 0 165px;
       display: flex;
@@ -208,7 +225,7 @@
       z-index: 2;
     }
     
-    /* 右側面板（保留原有） */
+    /* 右側面板 */
     #sidePanel {
       position: fixed;
       top: 50px;
@@ -450,7 +467,6 @@
     function updateNav() {
       let navHTML = "";
       if (currentPage === "homePage") {
-        // 首頁直接顯示新按鈕
         navHTML = `
           <button class="branch-tab" onclick="menuSelect('dailySchedule')" title="每日班表">每日班表</button>
           <button class="branch-tab" onclick="menuSelect('weeklySchedule')" title="每週班表">每週班表</button>
@@ -461,7 +477,6 @@
           <button class="branch-tab" onclick="alert('收藏查詢')" title="收藏查詢">收藏查詢</button>
         `;
       } else {
-        // 非首頁僅顯示「選單」按鈕
         navHTML = `<button class="nav-btn" onclick="toggleMenu(event)">選單</button>`;
         if (currentPage === "dailySchedule") {
           branchList.forEach(branch => {
@@ -489,7 +504,6 @@
           currentBranch = branchList[0];
         }
       }
-      // 將左側第一個按鈕設為 active
       const navBtns = document.querySelectorAll('#branchesContainer > .nav-btn, #branchesContainer > .branch-tab');
       navBtns.forEach(btn => btn.classList.remove('active'));
       if (navBtns.length) navBtns[0].classList.add('active');
@@ -799,7 +813,6 @@
       return false;
     }
     
-    // 非首頁時「選單」功能：點選「選單」按鈕後，滑出新按鈕
     function toggleMenu(e) {
       if (e) e.stopPropagation();
       if (!menuVisible) { showMenu(); }

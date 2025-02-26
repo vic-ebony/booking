@@ -534,16 +534,24 @@
     }
     
     function updateCards() {
+      // 定義三個 Google 硬碟圖片的直連網址
+      const images = [
+        "https://drive.google.com/uc?export=view&id=1lXnY3kMfj6OB2fIbhgUwq_s34D9cd6BQ",
+        "https://drive.google.com/uc?export=view&id=1l_RGNqoXDE_2Chn9V7amh56d0EKsODk7",
+        "https://drive.google.com/uc?export=view&id=1l___Dl9xCJZxMjUK-K0RtZnTQ6DyystQ"
+      ];
       let cardsHTML = "";
       for (let i = 1; i <= 30; i++) {
         const numComments = Math.floor(Math.random() * 6) + 5;
         const numReservation = Math.floor(Math.random() * 3) + 1;
+        // 隨機選取一個圖片
+        const randomImage = images[Math.floor(Math.random() * images.length)];
         cardsHTML += `
           <div class="card">
             <div class="left-column">
               <div class="photo-container">
                 <div class="photo">
-                  <img src="https://picsum.photos/130/180?random=${currentBranch.charCodeAt(0)}${i}" alt="動物照片">
+                  <img src="${randomImage}" alt="動物照片">
                 </div>
               </div>
               <div class="activity-times-container">

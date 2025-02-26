@@ -79,10 +79,36 @@
     }
     .branch-tab .branch-name { white-space: normal; text-align: center; line-height: 1.2; }
     .branch-tab.active { background: #3498db; color: #fff; }
-    .branch-tab .badge {
+    
+    /* Glassmorphism 風格：僅套用在每日班表的館別按鈕 */
+    .branch-tab[data-branch] {
+      background: transparent;
+      /* 調整 overflow 為 visible 以避免徽章被裁切 */
+      overflow: visible;
+    }
+    .branch-tab[data-branch]::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: inherit;
+      z-index: 0;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+    }
+    /* 確保館別按鈕的所有子元素顯示於偽元素之上 */
+    .branch-tab[data-branch] > * {
+      position: relative;
+      z-index: 1;
+    }
+    /* 調整徽章：置於右上角且層級較高 */
+    .branch-tab[data-branch] .badge {
       position: absolute;
       top: -3px;
       right: -3px;
+      z-index: 2;
       background: #e74c3c;
       color: #fff;
       border-radius: 50%;
@@ -124,7 +150,6 @@
     #cardsContainer .card {
       position: relative;
       display: flex;
-      /* 原本背景 #fff 改為透明，由偽元素呈現玻璃效果 */
       background: transparent;
       border-radius: 8px;
       margin: 12px 0;
@@ -141,7 +166,6 @@
       border: 1px solid rgba(255, 255, 255, 0.3);
       border-radius: inherit;
       z-index: 0;
-      /* 原本 box-shadow: 0 2px 5px rgba(0,0,0,0.15); */
       box-shadow: 0 2px 5px rgba(0,0,0,0.15);
     }
     /* 將資訊卡內所有子元素提升至偽元素上層 */

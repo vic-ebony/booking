@@ -2,8 +2,13 @@
 <html lang="zh">
 <head>
   <meta charset="UTF-8">
+  <!-- 讓網頁在各種裝置上適當縮放 -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Glassmorphism Overlay</title>
+  <!-- 設定主題色 -->
+  <meta name="theme-color" content="#ffffff">
+  <!-- PWA manifest 連結 -->
+  <link rel="manifest" href="manifest.json">
+  <title>首頁</title>
   <style>
     /* 確保安全區域與邊距 */
     html, body {
@@ -21,7 +26,7 @@
       position: relative;
       font-family: Arial, sans-serif;
     }
-    /* 玻璃質感覆蓋層，加入內邊距避免內容貼邊 */
+    /* 玻璃質感覆蓋層，避免內容貼邊 */
     .glass-overlay {
       position: absolute;
       top: 0;
@@ -37,7 +42,7 @@
       align-items: center;
       padding: 10px;
     }
-    /* 定義內容容器的動畫 */
+    /* 淡入上移動畫 */
     @keyframes fadeInUp {
       0% {
         opacity: 0;
@@ -48,7 +53,7 @@
         transform: translateY(0);
       }
     }
-    /* 內容容器設定最大寬度與自動水平邊距，避免在小螢幕下被裁切 */
+    /* 內容容器（玻璃質感方框） */
     .content {
       background: rgba(255, 255, 255, 0.25);
       padding: 20px 30px;
@@ -95,20 +100,34 @@
 <body>
   <div class="glass-overlay">
     <div class="content">
-      <h1>Glassmorphism Overlay</h1>
-      <p>這是一個覆蓋在滿版背景圖上的玻璃質感設計範例</p>
-      <!-- 新增按鈕區塊 -->
+      <h1>首頁</h1>
+      <p>這是首頁的玻璃質感設計範例</p>
+      <!-- 按鈕區塊，可依需求導向其他頁面 -->
       <div class="button-container">
-        <button>每日班表</button>
-        <button>每週班表</button>
-        <button>名稱搜尋</button>
-        <button>最新心得</button>
-        <button>預約查詢</button>
-        <button>預約紀錄</button>
-        <button>收藏查詢</button>
-        <button>願望清單</button>
+        <button onclick="location.href='daily.html'">每日班表</button>
+        <button onclick="location.href='weekly.html'">每週班表</button>
+        <button onclick="alert('名稱搜尋功能')">名稱搜尋</button>
+        <button onclick="alert('最新心得功能')">最新心得</button>
+        <button onclick="alert('預約查詢功能')">預約查詢</button>
+        <button onclick="alert('預約紀錄功能')">預約紀錄</button>
+        <button onclick="alert('收藏查詢功能')">收藏查詢</button>
+        <button onclick="alert('願望清單功能')">願望清單</button>
       </div>
     </div>
   </div>
+  
+  <script>
+    // 註冊 Service Worker（確認瀏覽器支援）
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function() {
+        navigator.serviceWorker.register('sw.js')
+          .then(function(registration) {
+            console.log('ServiceWorker 註冊成功，範圍:', registration.scope);
+          }, function(error) {
+            console.error('ServiceWorker 註冊失敗:', error);
+          });
+      });
+    }
+  </script>
 </body>
 </html>

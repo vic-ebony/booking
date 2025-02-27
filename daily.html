@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <!-- 讓網頁在各種裝置上適當縮放 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>每日班表</title>
+  <style>
+    /* 確保安全區域與邊距，並禁止滾動 */
+    html, body {
+      margin: 0;
+      padding: env(safe-area-inset-top, 0) env(safe-area-inset-right, 0)
+               env(safe-area-inset-bottom, 0) env(safe-area-inset-left, 0);
+      box-sizing: border-box;
+      overflow: hidden;
+    }
+    *, *::before, *::after {
+      box-sizing: inherit;
+    }
+    /* 滿版背景圖片 */
+    body {
+      background: url('image/05.jpg') no-repeat center center/cover;
+      height: 100vh;
+      position: relative;
+      font-family: Arial, sans-serif;
+    }
+    /* 玻璃質感覆蓋層 */
+    .glass-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 10px;
+    }
+    /* 淡入上移動畫 */
+    @keyframes fadeInUp {
+      0% {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    /* 中央內容方框 */
+    .content {
+      background: rgba(255, 255, 255, 0.25);
+      padding: 20px 30px;
+      border-radius: 15px;
+      box-shadow: 0 8px 32px 0 rgba(31,38,135,0.37);
+      text-align: center;
+      color: #333;
+      max-width: 90%;
+      width: 100%;
+      margin: 0 auto;
+      opacity: 0;
+      animation: fadeInUp 1s forwards;
+    }
+    /* 固定在畫面底部中間的切換按鈕 */
+    .toggle-caret {
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 2rem;
+      cursor: pointer;
+      background: rgba(255, 255, 255, 0.7);
+      padding: 5px 10px;
+      border-radius: 5px 5px 0 0;
+      z-index: 1001;
+    }
+    /* 滑動面板：固定在底部，初始狀態利用 transform 將面板推出視窗外 */
+    .slide-panel {
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translate(-50%, 100vh);
+      background: rgba(255, 255, 255, 0.25);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border-top: 1px solid rgba(255, 255, 255, 0.18);
+      padding: 20px 30px;
+      border-top-left-radius: 15px;
+      border-top-right-radius: 15px;
+      box-shadow: 0 -8px 32px 0 rgba(31,38,135,0.37);
+      text-align: center;
+      color: #333;
+      max-width: 90%;
+      width: 100%;
+      transition: transform 0.5s ease;
+      z-index: 1000;
+    }
+    /* active 狀態下，滑動面板移回原位 */
+    .slide-panel.active {
+      transform: translate(-50%, 0);
+    }
+    @media (max-width: 480px) {
+      .content {
+        padding: 15px 20px;
+        font-size: 0.9rem;
+      }
+      .toggle-caret {
+        font-size: 1.5rem;
+        padding: 4px 8px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="glass-overlay">
+    <div class="content">
+      <h1>每日班表</h1>
+      <p>這是每日班表頁面的玻璃質感設計範例</p>
+    </div>
+  </div>
+  
+  <!-- 固定在畫面底部中間的切換按鈕，顯示上箭頭 (^) -->
+  <div class="toggle-caret" onclick="togglePanel()">&#94;</div>
+  
+  <!-- 滑動面板（首頁方框），初始狀態完全隱藏 -->
+  <div id="slidePanel" class="slide-panel">
+    <h1>首頁</h1>
+    <p>這是首頁的玻璃質感方框，從下方滑入</p>
+  </div>
+  
+  <script>
+    function togglePanel() {
+      var panel = document.getElementById('slidePanel');
+      panel.classList.toggle('active');
+    }
+  </script>
+</body>
+</html>

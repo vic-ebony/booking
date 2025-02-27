@@ -511,9 +511,16 @@
     
     function updateCards() {
       const images = [
-        "booking/1.jpg",
-        "booking/2.jpg",
-        "booking/3.jpg"
+      "image/cat01.jpg",
+      "image/cat02.jpg",
+      "image/cat03.jpg",
+      "image/cat04.jpg",
+      "image/cat05.jpg",
+      "image/cat06.jpg",
+      "image/cat07.jpg",
+      "image/cat08.jpg",
+      "image/cat09.jpg",
+      "image/cat10.jpg"
       ];
       let cardsHTML = "";
       for (let i = 1; i <= 30; i++) {
@@ -528,20 +535,17 @@
                   <img src="${randomImage}" alt="動物照片">
                 </div>
               </div>
-              <div class="activity-times-container">
-                <div class="activity-times">
-                  <span class="label">活動時段</span>
-                  <div>12-13-14-15-16-17-18-19-20-21-22-23-24-01-02-03-04-05</div>
-                </div>
-              </div>
             </div>
             <div class="right-column">
               <div class="data-area">
                 <div class="name">${currentBranch} - 動物 ${i}</div>
                 <div class="details">100 / 50 / 1</div>
                 <div class="price">💰 3000</div>
-                <div class="intro-area">
-                  <p>本館收藏珍禽異獸，各具特色，歡迎蒞臨賞析探索。</p>
+                <div class="activity-times-container">
+                  <div class="activity-times">
+                    <span class="label">活動時段</span>
+                    <div>12-13-14-15-16-17-18-19-20-21-22-23-24-01-02-03-04-05</div>
+                  </div>
                 </div>
               </div>
               <div class="action-container">

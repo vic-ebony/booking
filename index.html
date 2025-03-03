@@ -50,12 +50,12 @@
       border: 1px solid rgba(255,255,255,0.18);
       z-index: 0;
     }
-    /* 內容區 */
+    /* 主要內容區 */
     .content {
       position: relative;
       z-index: 1;
       background: rgba(255,255,255,0.25);
-      padding: 20px 30px;
+      padding: 20px 30px 70px 30px; /* 下方留足空間給選單面板 */
       border-radius: 15px;
       box-shadow: 0 8px 32px 0 rgba(31,38,135,0.37);
       text-align: center;
@@ -69,6 +69,7 @@
       will-change: opacity, transform;
       -webkit-font-smoothing: antialiased;
       background-clip: padding-box;
+      overflow: hidden;  /* 隱藏內容區外溢 */
     }
     @keyframes fadeInUp {
       0% {
@@ -80,7 +81,64 @@
         transform: translateY(0) translateZ(0);
       }
     }
-    /* 首頁內選單按鈕區 */
+    /* 漢堡按鈕：放在 .content 左上角 */
+    #menuBtn {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      z-index: 2;
+      background: transparent;
+      border: none;
+      font-size: 2rem;
+      cursor: pointer;
+      color: #333;
+    }
+    /* 側邊選單面板：定位在 .content 內左側 */
+    .side-menu {
+      position: absolute;
+      top: 0;
+      left: -150px; /* 預設隱藏 */
+      width: 150px;
+      height: 100%;
+      background: rgba(255,255,255,0.95);
+      box-shadow: 2px 0 5px rgba(0,0,0,0.3);
+      transition: left 0.3s ease;
+      z-index: 3;
+      padding: 10px;
+      border-top-left-radius: 15px;
+      border-bottom-left-radius: 15px;
+    }
+    .side-menu.open {
+      left: 0;
+    }
+    .side-menu .close-btn {
+      background: transparent;
+      border: none;
+      font-size: 1.5rem;
+      float: right;
+      cursor: pointer;
+      color: #333;
+    }
+    .side-menu h2 {
+      margin: 10px 0 10px 0;
+      text-align: center;
+      font-size: 1.1rem;
+    }
+    .menu-content button {
+      width: 100%;
+      margin: 6px 0;
+      padding: 6px;
+      border: none;
+      background: rgba(0,0,0,0.1);
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: background 0.3s;
+    }
+    .menu-content button:hover {
+      background: rgba(0,0,0,0.2);
+    }
+    /* 首頁選單按鈕區 */
     .home-menu {
       margin-top: 20px;
       display: grid;
@@ -117,7 +175,6 @@
       border-radius: 5px;
       background: rgba(255,255,255,0.6);
     }
-    /* 調整人物照片容器：寬100px、高120px */
     .person-photo {
       flex: 0 0 100px;
       width: 100px;
@@ -142,7 +199,6 @@
     .person-details .detail-line {
       margin-bottom: 4px;
     }
-    /* 可約時段排版：利用 ::before 添加前綴，HTML 中僅保留時段字串 */
     .person-details .fourth-line {
       white-space: normal;
       word-break: break-word;
@@ -159,13 +215,12 @@
       margin-bottom: 20px;
       border-bottom: 1px solid rgba(0,0,0,0.1);
     }
-    /* 每個館別項目 */
     .hall-item {
       text-align: center;
       flex: 0 0 auto;
     }
     .hall-item button {
-      width: 60px;  /* 固定寬度，約3個中文字 */
+      width: 60px;
       padding: 8px 12px;
       border: none;
       background: rgba(255,255,255,0.35);
@@ -180,14 +235,29 @@
     .hall-item button.active {
       background: rgba(255,255,255,0.5);
     }
-    /* 將按鈕內部分為兩行 */
     .hall-item button span {
       display: block;
+    }
+    /* 選單面板內的選單按鈕 */
+    .menu-content button {
+      padding: 6px;
+      border: none;
+      background: rgba(255,255,255,0.35);
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      transition: background 0.3s;
+      width: 100%;
+      margin-bottom: 6px;
+    }
+    .menu-content button:hover {
+      background: rgba(255,255,255,0.5);
     }
     /* 小螢幕調整 */
     @media (max-width:480px) {
       .content {
-        padding: 15px 20px;
+        padding: 15px 20px 70px 20px;
         font-size: 0.9rem;
       }
     }
@@ -200,7 +270,6 @@
     <div class="content">
       <h1>首頁</h1>
       <p>這是首頁的玻璃質感設計範例</p>
-      <!-- 首頁選單按鈕 -->
       <div class="home-menu">
         <button id="btn-daily">每日<br>班表</button>
         <button id="btn-weekly">每週<br>班表</button>
@@ -218,11 +287,29 @@
   <div class="glass-overlay" id="dailyPage" style="display:none;">
     <div class="glass-background"></div>
     <div class="content">
+      <!-- 漢堡按鈕，放在內容區左上角 -->
+      <button id="menuBtn">≡</button>
+      
       <h1>每日班表</h1>
       <!-- 館別選項區 -->
       <div class="hall-selection" id="hallSelection"></div>
       <!-- 每日班表內人物資訊列表 -->
       <div class="schedule" id="schedule"></div>
+      <!-- 側邊選單面板，定位在 .content 內左側 -->
+      <div class="side-menu" id="sideMenu">
+        <button class="close-btn" id="closeMenu">×</button>
+        <h2>選單</h2>
+        <div class="menu-content">
+          <button id="m-btn-daily">每日<br>班表</button>
+          <button id="m-btn-weekly">每週<br>班表</button>
+          <button id="m-btn-search">名單<br>搜尋</button>
+          <button id="m-btn-latest">最 新<br>心得</button>
+          <button id="m-btn-reservation">預約<br>查詢</button>
+          <button id="m-btn-record">預約<br>紀錄</button>
+          <button id="m-btn-favorite">收 藏<br>查詢</button>
+          <button id="m-btn-wishlist">願望<br>清單</button>
+        </div>
+      </div>
       <br>
       <button id="btn-back" style="padding:10px 20px; border:none; background:rgba(255,255,255,0.35); border-radius:5px; cursor:pointer;">回首頁</button>
     </div>
@@ -238,7 +325,19 @@
       document.getElementById('dailyPage').style.display = 'none';
       document.getElementById('homePage').style.display = 'flex';
     });
-
+    
+    // 漢堡按鈕與側邊選單功能
+    const menuBtn = document.getElementById('menuBtn');
+    const sideMenu = document.getElementById('sideMenu');
+    const closeMenu = document.getElementById('closeMenu');
+    menuBtn.addEventListener('click', function() {
+      sideMenu.classList.add('open');
+    });
+    closeMenu.addEventListener('click', function(e) {
+      e.stopPropagation();
+      sideMenu.classList.remove('open');
+    });
+    
     // 定義各館別及相關資料
     const halls = ["樂鑽", "手中情", "潘朵拉", "茶湯會", "芯苑", "八五", "寶可夢", "愛寶", "芯店", "水沙連", "木村"];
     const times = "12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05";
@@ -253,13 +352,13 @@
     // 產生各館別隨機人員資訊，每館隨機 5～15 筆
     const hallData = {};
     halls.forEach(hall => {
-      const count = randomInt(5,15);
+      const count = randomInt(5, 15);
       hallData[hall] = [];
       for(let i = 1; i <= count; i++){
-        const height = randomInt(160,180);
-        const weight = randomInt(45,70);
+        const height = randomInt(160, 180);
+        const weight = randomInt(45, 70);
         const cup = randomCup();
-        const fee = randomInt(3,6)*500;
+        const fee = randomInt(3,6) * 500;
         hallData[hall].push({name: `姓名${i}`, height, weight, cup, fee, times});
       }
     });
@@ -270,11 +369,9 @@
       const count = hallData[hall].length;
       const div = document.createElement('div');
       div.className = "hall-item";
-      // 建立按鈕，內部兩行顯示：館別名稱與 "👤數字"
       const btn = document.createElement('button');
       btn.innerHTML = `<span>${hall}</span><span>👤${count}</span>`;
       btn.addEventListener('click', function(){
-        // 移除所有按鈕的 active class
         document.querySelectorAll('.hall-item button').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         renderSchedule(hall);
@@ -285,7 +382,6 @@
     
     // 預設渲染第一個館別
     renderSchedule(halls[0]);
-    // 同時預設第一個館別按鈕加上 active
     document.querySelector('.hall-item button').classList.add('active');
     
     // 根據所選館別渲染 schedule 區塊

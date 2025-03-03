@@ -78,76 +78,14 @@
         transform: translateY(0) translateZ(0);
       }
     }
-    /* 下方面板：預設狀態只顯示「選單」 */
-    .menu-panel {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      max-width: 90%;
-      margin: 0 auto;
-      height: 40px; /* 預設高度改為40px */
-      background: rgba(255,255,255,0.25);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      border-top: 1px solid rgba(255,255,255,0.18);
-      box-shadow: 0 -8px 32px 0 rgba(31,38,135,0.37);
-      border-top-left-radius: 15px;
-      border-top-right-radius: 15px;
-      transform: translateY(0);
-      transition: height 0.3s ease-in-out, transform 0.3s ease-in-out;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      overflow: visible;
-      cursor: pointer;
-      z-index: 9999;
-    }
-    /* 展開狀態：高度變為40vh，並向上滑出展開部分 */
-    .menu-panel.expanded {
-      height: 40vh;
-      transform: translateY(-calc(40vh - 40px));
-    }
-    /* 箭頭圖示：預設隱藏，僅在展開狀態顯示 */
-    .menu-arrow {
-      display: none;
-    }
-    .menu-panel.expanded .menu-arrow {
-      display: block;
-      position: absolute;
-      top: 5px;
-      left: 50%;
-      transform: translateX(-50%) rotate(180deg);
-      font-size: 20px;
-      user-select: none;
-      pointer-events: none;
-    }
-    /* 下方面板內部內容容器 */
-    .menu-content {
-      width: 100%;
-      text-align: center;
-      transition: opacity 0.3s ease-in-out;
-      flex: 1;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-    /* 預設狀態：僅顯示「選單」 */
-    .menu-content.collapsed {
-      opacity: 1;
-      font-size: 1.5rem;
-      font-weight: bold;
-      line-height: 40px;
-    }
-    /* 展開狀態：以 Grid 顯示選單項目，三個一行；並增加上方內邊距，避免被箭頭遮住 */
-    .menu-content.expanded {
-      opacity: 1;
+    /* 首頁內的選單按鈕區塊 */
+    .home-menu {
+      margin-top: 20px;
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(4, 1fr);
       gap: 10px;
-      padding: 30px 10px 10px;
     }
-    .menu-content.expanded button {
+    .home-menu button {
       padding: 10px;
       border: none;
       background: rgba(255,255,255,0.35);
@@ -157,37 +95,12 @@
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
       transition: background 0.3s;
     }
-    .menu-content.expanded button:hover {
+    .home-menu button:hover {
       background: rgba(255,255,255,0.5);
     }
-    /* 每日班表頁面上方館別選項區 */
-    .hall-selection {
-      display: flex;
-      overflow-x: auto;
-      gap: 10px;
-      padding-bottom: 10px;
-      margin-bottom: 20px;
-      border-bottom: 1px solid rgba(0,0,0,0.1);
-    }
-    .hall-selection button {
-      flex: 0 0 auto;
-      padding: 8px 12px;
-      border: none;
-      background: rgba(255,255,255,0.35);
-      border-radius: 20px;
-      cursor: pointer;
-      font-size: 0.9rem;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      transition: background 0.3s;
-    }
-    .hall-selection button:hover,
-    .hall-selection button.active {
-      background: rgba(255,255,255,0.5);
-    }
-    /* 調整每日班表頁面內人物資訊列表 */
+    /* 每日班表頁面相關設定保持不變 */
     .schedule {
       margin-top: 20px;
-      /* 多筆資料可滾動 */
       max-height: 400px;
       overflow-y: auto;
     }
@@ -200,7 +113,7 @@
       border-radius: 5px;
       background: rgba(255,255,255,0.6);
     }
-    /* 修改人物照片容器大小為寬100px、高120px */
+    /* 照片容器改為寬100px、高120px */
     .person-photo {
       flex: 0 0 100px;
       width: 100px;
@@ -218,7 +131,6 @@
       font-size: 0.9rem;
       line-height: 1.4;
     }
-    /* 第一行資訊改為粗體 */
     .person-details .first-line {
       font-weight: bold;
       margin-bottom: 4px;
@@ -226,10 +138,14 @@
     .person-details .detail-line {
       margin-bottom: 4px;
     }
-    /* 將可預約時段換行，並用.隔開時段，防止溢出 */
+    /* 將第四行文字替換為 "可約時段:"，換行後以點號分隔 */
     .person-details .fourth-line {
       white-space: pre-wrap;
       word-break: break-all;
+    }
+    .person-details .fourth-line::before {
+      content: "可約時段:\A";
+      white-space: pre;
     }
     /* 小螢幕調整 */
     @media (max-width:480px) {
@@ -247,6 +163,17 @@
     <div class="content">
       <h1>首頁</h1>
       <p>這是首頁的玻璃質感設計範例</p>
+      <!-- 將選單按鈕放在首頁內容中 -->
+      <div class="home-menu">
+        <button id="btn-daily">每日班表</button>
+        <button id="btn-weekly">每週班表</button>
+        <button id="btn-search">名稱搜尋</button>
+        <button id="btn-latest">最新心得</button>
+        <button id="btn-reservation">預約查詢</button>
+        <button id="btn-record">預約紀錄</button>
+        <button id="btn-favorite">收藏查詢</button>
+        <button id="btn-wishlist">願望清單</button>
+      </div>
     </div>
   </div>
 
@@ -275,261 +202,241 @@
         <!-- 1 -->
         <div class="person-entry">
           <div class="person-photo">
-            <img src="image/3.jpg" alt="人物照片">
+            <img src="image/cat07.jpg" alt="人物照片">
           </div>
           <div class="person-details">
             <div class="detail-line first-line">樂鑽 · 姓名1</div>
             <div class="detail-line second-line">165 / 50 / B</div>
-            <div class="detail-line third-line">台費: NT$2000</div>
-            <div class="detail-line fourth-line">可預約時段:
-12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
+            <div class="detail-line third-line">台費: 2000</div>
+            <div class="detail-line fourth-line">12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
           </div>
         </div>
         <!-- 2 -->
         <div class="person-entry">
           <div class="person-photo">
-            <img src="image/3.jpg" alt="人物照片">
+            <img src="image/cat07.jpg" alt="人物照片">
           </div>
           <div class="person-details">
             <div class="detail-line first-line">手中情 · 姓名2</div>
             <div class="detail-line second-line">170 / 55 / C</div>
-            <div class="detail-line third-line">台費: NT$2500</div>
-            <div class="detail-line fourth-line">可預約時段:
-12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
+            <div class="detail-line third-line">台費: 2500</div>
+            <div class="detail-line fourth-line">12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
           </div>
         </div>
         <!-- 3 -->
         <div class="person-entry">
           <div class="person-photo">
-            <img src="image/3.jpg" alt="人物照片">
+            <img src="image/cat07.jpg" alt="人物照片">
           </div>
           <div class="person-details">
             <div class="detail-line first-line">潘朵拉 · 姓名3</div>
             <div class="detail-line second-line">165 / 50 / B</div>
-            <div class="detail-line third-line">台費: NT$2000</div>
-            <div class="detail-line fourth-line">可預約時段:
-12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
+            <div class="detail-line third-line">台費: 2000</div>
+            <div class="detail-line fourth-line">12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
           </div>
         </div>
         <!-- 4 -->
         <div class="person-entry">
           <div class="person-photo">
-            <img src="image/3.jpg" alt="人物照片">
+            <img src="image/cat07.jpg" alt="人物照片">
           </div>
           <div class="person-details">
             <div class="detail-line first-line">茶湯會 · 姓名4</div>
             <div class="detail-line second-line">170 / 55 / C</div>
-            <div class="detail-line third-line">台費: NT$2500</div>
-            <div class="detail-line fourth-line">可預約時段:
-12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
+            <div class="detail-line third-line">台費: 2500</div>
+            <div class="detail-line fourth-line">12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
           </div>
         </div>
         <!-- 5 -->
         <div class="person-entry">
           <div class="person-photo">
-            <img src="image/3.jpg" alt="人物照片">
+            <img src="image/cat07.jpg" alt="人物照片">
           </div>
           <div class="person-details">
             <div class="detail-line first-line">芯苑 · 姓名5</div>
             <div class="detail-line second-line">165 / 50 / B</div>
-            <div class="detail-line third-line">台費: NT$2000</div>
-            <div class="detail-line fourth-line">可預約時段:
-12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
+            <div class="detail-line third-line">台費: 2000</div>
+            <div class="detail-line fourth-line">12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
           </div>
         </div>
         <!-- 6 -->
         <div class="person-entry">
           <div class="person-photo">
-            <img src="image/3.jpg" alt="人物照片">
+            <img src="image/cat07.jpg" alt="人物照片">
           </div>
           <div class="person-details">
             <div class="detail-line first-line">八五 · 姓名6</div>
             <div class="detail-line second-line">170 / 55 / C</div>
-            <div class="detail-line third-line">台費: NT$2500</div>
-            <div class="detail-line fourth-line">可預約時段:
-12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
+            <div class="detail-line third-line">台費: 2500</div>
+            <div class="detail-line fourth-line">12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
           </div>
         </div>
         <!-- 7 -->
         <div class="person-entry">
           <div class="person-photo">
-            <img src="image/3.jpg" alt="人物照片">
+            <img src="image/cat07.jpg" alt="人物照片">
           </div>
           <div class="person-details">
             <div class="detail-line first-line">寶可夢 · 姓名7</div>
             <div class="detail-line second-line">165 / 50 / B</div>
-            <div class="detail-line third-line">台費: NT$2000</div>
-            <div class="detail-line fourth-line">可預約時段:
-12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
+            <div class="detail-line third-line">台費: 2000</div>
+            <div class="detail-line fourth-line">12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
           </div>
         </div>
         <!-- 8 -->
         <div class="person-entry">
           <div class="person-photo">
-            <img src="image/3.jpg" alt="人物照片">
+            <img src="image/cat07.jpg" alt="人物照片">
           </div>
           <div class="person-details">
             <div class="detail-line first-line">愛寶 · 姓名8</div>
             <div class="detail-line second-line">170 / 55 / C</div>
-            <div class="detail-line third-line">台費: NT$2500</div>
-            <div class="detail-line fourth-line">可預約時段:
-12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
+            <div class="detail-line third-line">台費: 2500</div>
+            <div class="detail-line fourth-line">12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
           </div>
         </div>
         <!-- 9 -->
         <div class="person-entry">
           <div class="person-photo">
-            <img src="image/3.jpg" alt="人物照片">
+            <img src="image/cat07.jpg" alt="人物照片">
           </div>
           <div class="person-details">
             <div class="detail-line first-line">芯店 · 姓名9</div>
             <div class="detail-line second-line">165 / 50 / B</div>
-            <div class="detail-line third-line">台費: NT$2000</div>
-            <div class="detail-line fourth-line">可預約時段:
-12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
+            <div class="detail-line third-line">台費: 2000</div>
+            <div class="detail-line fourth-line">12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
           </div>
         </div>
         <!-- 10 -->
         <div class="person-entry">
           <div class="person-photo">
-            <img src="image/3.jpg" alt="人物照片">
+            <img src="image/cat07.jpg" alt="人物照片">
           </div>
           <div class="person-details">
             <div class="detail-line first-line">水沙連 · 姓名10</div>
             <div class="detail-line second-line">170 / 55 / C</div>
-            <div class="detail-line third-line">台費: NT$2500</div>
-            <div class="detail-line fourth-line">可預約時段:
-12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
+            <div class="detail-line third-line">台費: 2500</div>
+            <div class="detail-line fourth-line">12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
           </div>
         </div>
         <!-- 11 -->
         <div class="person-entry">
           <div class="person-photo">
-            <img src="image/3.jpg" alt="人物照片">
+            <img src="image/cat07.jpg" alt="人物照片">
           </div>
           <div class="person-details">
             <div class="detail-line first-line">木村 · 姓名11</div>
             <div class="detail-line second-line">165 / 50 / B</div>
-            <div class="detail-line third-line">台費: NT$2000</div>
-            <div class="detail-line fourth-line">可預約時段:
-12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
+            <div class="detail-line third-line">台費: 2000</div>
+            <div class="detail-line fourth-line">12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
           </div>
         </div>
         <!-- 12 -->
         <div class="person-entry">
           <div class="person-photo">
-            <img src="image/3.jpg" alt="人物照片">
+            <img src="image/cat07.jpg" alt="人物照片">
           </div>
           <div class="person-details">
             <div class="detail-line first-line">樂鑽 · 姓名12</div>
             <div class="detail-line second-line">170 / 55 / C</div>
-            <div class="detail-line third-line">台費: NT$2500</div>
-            <div class="detail-line fourth-line">可預約時段:
-12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
+            <div class="detail-line third-line">台費: 2500</div>
+            <div class="detail-line fourth-line">12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
           </div>
         </div>
         <!-- 13 -->
         <div class="person-entry">
           <div class="person-photo">
-            <img src="image/3.jpg" alt="人物照片">
+            <img src="image/cat07.jpg" alt="人物照片">
           </div>
           <div class="person-details">
             <div class="detail-line first-line">手中情 · 姓名13</div>
             <div class="detail-line second-line">165 / 50 / B</div>
-            <div class="detail-line third-line">台費: NT$2000</div>
-            <div class="detail-line fourth-line">可預約時段:
-12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
+            <div class="detail-line third-line">台費: 2000</div>
+            <div class="detail-line fourth-line">12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
           </div>
         </div>
         <!-- 14 -->
         <div class="person-entry">
           <div class="person-photo">
-            <img src="image/3.jpg" alt="人物照片">
+            <img src="image/cat07.jpg" alt="人物照片">
           </div>
           <div class="person-details">
             <div class="detail-line first-line">潘朵拉 · 姓名14</div>
             <div class="detail-line second-line">170 / 55 / C</div>
-            <div class="detail-line third-line">台費: NT$2500</div>
-            <div class="detail-line fourth-line">可預約時段:
-12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
+            <div class="detail-line third-line">台費: 2500</div>
+            <div class="detail-line fourth-line">12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
           </div>
         </div>
         <!-- 15 -->
         <div class="person-entry">
           <div class="person-photo">
-            <img src="image/3.jpg" alt="人物照片">
+            <img src="image/cat07.jpg" alt="人物照片">
           </div>
           <div class="person-details">
             <div class="detail-line first-line">茶湯會 · 姓名15</div>
             <div class="detail-line second-line">165 / 50 / B</div>
-            <div class="detail-line third-line">台費: NT$2000</div>
-            <div class="detail-line fourth-line">可預約時段:
-12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
+            <div class="detail-line third-line">台費: 2000</div>
+            <div class="detail-line fourth-line">12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
           </div>
         </div>
         <!-- 16 -->
         <div class="person-entry">
           <div class="person-photo">
-            <img src="image/3.jpg" alt="人物照片">
+            <img src="image/cat07.jpg" alt="人物照片">
           </div>
           <div class="person-details">
             <div class="detail-line first-line">芯苑 · 姓名16</div>
             <div class="detail-line second-line">170 / 55 / C</div>
-            <div class="detail-line third-line">台費: NT$2500</div>
-            <div class="detail-line fourth-line">可預約時段:
-12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
+            <div class="detail-line third-line">台費: 2500</div>
+            <div class="detail-line fourth-line">12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
           </div>
         </div>
         <!-- 17 -->
         <div class="person-entry">
           <div class="person-photo">
-            <img src="image/3.jpg" alt="人物照片">
+            <img src="image/cat07.jpg" alt="人物照片">
           </div>
           <div class="person-details">
             <div class="detail-line first-line">八五 · 姓名17</div>
             <div class="detail-line second-line">165 / 50 / B</div>
-            <div class="detail-line third-line">台費: NT$2000</div>
-            <div class="detail-line fourth-line">可預約時段:
-12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
+            <div class="detail-line third-line">台費: 2000</div>
+            <div class="detail-line fourth-line">12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
           </div>
         </div>
         <!-- 18 -->
         <div class="person-entry">
           <div class="person-photo">
-            <img src="image/3.jpg" alt="人物照片">
+            <img src="image/cat07.jpg" alt="人物照片">
           </div>
           <div class="person-details">
             <div class="detail-line first-line">寶可夢 · 姓名18</div>
             <div class="detail-line second-line">170 / 55 / C</div>
-            <div class="detail-line third-line">台費: NT$2500</div>
-            <div class="detail-line fourth-line">可預約時段:
-12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
+            <div class="detail-line third-line">台費: 2500</div>
+            <div class="detail-line fourth-line">12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
           </div>
         </div>
         <!-- 19 -->
         <div class="person-entry">
           <div class="person-photo">
-            <img src="image/3.jpg" alt="人物照片">
+            <img src="image/cat07.jpg" alt="人物照片">
           </div>
           <div class="person-details">
             <div class="detail-line first-line">愛寶 · 姓名19</div>
             <div class="detail-line second-line">165 / 50 / B</div>
-            <div class="detail-line third-line">台費: NT$2000</div>
-            <div class="detail-line fourth-line">可預約時段:
-12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
+            <div class="detail-line third-line">台費: 2000</div>
+            <div class="detail-line fourth-line">12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
           </div>
         </div>
         <!-- 20 -->
         <div class="person-entry">
           <div class="person-photo">
-            <img src="image/3.jpg" alt="人物照片">
+            <img src="image/cat07.jpg" alt="人物照片">
           </div>
           <div class="person-details">
             <div class="detail-line first-line">芯店 · 姓名20</div>
             <div class="detail-line second-line">170 / 55 / C</div>
-            <div class="detail-line third-line">台費: NT$2500</div>
-            <div class="detail-line fourth-line">可預約時段:
-12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
+            <div class="detail-line third-line">台費: 2500</div>
+            <div class="detail-line fourth-line">12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
           </div>
         </div>
       </div>
@@ -538,51 +445,12 @@
     </div>
   </div>
 
-  <!-- 下方面板：包含箭頭（僅在展開時顯示）與選單內容 -->
-  <div class="menu-panel" id="menuPanel">
-    <div class="menu-arrow" id="menuArrow">&#x25B2;</div>
-    <div class="menu-content collapsed" id="menuContent">選單</div>
-  </div>
-  
   <script>
-    const menuPanel = document.getElementById('menuPanel');
-    const menuContent = document.getElementById('menuContent');
-    let expanded = false;
-    
-    // 點擊下方面板切換展開 / 收合
-    menuPanel.addEventListener('click', function() {
-      if(expanded) {
-        menuPanel.classList.remove('expanded');
-        menuContent.classList.remove('expanded');
-        menuContent.classList.add('collapsed');
-        menuContent.innerHTML = '選單';
-        expanded = false;
-      } else {
-        menuPanel.classList.add('expanded');
-        menuContent.classList.remove('collapsed');
-        menuContent.classList.add('expanded');
-        menuContent.innerHTML = `
-          <button id="btn-daily">每日班表</button>
-          <button id="btn-weekly">每週班表</button>
-          <button id="btn-search">名稱搜尋</button>
-          <button id="btn-latest">最新心得</button>
-          <button id="btn-reservation">預約查詢</button>
-          <button id="btn-record">預約紀錄</button>
-          <button id="btn-favorite">收藏查詢</button>
-          <button id="btn-wishlist">願望清單</button>
-        `;
-        expanded = true;
-      }
+    // 移除下方選單面板相關程式碼，僅保留首頁內的選單按鈕功能
+    document.getElementById('btn-daily').addEventListener('click', function() {
+      document.getElementById('homePage').style.display = 'none';
+      document.getElementById('dailyPage').style.display = 'flex';
     });
-    
-    // SPA 切換頁面功能：每日班表按鈕
-    document.addEventListener('click', function(e) {
-      if(e.target && e.target.id === 'btn-daily'){
-        document.getElementById('homePage').style.display = 'none';
-        document.getElementById('dailyPage').style.display = 'flex';
-      }
-    });
-    // 回首頁按鈕
     document.getElementById('btn-back').addEventListener('click', function() {
       document.getElementById('dailyPage').style.display = 'none';
       document.getElementById('homePage').style.display = 'flex';

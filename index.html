@@ -9,6 +9,8 @@
     /* 基本重設與安全區域設定 */
     html, body {
       margin: 0;
+      padding: 0;
+      overflow: hidden;
       padding: env(safe-area-inset-top, 0) env(safe-area-inset-right, 0) env(safe-area-inset-bottom, 0) env(safe-area-inset-left, 0);
       box-sizing: border-box;
     }
@@ -22,7 +24,7 @@
       position: relative;
       font-family: Arial, sans-serif;
     }
-    /* 玻璃質感容器，內含背景與內容兩個部分 */
+    /* 玻璃質感容器 */
     .glass-overlay {
       position: absolute;
       top: 0;
@@ -35,7 +37,7 @@
       align-items: center;
       overflow: hidden;
     }
-    /* 背景層：只用來呈現模糊效果 */
+    /* 背景模糊層 */
     .glass-background {
       position: absolute;
       top: 0;
@@ -48,7 +50,7 @@
       border: 1px solid rgba(255,255,255,0.18);
       z-index: 0;
     }
-    /* 內容層：確保不受背景模糊影響 */
+    /* 內容區 */
     .content {
       position: relative;
       z-index: 1;
@@ -78,7 +80,7 @@
         transform: translateY(0) translateZ(0);
       }
     }
-    /* 首頁內的選單按鈕區塊 */
+    /* 首頁內選單按鈕區 */
     .home-menu {
       margin-top: 20px;
       display: grid;
@@ -94,11 +96,13 @@
       font-size: 1rem;
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
       transition: background 0.3s;
+      text-align: center;
+      white-space: pre-line;
     }
     .home-menu button:hover {
       background: rgba(255,255,255,0.5);
     }
-    /* 每日班表頁面相關設定保持不變 */
+    /* 每日班表內人物資訊列表 */
     .schedule {
       margin-top: 20px;
       max-height: 400px;
@@ -113,7 +117,7 @@
       border-radius: 5px;
       background: rgba(255,255,255,0.6);
     }
-    /* 照片容器改為寬100px、高120px */
+    /* 調整人物照片容器：寬100px、高120px */
     .person-photo {
       flex: 0 0 100px;
       width: 100px;
@@ -138,7 +142,7 @@
     .person-details .detail-line {
       margin-bottom: 4px;
     }
-    /* 將第四行文字替換為 "可約時段:"，換行後以點號分隔 */
+    /* 將第四行文字替換為 "可約時段:"，換行後用點號分隔 */
     .person-details .fourth-line {
       white-space: pre-wrap;
       word-break: break-all;
@@ -146,6 +150,44 @@
     .person-details .fourth-line::before {
       content: "可約時段:\A";
       white-space: pre;
+    }
+    /* 館別選項區：徽章樣式 */
+    .hall-selection {
+      display: flex;
+      overflow-x: auto;
+      gap: 10px;
+      padding-bottom: 10px;
+      margin-bottom: 20px;
+      border-bottom: 1px solid rgba(0,0,0,0.1);
+    }
+    .hall-selection button {
+      position: relative;
+      overflow: visible;
+      flex: 0 0 auto;
+      padding: 8px 12px;
+      border: none;
+      background: rgba(255,255,255,0.35);
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      transition: background 0.3s;
+      text-align: center;
+    }
+    .hall-selection button:hover,
+    .hall-selection button.active {
+      background: rgba(255,255,255,0.5);
+    }
+    .hall-selection button .badge {
+      position: absolute;
+      bottom: -3px;
+      right: -3px;
+      background: #7f8c8d;
+      color: #fff;
+      border-radius: 50%;
+      padding: 2px 6px;
+      font-size: 0.7rem;
+      line-height: 1;
     }
     /* 小螢幕調整 */
     @media (max-width:480px) {
@@ -163,16 +205,16 @@
     <div class="content">
       <h1>首頁</h1>
       <p>這是首頁的玻璃質感設計範例</p>
-      <!-- 將選單按鈕放在首頁內容中 -->
+      <!-- 首頁選單按鈕 -->
       <div class="home-menu">
-        <button id="btn-daily">每日班表</button>
-        <button id="btn-weekly">每週班表</button>
-        <button id="btn-search">名稱搜尋</button>
-        <button id="btn-latest">最新心得</button>
-        <button id="btn-reservation">預約查詢</button>
-        <button id="btn-record">預約紀錄</button>
-        <button id="btn-favorite">收藏查詢</button>
-        <button id="btn-wishlist">願望清單</button>
+        <button id="btn-daily">每日<br>班表</button>
+        <button id="btn-weekly">每週<br>班表</button>
+        <button id="btn-search">名單<br>搜尋</button>
+        <button id="btn-latest">最 新<br>心得</button>
+        <button id="btn-reservation">預約<br>查詢</button>
+        <button id="btn-record">預約<br>紀錄</button>
+        <button id="btn-favorite">收 藏<br>查詢</button>
+        <button id="btn-wishlist">願望<br>清單</button>
       </div>
     </div>
   </div>
@@ -182,19 +224,19 @@
     <div class="glass-background"></div>
     <div class="content">
       <h1>每日班表</h1>
-      <!-- 館別選項區 -->
+      <!-- 館別選項區：徽章方式 -->
       <div class="hall-selection">
-        <button class="active">樂鑽</button>
-        <button>手中情</button>
-        <button>潘朵拉</button>
-        <button>茶湯會</button>
-        <button>芯苑</button>
-        <button>八五</button>
-        <button>寶可夢</button>
-        <button>愛寶</button>
-        <button>芯店</button>
-        <button>水沙連</button>
-        <button>木村</button>
+        <button class="active">樂鑽<span class="badge">20</span></button>
+        <button>手中情<span class="badge">15</span></button>
+        <button>潘朵拉<span class="badge">25</span></button>
+        <button>茶湯會<span class="badge">18</span></button>
+        <button>芯苑<span class="badge">12</span></button>
+        <button>八五<span class="badge">30</span></button>
+        <button>寶可夢<span class="badge">22</span></button>
+        <button>愛寶<span class="badge">10</span></button>
+        <button>芯店<span class="badge">14</span></button>
+        <button>水沙連<span class="badge">17</span></button>
+        <button>木村<span class="badge">19</span></button>
       </div>
       <!-- 每日班表內人物資訊列表 -->
       <div class="schedule">
@@ -446,7 +488,7 @@
   </div>
 
   <script>
-    // 移除下方選單面板相關程式碼，僅保留首頁內的選單按鈕功能
+    // 移除原有下方選單面板，僅保留首頁內選單按鈕功能
     document.getElementById('btn-daily').addEventListener('click', function() {
       document.getElementById('homePage').style.display = 'none';
       document.getElementById('dailyPage').style.display = 'flex';

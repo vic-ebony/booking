@@ -151,7 +151,7 @@
       content: "可約時段:\A";
       white-space: pre;
     }
-    /* 館別選項區：徽章樣式 */
+    /* 館別選項區：直接在按鈕內兩行顯示館別名稱及人數 */
     .hall-selection {
       display: flex;
       overflow-x: auto;
@@ -161,8 +161,6 @@
       border-bottom: 1px solid rgba(0,0,0,0.1);
     }
     .hall-selection button {
-      position: relative;
-      overflow: visible;
       flex: 0 0 auto;
       padding: 8px 12px;
       border: none;
@@ -173,21 +171,11 @@
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
       transition: background 0.3s;
       text-align: center;
+      white-space: pre-line;
     }
     .hall-selection button:hover,
     .hall-selection button.active {
       background: rgba(255,255,255,0.5);
-    }
-    .hall-selection button .badge {
-      position: absolute;
-      bottom: -3px;
-      right: -3px;
-      background: #7f8c8d;
-      color: #fff;
-      border-radius: 50%;
-      padding: 2px 6px;
-      font-size: 0.7rem;
-      line-height: 1;
     }
     /* 小螢幕調整 */
     @media (max-width:480px) {
@@ -224,19 +212,19 @@
     <div class="glass-background"></div>
     <div class="content">
       <h1>每日班表</h1>
-      <!-- 館別選項區：徽章方式 -->
+      <!-- 館別選項區：直接在按鈕內兩行顯示館別名稱及人數 -->
       <div class="hall-selection">
-        <button class="active">樂鑽<span class="badge">20</span></button>
-        <button>手中情<span class="badge">15</span></button>
-        <button>潘朵拉<span class="badge">25</span></button>
-        <button>茶湯會<span class="badge">18</span></button>
-        <button>芯苑<span class="badge">12</span></button>
-        <button>八五<span class="badge">30</span></button>
-        <button>寶可夢<span class="badge">22</span></button>
-        <button>愛寶<span class="badge">10</span></button>
-        <button>芯店<span class="badge">14</span></button>
-        <button>水沙連<span class="badge">17</span></button>
-        <button>木村<span class="badge">19</span></button>
+        <button class="active">樂鑽<br>20位</button>
+        <button>手中情<br>15位</button>
+        <button>潘朵拉<br>25位</button>
+        <button>茶湯會<br>18位</button>
+        <button>芯苑<br>12位</button>
+        <button>八五<br>30位</button>
+        <button>寶可夢<br>22位</button>
+        <button>愛寶<br>10位</button>
+        <button>芯店<br>14位</button>
+        <button>水沙連<br>17位</button>
+        <button>木村<br>19位</button>
       </div>
       <!-- 每日班表內人物資訊列表 -->
       <div class="schedule">

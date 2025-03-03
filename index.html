@@ -22,8 +22,21 @@
       position: relative;
       font-family: Arial, sans-serif;
     }
-    /* 中央玻璃質感內容區 */
+    /* 玻璃質感容器，內含背景與內容兩個部分 */
     .glass-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      padding: 10px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+    /* 背景層：只用來呈現模糊效果 */
+    .glass-background {
       position: absolute;
       top: 0;
       left: 0;
@@ -33,12 +46,12 @@
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
       border: 1px solid rgba(255,255,255,0.18);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 10px;
+      z-index: 0;
     }
+    /* 內容層：確保不受背景模糊影響，強制硬體加速 */
     .content {
+      position: relative;
+      z-index: 1;
       background: rgba(255,255,255,0.25);
       padding: 20px 30px;
       border-radius: 15px;
@@ -50,15 +63,20 @@
       margin: 0 auto;
       opacity: 0;
       animation: fadeInUp 1s forwards;
+      /* 強制硬體加速，確保文字渲染清晰 */
+      transform: translateZ(0);
+      will-change: opacity, transform;
+      -webkit-font-smoothing: antialiased;
+      background-clip: padding-box;
     }
     @keyframes fadeInUp {
       0% {
         opacity: 0;
-        transform: translateY(20px);
+        transform: translateY(20px) translateZ(0);
       }
       100% {
         opacity: 1;
-        transform: translateY(0);
+        transform: translateY(0) translateZ(0);
       }
     }
     /* 下方面板：預設狀態只顯示「選單」 */
@@ -69,7 +87,7 @@
       right: 0;
       max-width: 90%;
       margin: 0 auto;
-      height: 80px;
+      height: 40px; /* 預設高度改為40px */
       background: rgba(255,255,255,0.25);
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
@@ -77,41 +95,58 @@
       box-shadow: 0 -8px 32px 0 rgba(31,38,135,0.37);
       border-top-left-radius: 15px;
       border-top-right-radius: 15px;
-      /* 初始狀態無位移 */
       transform: translateY(0);
-      transition: height 0.7s ease-in-out, transform 0.7s ease-in-out;
+      transition: height 0.3s ease-in-out, transform 0.3s ease-in-out;
       display: flex;
-      justify-content: center;
+      flex-direction: column;
       align-items: center;
-      overflow: hidden;
+      overflow: visible;
       cursor: pointer;
+      z-index: 9999;
     }
-    /* 當展開時，下方面板高度變為 40vh，並向上滑出擴展部分
-       滑出的距離為 (40vh - 80px)，使得原本的「選單」位置不變 */
+    /* 展開狀態：高度變為40vh，並向上滑出展開部分 */
     .menu-panel.expanded {
       height: 40vh;
-      transform: translateY(-calc(40vh - 80px));
+      transform: translateY(-calc(40vh - 40px));
+    }
+    /* 箭頭圖示：預設隱藏，僅在展開狀態顯示 */
+    .menu-arrow {
+      display: none;
+    }
+    .menu-panel.expanded .menu-arrow {
+      display: block;
+      position: absolute;
+      top: 5px;
+      left: 50%;
+      transform: translateX(-50%) rotate(180deg);
+      font-size: 20px;
+      user-select: none;
+      pointer-events: none;
     }
     /* 下方面板內部內容容器 */
     .menu-content {
       width: 100%;
       text-align: center;
-      transition: opacity 0.7s ease-in-out;
+      transition: opacity 0.3s ease-in-out;
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
     /* 預設狀態：僅顯示「選單」 */
     .menu-content.collapsed {
       opacity: 1;
       font-size: 1.5rem;
       font-weight: bold;
-      line-height: 80px;
+      line-height: 40px;
     }
-    /* 展開狀態：以 Grid 顯示選單項目，三個一行 */
+    /* 展開狀態：以 Grid 顯示選單項目，三個一行；並增加上方內邊距，避免被箭頭遮住 */
     .menu-content.expanded {
       opacity: 1;
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 10px;
-      padding: 10px;
+      padding: 30px 10px 10px;
     }
     .menu-content.expanded button {
       padding: 10px;
@@ -126,6 +161,38 @@
     .menu-content.expanded button:hover {
       background: rgba(255,255,255,0.5);
     }
+    /* 新增：每日班表頁面上方館別選項區 */
+    .hall-selection {
+      display: flex;
+      overflow-x: auto;
+      gap: 10px;
+      padding-bottom: 10px;
+      margin-bottom: 20px;
+      border-bottom: 1px solid rgba(0,0,0,0.1);
+    }
+    .hall-selection button {
+      flex: 0 0 auto;
+      padding: 8px 12px;
+      border: none;
+      background: rgba(255,255,255,0.35);
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      transition: background 0.3s;
+    }
+    .hall-selection button:hover,
+    .hall-selection button.active {
+      background: rgba(255,255,255,0.5);
+    }
+    /* 調整每日班表頁面內空白方框樣式 */
+    .schedule {
+      border: 1px solid rgba(0,0,0,0.1);
+      height: 200px;
+      width: 100%;
+      border-radius: 5px;
+      margin-top: 20px;
+    }
     /* 小螢幕調整 */
     @media (max-width:480px) {
       .content {
@@ -136,15 +203,44 @@
   </style>
 </head>
 <body>
-  <!-- 中央玻璃質感內容區 -->
-  <div class="glass-overlay">
+  <!-- 首頁玻璃質感內容區 -->
+  <div class="glass-overlay" id="homePage">
+    <div class="glass-background"></div>
     <div class="content">
       <h1>首頁</h1>
       <p>這是首頁的玻璃質感設計範例</p>
     </div>
   </div>
-  <!-- 下方面板：預設只顯示「選單」 -->
+
+  <!-- 新增的每日班表頁面，預設隱藏 -->
+  <div class="glass-overlay" id="dailyPage" style="display:none;">
+    <div class="glass-background"></div>
+    <div class="content">
+      <h1>每日班表</h1>
+      <!-- 館別選項區 -->
+      <div class="hall-selection">
+        <button class="active">館1</button>
+        <button>館2</button>
+        <button>館3</button>
+        <button>館4</button>
+        <button>館5</button>
+        <button>館6</button>
+        <button>館7</button>
+        <button>館8</button>
+        <button>館9</button>
+        <button>館10</button>
+        <button>館11</button>
+      </div>
+      <!-- 留下一個空白的方框 -->
+      <div class="schedule"></div>
+      <br>
+      <button id="btn-back" style="padding:10px 20px; border:none; background:rgba(255,255,255,0.35); border-radius:5px; cursor:pointer;">回首頁</button>
+    </div>
+  </div>
+
+  <!-- 下方面板：包含箭頭（僅在展開時顯示）與選單內容 -->
   <div class="menu-panel" id="menuPanel">
+    <div class="menu-arrow" id="menuArrow">&#x25B2;</div>
     <div class="menu-content collapsed" id="menuContent">選單</div>
   </div>
   
@@ -156,14 +252,12 @@
     // 點擊下方面板切換展開 / 收合
     menuPanel.addEventListener('click', function() {
       if(expanded) {
-        // 收合
         menuPanel.classList.remove('expanded');
         menuContent.classList.remove('expanded');
         menuContent.classList.add('collapsed');
         menuContent.innerHTML = '選單';
         expanded = false;
       } else {
-        // 展開
         menuPanel.classList.add('expanded');
         menuContent.classList.remove('collapsed');
         menuContent.classList.add('expanded');
@@ -179,6 +273,19 @@
         `;
         expanded = true;
       }
+    });
+    
+    // SPA 切換頁面功能：每日班表按鈕
+    document.addEventListener('click', function(e) {
+      if(e.target && e.target.id === 'btn-daily'){
+        document.getElementById('homePage').style.display = 'none';
+        document.getElementById('dailyPage').style.display = 'flex';
+      }
+    });
+    // 回首頁按鈕
+    document.getElementById('btn-back').addEventListener('click', function() {
+      document.getElementById('dailyPage').style.display = 'none';
+      document.getElementById('homePage').style.display = 'flex';
     });
   </script>
 </body>

@@ -142,7 +142,7 @@
     .person-details .detail-line {
       margin-bottom: 4px;
     }
-    /* 可約時段排版：正常換行 */
+    /* 可約時段排版：利用 ::before 添加前綴，HTML 中僅保留時段字串 */
     .person-details .fourth-line {
       white-space: normal;
       word-break: break-word;
@@ -150,7 +150,7 @@
     .person-details .fourth-line::before {
       content: "可約時段: ";
     }
-    /* 館別選項區：使用 .hall-item 包含按鈕與下方換行人數資訊 */
+    /* 館別選項區 */
     .hall-selection {
       display: flex;
       overflow-x: auto;
@@ -159,6 +159,7 @@
       margin-bottom: 20px;
       border-bottom: 1px solid rgba(0,0,0,0.1);
     }
+    /* 每個館別項目 */
     .hall-item {
       text-align: center;
       flex: 0 0 auto;
@@ -179,7 +180,7 @@
     .hall-item button.active {
       background: rgba(255,255,255,0.5);
     }
-    /* 調整按鈕內兩行顯示：使用 <br> 分隔 */
+    /* 將按鈕內部分為兩行 */
     .hall-item button span {
       display: block;
     }
@@ -218,335 +219,95 @@
     <div class="glass-background"></div>
     <div class="content">
       <h1>每日班表</h1>
-      <!-- 館別選項區：使用 .hall-item 包含按鈕，並在按鈕內以兩行顯示館別名稱和人數資訊 -->
-      <div class="hall-selection">
-        <div class="hall-item">
-          <button class="active">
-            <span>樂鑽</span>
-            <span>👤20</span>
-          </button>
-        </div>
-        <div class="hall-item">
-          <button>
-            <span>手中情</span>
-            <span>👤15</span>
-          </button>
-        </div>
-        <div class="hall-item">
-          <button>
-            <span>潘朵拉</span>
-            <span>👤25</span>
-          </button>
-        </div>
-        <div class="hall-item">
-          <button>
-            <span>茶湯會</span>
-            <span>👤18</span>
-          </button>
-        </div>
-        <div class="hall-item">
-          <button>
-            <span>芯苑</span>
-            <span>👤12</span>
-          </button>
-        </div>
-        <div class="hall-item">
-          <button>
-            <span>八五</span>
-            <span>👤30</span>
-          </button>
-        </div>
-        <div class="hall-item">
-          <button>
-            <span>寶可夢</span>
-            <span>👤22</span>
-          </button>
-        </div>
-        <div class="hall-item">
-          <button>
-            <span>愛寶</span>
-            <span>👤10</span>
-          </button>
-        </div>
-        <div class="hall-item">
-          <button>
-            <span>芯店</span>
-            <span>👤14</span>
-          </button>
-        </div>
-        <div class="hall-item">
-          <button>
-            <span>水沙連</span>
-            <span>👤17</span>
-          </button>
-        </div>
-        <div class="hall-item">
-          <button>
-            <span>木村</span>
-            <span>👤19</span>
-          </button>
-        </div>
-      </div>
+      <!-- 館別選項區 -->
+      <div class="hall-selection" id="hallSelection"></div>
       <!-- 每日班表內人物資訊列表 -->
-      <div class="schedule">
-        <!-- 以下生成20個範本 -->
-        <!-- 1 -->
-        <div class="person-entry">
-          <div class="person-photo">
-            <img src="image/cat07.jpg" alt="人物照片">
-          </div>
-          <div class="person-details">
-            <div class="detail-line first-line">樂鑽 · 姓名1</div>
-            <div class="detail-line second-line">165 / 50 / B</div>
-            <div class="detail-line third-line">台費: 2000</div>
-            <div class="detail-line fourth-line">可約時段: 12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
-          </div>
-        </div>
-        <!-- 2 -->
-        <div class="person-entry">
-          <div class="person-photo">
-            <img src="image/cat07.jpg" alt="人物照片">
-          </div>
-          <div class="person-details">
-            <div class="detail-line first-line">手中情 · 姓名2</div>
-            <div class="detail-line second-line">170 / 55 / C</div>
-            <div class="detail-line third-line">台費: 2500</div>
-            <div class="detail-line fourth-line">可約時段: 12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
-          </div>
-        </div>
-        <!-- 3 -->
-        <div class="person-entry">
-          <div class="person-photo">
-            <img src="image/cat07.jpg" alt="人物照片">
-          </div>
-          <div class="person-details">
-            <div class="detail-line first-line">潘朵拉 · 姓名3</div>
-            <div class="detail-line second-line">165 / 50 / B</div>
-            <div class="detail-line third-line">台費: 2000</div>
-            <div class="detail-line fourth-line">可約時段: 12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
-          </div>
-        </div>
-        <!-- 4 -->
-        <div class="person-entry">
-          <div class="person-photo">
-            <img src="image/cat07.jpg" alt="人物照片">
-          </div>
-          <div class="person-details">
-            <div class="detail-line first-line">茶湯會 · 姓名4</div>
-            <div class="detail-line second-line">170 / 55 / C</div>
-            <div class="detail-line third-line">台費: 2500</div>
-            <div class="detail-line fourth-line">可約時段: 12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
-          </div>
-        </div>
-        <!-- 5 -->
-        <div class="person-entry">
-          <div class="person-photo">
-            <img src="image/cat07.jpg" alt="人物照片">
-          </div>
-          <div class="person-details">
-            <div class="detail-line first-line">芯苑 · 姓名5</div>
-            <div class="detail-line second-line">165 / 50 / B</div>
-            <div class="detail-line third-line">台費: 2000</div>
-            <div class="detail-line fourth-line">可約時段: 12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
-          </div>
-        </div>
-        <!-- 6 -->
-        <div class="person-entry">
-          <div class="person-photo">
-            <img src="image/cat07.jpg" alt="人物照片">
-          </div>
-          <div class="person-details">
-            <div class="detail-line first-line">八五 · 姓名6</div>
-            <div class="detail-line second-line">170 / 55 / C</div>
-            <div class="detail-line third-line">台費: 2500</div>
-            <div class="detail-line fourth-line">可約時段: 12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
-          </div>
-        </div>
-        <!-- 7 -->
-        <div class="person-entry">
-          <div class="person-photo">
-            <img src="image/cat07.jpg" alt="人物照片">
-          </div>
-          <div class="person-details">
-            <div class="detail-line first-line">寶可夢 · 姓名7</div>
-            <div class="detail-line second-line">165 / 50 / B</div>
-            <div class="detail-line third-line">台費: 2000</div>
-            <div class="detail-line fourth-line">可約時段: 12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
-          </div>
-        </div>
-        <!-- 8 -->
-        <div class="person-entry">
-          <div class="person-photo">
-            <img src="image/cat07.jpg" alt="人物照片">
-          </div>
-          <div class="person-details">
-            <div class="detail-line first-line">愛寶 · 姓名8</div>
-            <div class="detail-line second-line">170 / 55 / C</div>
-            <div class="detail-line third-line">台費: 2500</div>
-            <div class="detail-line fourth-line">可約時段: 12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
-          </div>
-        </div>
-        <!-- 9 -->
-        <div class="person-entry">
-          <div class="person-photo">
-            <img src="image/cat07.jpg" alt="人物照片">
-          </div>
-          <div class="person-details">
-            <div class="detail-line first-line">芯店 · 姓名9</div>
-            <div class="detail-line second-line">165 / 50 / B</div>
-            <div class="detail-line third-line">台費: 2000</div>
-            <div class="detail-line fourth-line">可約時段: 12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
-          </div>
-        </div>
-        <!-- 10 -->
-        <div class="person-entry">
-          <div class="person-photo">
-            <img src="image/cat07.jpg" alt="人物照片">
-          </div>
-          <div class="person-details">
-            <div class="detail-line first-line">水沙連 · 姓名10</div>
-            <div class="detail-line second-line">170 / 55 / C</div>
-            <div class="detail-line third-line">台費: 2500</div>
-            <div class="detail-line fourth-line">可約時段: 12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
-          </div>
-        </div>
-        <!-- 11 -->
-        <div class="person-entry">
-          <div class="person-photo">
-            <img src="image/cat07.jpg" alt="人物照片">
-          </div>
-          <div class="person-details">
-            <div class="detail-line first-line">木村 · 姓名11</div>
-            <div class="detail-line second-line">165 / 50 / B</div>
-            <div class="detail-line third-line">台費: 2000</div>
-            <div class="detail-line fourth-line">可約時段: 12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
-          </div>
-        </div>
-        <!-- 12 -->
-        <div class="person-entry">
-          <div class="person-photo">
-            <img src="image/cat07.jpg" alt="人物照片">
-          </div>
-          <div class="person-details">
-            <div class="detail-line first-line">樂鑽 · 姓名12</div>
-            <div class="detail-line second-line">170 / 55 / C</div>
-            <div class="detail-line third-line">台費: 2500</div>
-            <div class="detail-line fourth-line">可約時段: 12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
-          </div>
-        </div>
-        <!-- 13 -->
-        <div class="person-entry">
-          <div class="person-photo">
-            <img src="image/cat07.jpg" alt="人物照片">
-          </div>
-          <div class="person-details">
-            <div class="detail-line first-line">手中情 · 姓名13</div>
-            <div class="detail-line second-line">165 / 50 / B</div>
-            <div class="detail-line third-line">台費: 2000</div>
-            <div class="detail-line fourth-line">可約時段: 12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
-          </div>
-        </div>
-        <!-- 14 -->
-        <div class="person-entry">
-          <div class="person-photo">
-            <img src="image/cat07.jpg" alt="人物照片">
-          </div>
-          <div class="person-details">
-            <div class="detail-line first-line">潘朵拉 · 姓名14</div>
-            <div class="detail-line second-line">170 / 55 / C</div>
-            <div class="detail-line third-line">台費: 2500</div>
-            <div class="detail-line fourth-line">可約時段: 12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
-          </div>
-        </div>
-        <!-- 15 -->
-        <div class="person-entry">
-          <div class="person-photo">
-            <img src="image/cat07.jpg" alt="人物照片">
-          </div>
-          <div class="person-details">
-            <div class="detail-line first-line">茶湯會 · 姓名15</div>
-            <div class="detail-line second-line">165 / 50 / B</div>
-            <div class="detail-line third-line">台費: 2000</div>
-            <div class="detail-line fourth-line">可約時段: 12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
-          </div>
-        </div>
-        <!-- 16 -->
-        <div class="person-entry">
-          <div class="person-photo">
-            <img src="image/cat07.jpg" alt="人物照片">
-          </div>
-          <div class="person-details">
-            <div class="detail-line first-line">芯苑 · 姓名16</div>
-            <div class="detail-line second-line">170 / 55 / C</div>
-            <div class="detail-line third-line">台費: 2500</div>
-            <div class="detail-line fourth-line">可約時段: 12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
-          </div>
-        </div>
-        <!-- 17 -->
-        <div class="person-entry">
-          <div class="person-photo">
-            <img src="image/cat07.jpg" alt="人物照片">
-          </div>
-          <div class="person-details">
-            <div class="detail-line first-line">八五 · 姓名17</div>
-            <div class="detail-line second-line">165 / 50 / B</div>
-            <div class="detail-line third-line">台費: 2000</div>
-            <div class="detail-line fourth-line">可約時段: 12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
-          </div>
-        </div>
-        <!-- 18 -->
-        <div class="person-entry">
-          <div class="person-photo">
-            <img src="image/cat07.jpg" alt="人物照片">
-          </div>
-          <div class="person-details">
-            <div class="detail-line first-line">寶可夢 · 姓名18</div>
-            <div class="detail-line second-line">170 / 55 / C</div>
-            <div class="detail-line third-line">台費: 2500</div>
-            <div class="detail-line fourth-line">可約時段: 12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
-          </div>
-        </div>
-        <!-- 19 -->
-        <div class="person-entry">
-          <div class="person-photo">
-            <img src="image/cat07.jpg" alt="人物照片">
-          </div>
-          <div class="person-details">
-            <div class="detail-line first-line">愛寶 · 姓名19</div>
-            <div class="detail-line second-line">165 / 50 / B</div>
-            <div class="detail-line third-line">台費: 2000</div>
-            <div class="detail-line fourth-line">可約時段: 12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
-          </div>
-        </div>
-        <!-- 20 -->
-        <div class="person-entry">
-          <div class="person-photo">
-            <img src="image/cat07.jpg" alt="人物照片">
-          </div>
-          <div class="person-details">
-            <div class="detail-line first-line">芯店 · 姓名20</div>
-            <div class="detail-line second-line">170 / 55 / C</div>
-            <div class="detail-line third-line">台費: 2500</div>
-            <div class="detail-line fourth-line">可約時段: 12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
-          </div>
-        </div>
-      </div>
+      <div class="schedule" id="schedule"></div>
       <br>
       <button id="btn-back" style="padding:10px 20px; border:none; background:rgba(255,255,255,0.35); border-radius:5px; cursor:pointer;">回首頁</button>
     </div>
   </div>
 
   <script>
-    // 點擊「每日班表」按鈕後切換頁面
+    // 切換首頁與每日班表頁面
     document.getElementById('btn-daily').addEventListener('click', function() {
       document.getElementById('homePage').style.display = 'none';
       document.getElementById('dailyPage').style.display = 'flex';
     });
-    // 點擊「回首頁」按鈕返回首頁
     document.getElementById('btn-back').addEventListener('click', function() {
       document.getElementById('dailyPage').style.display = 'none';
       document.getElementById('homePage').style.display = 'flex';
     });
+
+    // 定義各館別及相關資料
+    const halls = ["樂鑽", "手中情", "潘朵拉", "茶湯會", "芯苑", "八五", "寶可夢", "愛寶", "芯店", "水沙連", "木村"];
+    const times = "12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05";
+    function randomInt(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+    function randomCup() {
+      const cups = ["A", "B", "C", "D"];
+      return cups[randomInt(0, cups.length - 1)];
+    }
+    
+    // 產生各館別隨機人員資訊，每館隨機 5～15 筆
+    const hallData = {};
+    halls.forEach(hall => {
+      const count = randomInt(5,15);
+      hallData[hall] = [];
+      for(let i = 1; i <= count; i++){
+        const height = randomInt(160,180);
+        const weight = randomInt(45,70);
+        const cup = randomCup();
+        const fee = randomInt(3,6)*500;
+        hallData[hall].push({name: `姓名${i}`, height, weight, cup, fee, times});
+      }
+    });
+    
+    // 生成館別選項區
+    const hallSelectionDiv = document.getElementById('hallSelection');
+    halls.forEach(hall => {
+      const count = hallData[hall].length;
+      const div = document.createElement('div');
+      div.className = "hall-item";
+      // 建立按鈕，內部兩行顯示：館別名稱與 "👤數字"
+      const btn = document.createElement('button');
+      btn.innerHTML = `<span>${hall}</span><span>👤${count}</span>`;
+      btn.addEventListener('click', function(){
+        // 移除所有按鈕的 active class
+        document.querySelectorAll('.hall-item button').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        renderSchedule(hall);
+      });
+      div.appendChild(btn);
+      hallSelectionDiv.appendChild(div);
+    });
+    
+    // 預設渲染第一個館別
+    renderSchedule(halls[0]);
+    // 同時預設第一個館別按鈕加上 active
+    document.querySelector('.hall-item button').classList.add('active');
+    
+    // 根據所選館別渲染 schedule 區塊
+    function renderSchedule(hall) {
+      const personnel = hallData[hall];
+      let html = "";
+      personnel.forEach(person => {
+        html += `
+        <div class="person-entry">
+          <div class="person-photo">
+            <img src="image/cat07.jpg" alt="人物照片">
+          </div>
+          <div class="person-details">
+            <div class="detail-line first-line">${hall} · ${person.name}</div>
+            <div class="detail-line second-line">${person.height} / ${person.weight} / ${person.cup}</div>
+            <div class="detail-line third-line">台費: ${person.fee}</div>
+            <div class="detail-line fourth-line">${person.times}</div>
+          </div>
+        </div>`;
+      });
+      document.getElementById('schedule').innerHTML = html;
+    }
   </script>
 </body>
 </html>

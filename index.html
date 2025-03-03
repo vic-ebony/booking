@@ -142,16 +142,15 @@
     .person-details .detail-line {
       margin-bottom: 4px;
     }
-    /* 將第四行文字替換為 "可約時段:"，換行後用點號分隔 */
+    /* 可約時段排版：正常換行 */
     .person-details .fourth-line {
-      white-space: pre-wrap;
-      word-break: break-all;
+      white-space: normal;
+      word-break: break-word;
     }
     .person-details .fourth-line::before {
-      content: "可約時段:\A";
-      white-space: pre;
+      content: "可約時段: ";
     }
-    /* 館別選項區：徽章樣式 */
+    /* 館別選項區：使用 .hall-item 包含按鈕與下方換行人數資訊 */
     .hall-selection {
       display: flex;
       overflow-x: auto;
@@ -160,34 +159,29 @@
       margin-bottom: 20px;
       border-bottom: 1px solid rgba(0,0,0,0.1);
     }
-    .hall-selection button {
-      position: relative;
-      overflow: visible;
+    .hall-item {
+      text-align: center;
       flex: 0 0 auto;
+    }
+    .hall-item button {
+      width: 60px;  /* 固定寬度，約3個中文字 */
       padding: 8px 12px;
       border: none;
       background: rgba(255,255,255,0.35);
-      border-radius: 20px;
+      border-radius: 10px;
       cursor: pointer;
       font-size: 0.9rem;
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
       transition: background 0.3s;
-      text-align: center;
+      white-space: nowrap;
     }
-    .hall-selection button:hover,
-    .hall-selection button.active {
+    .hall-item button:hover,
+    .hall-item button.active {
       background: rgba(255,255,255,0.5);
     }
-    .hall-selection button .badge {
-      position: absolute;
-      bottom: -3px;
-      right: -3px;
-      background: #7f8c8d;
-      color: #fff;
-      border-radius: 50%;
-      padding: 2px 6px;
-      font-size: 0.7rem;
-      line-height: 1;
+    /* 調整按鈕內兩行顯示：使用 <br> 分隔 */
+    .hall-item button span {
+      display: block;
     }
     /* 小螢幕調整 */
     @media (max-width:480px) {
@@ -224,19 +218,74 @@
     <div class="glass-background"></div>
     <div class="content">
       <h1>每日班表</h1>
-      <!-- 館別選項區：徽章方式 -->
+      <!-- 館別選項區：使用 .hall-item 包含按鈕，並在按鈕內以兩行顯示館別名稱和人數資訊 -->
       <div class="hall-selection">
-        <button class="active">樂鑽<span class="badge">20</span></button>
-        <button>手中情<span class="badge">15</span></button>
-        <button>潘朵拉<span class="badge">25</span></button>
-        <button>茶湯會<span class="badge">18</span></button>
-        <button>芯苑<span class="badge">12</span></button>
-        <button>八五<span class="badge">30</span></button>
-        <button>寶可夢<span class="badge">22</span></button>
-        <button>愛寶<span class="badge">10</span></button>
-        <button>芯店<span class="badge">14</span></button>
-        <button>水沙連<span class="badge">17</span></button>
-        <button>木村<span class="badge">19</span></button>
+        <div class="hall-item">
+          <button class="active">
+            <span>樂鑽</span>
+            <span>👤20</span>
+          </button>
+        </div>
+        <div class="hall-item">
+          <button>
+            <span>手中情</span>
+            <span>👤15</span>
+          </button>
+        </div>
+        <div class="hall-item">
+          <button>
+            <span>潘朵拉</span>
+            <span>👤25</span>
+          </button>
+        </div>
+        <div class="hall-item">
+          <button>
+            <span>茶湯會</span>
+            <span>👤18</span>
+          </button>
+        </div>
+        <div class="hall-item">
+          <button>
+            <span>芯苑</span>
+            <span>👤12</span>
+          </button>
+        </div>
+        <div class="hall-item">
+          <button>
+            <span>八五</span>
+            <span>👤30</span>
+          </button>
+        </div>
+        <div class="hall-item">
+          <button>
+            <span>寶可夢</span>
+            <span>👤22</span>
+          </button>
+        </div>
+        <div class="hall-item">
+          <button>
+            <span>愛寶</span>
+            <span>👤10</span>
+          </button>
+        </div>
+        <div class="hall-item">
+          <button>
+            <span>芯店</span>
+            <span>👤14</span>
+          </button>
+        </div>
+        <div class="hall-item">
+          <button>
+            <span>水沙連</span>
+            <span>👤17</span>
+          </button>
+        </div>
+        <div class="hall-item">
+          <button>
+            <span>木村</span>
+            <span>👤19</span>
+          </button>
+        </div>
       </div>
       <!-- 每日班表內人物資訊列表 -->
       <div class="schedule">
@@ -250,7 +299,7 @@
             <div class="detail-line first-line">樂鑽 · 姓名1</div>
             <div class="detail-line second-line">165 / 50 / B</div>
             <div class="detail-line third-line">台費: 2000</div>
-            <div class="detail-line fourth-line">12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
+            <div class="detail-line fourth-line">可約時段: 12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
           </div>
         </div>
         <!-- 2 -->
@@ -262,7 +311,7 @@
             <div class="detail-line first-line">手中情 · 姓名2</div>
             <div class="detail-line second-line">170 / 55 / C</div>
             <div class="detail-line third-line">台費: 2500</div>
-            <div class="detail-line fourth-line">12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
+            <div class="detail-line fourth-line">可約時段: 12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
           </div>
         </div>
         <!-- 3 -->
@@ -274,7 +323,7 @@
             <div class="detail-line first-line">潘朵拉 · 姓名3</div>
             <div class="detail-line second-line">165 / 50 / B</div>
             <div class="detail-line third-line">台費: 2000</div>
-            <div class="detail-line fourth-line">12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
+            <div class="detail-line fourth-line">可約時段: 12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
           </div>
         </div>
         <!-- 4 -->
@@ -286,7 +335,7 @@
             <div class="detail-line first-line">茶湯會 · 姓名4</div>
             <div class="detail-line second-line">170 / 55 / C</div>
             <div class="detail-line third-line">台費: 2500</div>
-            <div class="detail-line fourth-line">12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
+            <div class="detail-line fourth-line">可約時段: 12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
           </div>
         </div>
         <!-- 5 -->
@@ -298,7 +347,7 @@
             <div class="detail-line first-line">芯苑 · 姓名5</div>
             <div class="detail-line second-line">165 / 50 / B</div>
             <div class="detail-line third-line">台費: 2000</div>
-            <div class="detail-line fourth-line">12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
+            <div class="detail-line fourth-line">可約時段: 12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
           </div>
         </div>
         <!-- 6 -->
@@ -310,7 +359,7 @@
             <div class="detail-line first-line">八五 · 姓名6</div>
             <div class="detail-line second-line">170 / 55 / C</div>
             <div class="detail-line third-line">台費: 2500</div>
-            <div class="detail-line fourth-line">12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
+            <div class="detail-line fourth-line">可約時段: 12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
           </div>
         </div>
         <!-- 7 -->
@@ -322,7 +371,7 @@
             <div class="detail-line first-line">寶可夢 · 姓名7</div>
             <div class="detail-line second-line">165 / 50 / B</div>
             <div class="detail-line third-line">台費: 2000</div>
-            <div class="detail-line fourth-line">12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
+            <div class="detail-line fourth-line">可約時段: 12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
           </div>
         </div>
         <!-- 8 -->
@@ -334,7 +383,7 @@
             <div class="detail-line first-line">愛寶 · 姓名8</div>
             <div class="detail-line second-line">170 / 55 / C</div>
             <div class="detail-line third-line">台費: 2500</div>
-            <div class="detail-line fourth-line">12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
+            <div class="detail-line fourth-line">可約時段: 12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
           </div>
         </div>
         <!-- 9 -->
@@ -346,7 +395,7 @@
             <div class="detail-line first-line">芯店 · 姓名9</div>
             <div class="detail-line second-line">165 / 50 / B</div>
             <div class="detail-line third-line">台費: 2000</div>
-            <div class="detail-line fourth-line">12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
+            <div class="detail-line fourth-line">可約時段: 12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
           </div>
         </div>
         <!-- 10 -->
@@ -358,7 +407,7 @@
             <div class="detail-line first-line">水沙連 · 姓名10</div>
             <div class="detail-line second-line">170 / 55 / C</div>
             <div class="detail-line third-line">台費: 2500</div>
-            <div class="detail-line fourth-line">12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
+            <div class="detail-line fourth-line">可約時段: 12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
           </div>
         </div>
         <!-- 11 -->
@@ -370,7 +419,7 @@
             <div class="detail-line first-line">木村 · 姓名11</div>
             <div class="detail-line second-line">165 / 50 / B</div>
             <div class="detail-line third-line">台費: 2000</div>
-            <div class="detail-line fourth-line">12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
+            <div class="detail-line fourth-line">可約時段: 12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
           </div>
         </div>
         <!-- 12 -->
@@ -382,7 +431,7 @@
             <div class="detail-line first-line">樂鑽 · 姓名12</div>
             <div class="detail-line second-line">170 / 55 / C</div>
             <div class="detail-line third-line">台費: 2500</div>
-            <div class="detail-line fourth-line">12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
+            <div class="detail-line fourth-line">可約時段: 12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
           </div>
         </div>
         <!-- 13 -->
@@ -394,7 +443,7 @@
             <div class="detail-line first-line">手中情 · 姓名13</div>
             <div class="detail-line second-line">165 / 50 / B</div>
             <div class="detail-line third-line">台費: 2000</div>
-            <div class="detail-line fourth-line">12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
+            <div class="detail-line fourth-line">可約時段: 12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
           </div>
         </div>
         <!-- 14 -->
@@ -406,7 +455,7 @@
             <div class="detail-line first-line">潘朵拉 · 姓名14</div>
             <div class="detail-line second-line">170 / 55 / C</div>
             <div class="detail-line third-line">台費: 2500</div>
-            <div class="detail-line fourth-line">12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
+            <div class="detail-line fourth-line">可約時段: 12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
           </div>
         </div>
         <!-- 15 -->
@@ -418,7 +467,7 @@
             <div class="detail-line first-line">茶湯會 · 姓名15</div>
             <div class="detail-line second-line">165 / 50 / B</div>
             <div class="detail-line third-line">台費: 2000</div>
-            <div class="detail-line fourth-line">12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
+            <div class="detail-line fourth-line">可約時段: 12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
           </div>
         </div>
         <!-- 16 -->
@@ -430,7 +479,7 @@
             <div class="detail-line first-line">芯苑 · 姓名16</div>
             <div class="detail-line second-line">170 / 55 / C</div>
             <div class="detail-line third-line">台費: 2500</div>
-            <div class="detail-line fourth-line">12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
+            <div class="detail-line fourth-line">可約時段: 12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
           </div>
         </div>
         <!-- 17 -->
@@ -442,7 +491,7 @@
             <div class="detail-line first-line">八五 · 姓名17</div>
             <div class="detail-line second-line">165 / 50 / B</div>
             <div class="detail-line third-line">台費: 2000</div>
-            <div class="detail-line fourth-line">12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
+            <div class="detail-line fourth-line">可約時段: 12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
           </div>
         </div>
         <!-- 18 -->
@@ -454,7 +503,7 @@
             <div class="detail-line first-line">寶可夢 · 姓名18</div>
             <div class="detail-line second-line">170 / 55 / C</div>
             <div class="detail-line third-line">台費: 2500</div>
-            <div class="detail-line fourth-line">12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
+            <div class="detail-line fourth-line">可約時段: 12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
           </div>
         </div>
         <!-- 19 -->
@@ -466,7 +515,7 @@
             <div class="detail-line first-line">愛寶 · 姓名19</div>
             <div class="detail-line second-line">165 / 50 / B</div>
             <div class="detail-line third-line">台費: 2000</div>
-            <div class="detail-line fourth-line">12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
+            <div class="detail-line fourth-line">可約時段: 12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
           </div>
         </div>
         <!-- 20 -->
@@ -478,7 +527,7 @@
             <div class="detail-line first-line">芯店 · 姓名20</div>
             <div class="detail-line second-line">170 / 55 / C</div>
             <div class="detail-line third-line">台費: 2500</div>
-            <div class="detail-line fourth-line">12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
+            <div class="detail-line fourth-line">可約時段: 12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
           </div>
         </div>
       </div>
@@ -488,11 +537,12 @@
   </div>
 
   <script>
-    // 移除原有下方選單面板，僅保留首頁內選單按鈕功能
+    // 點擊「每日班表」按鈕後切換頁面
     document.getElementById('btn-daily').addEventListener('click', function() {
       document.getElementById('homePage').style.display = 'none';
       document.getElementById('dailyPage').style.display = 'flex';
     });
+    // 點擊「回首頁」按鈕返回首頁
     document.getElementById('btn-back').addEventListener('click', function() {
       document.getElementById('dailyPage').style.display = 'none';
       document.getElementById('homePage').style.display = 'flex';

@@ -19,7 +19,7 @@
     }
     /* 滿版背景圖片 */
     body {
-      background: url('image/05.jpg') no-repeat center center/cover;
+      background: url('image/02.jpg') no-repeat center center/cover;
       height: 100vh;
       position: relative;
       font-family: Arial, sans-serif;
@@ -50,12 +50,12 @@
       border: 1px solid rgba(255,255,255,0.18);
       z-index: 0;
     }
-    /* 內容區 */
+    /* 主要內容區 */
     .content {
       position: relative;
       z-index: 1;
       background: rgba(255,255,255,0.25);
-      padding: 20px 30px;
+      padding: 20px 30px 70px 30px; /* 下方留足空間給選單面板 */
       border-radius: 15px;
       box-shadow: 0 8px 32px 0 rgba(31,38,135,0.37);
       text-align: center;
@@ -69,6 +69,7 @@
       will-change: opacity, transform;
       -webkit-font-smoothing: antialiased;
       background-clip: padding-box;
+      overflow: hidden;
     }
     @keyframes fadeInUp {
       0% {
@@ -80,24 +81,84 @@
         transform: translateY(0) translateZ(0);
       }
     }
-    /* 首頁內選單按鈕區 */
+    /* 漢堡按鈕：放在 .content 左上角 */
+    #menuBtn {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      z-index: 2;
+      background: transparent;
+      border: none;
+      font-size: 2rem;
+      cursor: pointer;
+      color: #333;
+    }
+    /* 側邊選單面板：定位在 .content 內左側 */
+    .side-menu {
+      position: absolute;
+      top: 0;
+      left: -150px; /* 預設隱藏 */
+      width: 150px;
+      height: 100%;
+      background: rgba(255,255,255,0.95);
+      transition: left 0.3s ease;
+      z-index: 3;
+      padding: 10px;
+      border-top-left-radius: 15px;
+      border-bottom-left-radius: 15px;
+    }
+    .side-menu.open {
+      left: 0;
+    }
+    .side-menu .close-btn {
+      background: transparent;
+      border: none;
+      font-size: 1.5rem;
+      float: right;
+      cursor: pointer;
+      color: #333;
+    }
+    .side-menu h2 {
+      margin: 10px 0 10px 0;
+      text-align: center;
+      font-size: 1.1rem;
+    }
+    .menu-content button {
+      width: 100%;
+      margin: 6px 0;
+      padding: 6px;
+      border: none;
+      background: rgba(0,0,0,0.1);
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: background 0.3s;
+    }
+    .menu-content button:hover {
+      background: rgba(0,0,0,0.2);
+    }
+    /* 首頁選單按鈕區：一行兩個按鈕 */
     .home-menu {
       margin-top: 20px;
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(2, auto);
       gap: 10px;
+      justify-content: center;
     }
     .home-menu button {
+      width: 8em; /* 預設4個字寬度 */
       padding: 10px;
       border: none;
       background: rgba(255,255,255,0.35);
       border-radius: 5px;
       cursor: pointer;
       font-size: 1rem;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
       transition: background 0.3s;
       text-align: center;
-      white-space: pre-line;
     }
     .home-menu button:hover {
       background: rgba(255,255,255,0.5);
@@ -117,7 +178,6 @@
       border-radius: 5px;
       background: rgba(255,255,255,0.6);
     }
-    /* 調整人物照片容器：寬100px、高120px */
     .person-photo {
       flex: 0 0 100px;
       width: 100px;
@@ -142,16 +202,14 @@
     .person-details .detail-line {
       margin-bottom: 4px;
     }
-    /* 將第四行文字替換為 "可約時段:"，換行後用點號分隔 */
     .person-details .fourth-line {
-      white-space: pre-wrap;
-      word-break: break-all;
+      white-space: normal;
+      word-break: break-word;
     }
     .person-details .fourth-line::before {
-      content: "可約時段:\A";
-      white-space: pre;
+      content: "可約時段: ";
     }
-    /* 館別選項區：直接在按鈕內兩行顯示館別名稱及人數 */
+    /* 館別選項區 */
     .hall-selection {
       display: flex;
       overflow-x: auto;
@@ -160,27 +218,49 @@
       margin-bottom: 20px;
       border-bottom: 1px solid rgba(0,0,0,0.1);
     }
-    .hall-selection button {
+    .hall-item {
+      text-align: center;
       flex: 0 0 auto;
+    }
+    .hall-item button {
+      width: 60px;
       padding: 8px 12px;
       border: none;
       background: rgba(255,255,255,0.35);
-      border-radius: 20px;
+      border-radius: 10px;
       cursor: pointer;
       font-size: 0.9rem;
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
       transition: background 0.3s;
-      text-align: center;
-      white-space: pre-line;
+      white-space: nowrap;
     }
-    .hall-selection button:hover,
-    .hall-selection button.active {
+    .hall-item button:hover,
+    .hall-item button.active {
+      background: rgba(255,255,255,0.5);
+    }
+    .hall-item button span {
+      display: block;
+    }
+    /* 選單面板內的選單按鈕 */
+    .menu-content button {
+      padding: 6px;
+      border: none;
+      background: rgba(255,255,255,0.35);
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      transition: background 0.3s;
+      width: 100%;
+      margin-bottom: 6px;
+    }
+    .menu-content button:hover {
       background: rgba(255,255,255,0.5);
     }
     /* 小螢幕調整 */
     @media (max-width:480px) {
       .content {
-        padding: 15px 20px;
+        padding: 15px 20px 70px 20px;
         font-size: 0.9rem;
       }
     }
@@ -193,16 +273,15 @@
     <div class="content">
       <h1>首頁</h1>
       <p>這是首頁的玻璃質感設計範例</p>
-      <!-- 首頁選單按鈕 -->
       <div class="home-menu">
-        <button id="btn-daily">每日<br>班表</button>
-        <button id="btn-weekly">每週<br>班表</button>
-        <button id="btn-search">名單<br>搜尋</button>
-        <button id="btn-latest">最 新<br>心得</button>
-        <button id="btn-reservation">預約<br>查詢</button>
-        <button id="btn-record">預約<br>紀錄</button>
-        <button id="btn-favorite">收 藏<br>查詢</button>
-        <button id="btn-wishlist">願望<br>清單</button>
+        <button id="btn-daily">每日班表</button>
+        <button id="btn-weekly">每週班表</button>
+        <button id="btn-search">名單搜尋</button>
+        <button id="btn-latest">最新心得</button>
+        <button id="btn-reservation">預約查詢</button>
+        <button id="btn-record">預約紀錄</button>
+        <button id="btn-favorite">收藏查詢</button>
+        <button id="btn-wishlist">願望清單</button>
       </div>
     </div>
   </div>
@@ -211,280 +290,127 @@
   <div class="glass-overlay" id="dailyPage" style="display:none;">
     <div class="glass-background"></div>
     <div class="content">
+      <!-- 漢堡按鈕，放在內容區左上角 -->
+      <button id="menuBtn">≡</button>
+      
       <h1>每日班表</h1>
-      <!-- 館別選項區：直接在按鈕內兩行顯示館別名稱及人數 -->
-      <div class="hall-selection">
-        <button class="active">樂鑽<br>20位</button>
-        <button>手中情<br>15位</button>
-        <button>潘朵拉<br>25位</button>
-        <button>茶湯會<br>18位</button>
-        <button>芯苑<br>12位</button>
-        <button>八五<br>30位</button>
-        <button>寶可夢<br>22位</button>
-        <button>愛寶<br>10位</button>
-        <button>芯店<br>14位</button>
-        <button>水沙連<br>17位</button>
-        <button>木村<br>19位</button>
-      </div>
+      <!-- 館別選項區 -->
+      <div class="hall-selection" id="hallSelection"></div>
       <!-- 每日班表內人物資訊列表 -->
-      <div class="schedule">
-        <!-- 以下生成20個範本 -->
-        <!-- 1 -->
-        <div class="person-entry">
-          <div class="person-photo">
-            <img src="image/cat07.jpg" alt="人物照片">
-          </div>
-          <div class="person-details">
-            <div class="detail-line first-line">樂鑽 · 姓名1</div>
-            <div class="detail-line second-line">165 / 50 / B</div>
-            <div class="detail-line third-line">台費: 2000</div>
-            <div class="detail-line fourth-line">12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
-          </div>
-        </div>
-        <!-- 2 -->
-        <div class="person-entry">
-          <div class="person-photo">
-            <img src="image/cat07.jpg" alt="人物照片">
-          </div>
-          <div class="person-details">
-            <div class="detail-line first-line">手中情 · 姓名2</div>
-            <div class="detail-line second-line">170 / 55 / C</div>
-            <div class="detail-line third-line">台費: 2500</div>
-            <div class="detail-line fourth-line">12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
-          </div>
-        </div>
-        <!-- 3 -->
-        <div class="person-entry">
-          <div class="person-photo">
-            <img src="image/cat07.jpg" alt="人物照片">
-          </div>
-          <div class="person-details">
-            <div class="detail-line first-line">潘朵拉 · 姓名3</div>
-            <div class="detail-line second-line">165 / 50 / B</div>
-            <div class="detail-line third-line">台費: 2000</div>
-            <div class="detail-line fourth-line">12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
-          </div>
-        </div>
-        <!-- 4 -->
-        <div class="person-entry">
-          <div class="person-photo">
-            <img src="image/cat07.jpg" alt="人物照片">
-          </div>
-          <div class="person-details">
-            <div class="detail-line first-line">茶湯會 · 姓名4</div>
-            <div class="detail-line second-line">170 / 55 / C</div>
-            <div class="detail-line third-line">台費: 2500</div>
-            <div class="detail-line fourth-line">12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
-          </div>
-        </div>
-        <!-- 5 -->
-        <div class="person-entry">
-          <div class="person-photo">
-            <img src="image/cat07.jpg" alt="人物照片">
-          </div>
-          <div class="person-details">
-            <div class="detail-line first-line">芯苑 · 姓名5</div>
-            <div class="detail-line second-line">165 / 50 / B</div>
-            <div class="detail-line third-line">台費: 2000</div>
-            <div class="detail-line fourth-line">12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
-          </div>
-        </div>
-        <!-- 6 -->
-        <div class="person-entry">
-          <div class="person-photo">
-            <img src="image/cat07.jpg" alt="人物照片">
-          </div>
-          <div class="person-details">
-            <div class="detail-line first-line">八五 · 姓名6</div>
-            <div class="detail-line second-line">170 / 55 / C</div>
-            <div class="detail-line third-line">台費: 2500</div>
-            <div class="detail-line fourth-line">12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
-          </div>
-        </div>
-        <!-- 7 -->
-        <div class="person-entry">
-          <div class="person-photo">
-            <img src="image/cat07.jpg" alt="人物照片">
-          </div>
-          <div class="person-details">
-            <div class="detail-line first-line">寶可夢 · 姓名7</div>
-            <div class="detail-line second-line">165 / 50 / B</div>
-            <div class="detail-line third-line">台費: 2000</div>
-            <div class="detail-line fourth-line">12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
-          </div>
-        </div>
-        <!-- 8 -->
-        <div class="person-entry">
-          <div class="person-photo">
-            <img src="image/cat07.jpg" alt="人物照片">
-          </div>
-          <div class="person-details">
-            <div class="detail-line first-line">愛寶 · 姓名8</div>
-            <div class="detail-line second-line">170 / 55 / C</div>
-            <div class="detail-line third-line">台費: 2500</div>
-            <div class="detail-line fourth-line">12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
-          </div>
-        </div>
-        <!-- 9 -->
-        <div class="person-entry">
-          <div class="person-photo">
-            <img src="image/cat07.jpg" alt="人物照片">
-          </div>
-          <div class="person-details">
-            <div class="detail-line first-line">芯店 · 姓名9</div>
-            <div class="detail-line second-line">165 / 50 / B</div>
-            <div class="detail-line third-line">台費: 2000</div>
-            <div class="detail-line fourth-line">12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
-          </div>
-        </div>
-        <!-- 10 -->
-        <div class="person-entry">
-          <div class="person-photo">
-            <img src="image/cat07.jpg" alt="人物照片">
-          </div>
-          <div class="person-details">
-            <div class="detail-line first-line">水沙連 · 姓名10</div>
-            <div class="detail-line second-line">170 / 55 / C</div>
-            <div class="detail-line third-line">台費: 2500</div>
-            <div class="detail-line fourth-line">12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
-          </div>
-        </div>
-        <!-- 11 -->
-        <div class="person-entry">
-          <div class="person-photo">
-            <img src="image/cat07.jpg" alt="人物照片">
-          </div>
-          <div class="person-details">
-            <div class="detail-line first-line">木村 · 姓名11</div>
-            <div class="detail-line second-line">165 / 50 / B</div>
-            <div class="detail-line third-line">台費: 2000</div>
-            <div class="detail-line fourth-line">12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
-          </div>
-        </div>
-        <!-- 12 -->
-        <div class="person-entry">
-          <div class="person-photo">
-            <img src="image/cat07.jpg" alt="人物照片">
-          </div>
-          <div class="person-details">
-            <div class="detail-line first-line">樂鑽 · 姓名12</div>
-            <div class="detail-line second-line">170 / 55 / C</div>
-            <div class="detail-line third-line">台費: 2500</div>
-            <div class="detail-line fourth-line">12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
-          </div>
-        </div>
-        <!-- 13 -->
-        <div class="person-entry">
-          <div class="person-photo">
-            <img src="image/cat07.jpg" alt="人物照片">
-          </div>
-          <div class="person-details">
-            <div class="detail-line first-line">手中情 · 姓名13</div>
-            <div class="detail-line second-line">165 / 50 / B</div>
-            <div class="detail-line third-line">台費: 2000</div>
-            <div class="detail-line fourth-line">12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
-          </div>
-        </div>
-        <!-- 14 -->
-        <div class="person-entry">
-          <div class="person-photo">
-            <img src="image/cat07.jpg" alt="人物照片">
-          </div>
-          <div class="person-details">
-            <div class="detail-line first-line">潘朵拉 · 姓名14</div>
-            <div class="detail-line second-line">170 / 55 / C</div>
-            <div class="detail-line third-line">台費: 2500</div>
-            <div class="detail-line fourth-line">12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
-          </div>
-        </div>
-        <!-- 15 -->
-        <div class="person-entry">
-          <div class="person-photo">
-            <img src="image/cat07.jpg" alt="人物照片">
-          </div>
-          <div class="person-details">
-            <div class="detail-line first-line">茶湯會 · 姓名15</div>
-            <div class="detail-line second-line">165 / 50 / B</div>
-            <div class="detail-line third-line">台費: 2000</div>
-            <div class="detail-line fourth-line">12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
-          </div>
-        </div>
-        <!-- 16 -->
-        <div class="person-entry">
-          <div class="person-photo">
-            <img src="image/cat07.jpg" alt="人物照片">
-          </div>
-          <div class="person-details">
-            <div class="detail-line first-line">芯苑 · 姓名16</div>
-            <div class="detail-line second-line">170 / 55 / C</div>
-            <div class="detail-line third-line">台費: 2500</div>
-            <div class="detail-line fourth-line">12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
-          </div>
-        </div>
-        <!-- 17 -->
-        <div class="person-entry">
-          <div class="person-photo">
-            <img src="image/cat07.jpg" alt="人物照片">
-          </div>
-          <div class="person-details">
-            <div class="detail-line first-line">八五 · 姓名17</div>
-            <div class="detail-line second-line">165 / 50 / B</div>
-            <div class="detail-line third-line">台費: 2000</div>
-            <div class="detail-line fourth-line">12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
-          </div>
-        </div>
-        <!-- 18 -->
-        <div class="person-entry">
-          <div class="person-photo">
-            <img src="image/cat07.jpg" alt="人物照片">
-          </div>
-          <div class="person-details">
-            <div class="detail-line first-line">寶可夢 · 姓名18</div>
-            <div class="detail-line second-line">170 / 55 / C</div>
-            <div class="detail-line third-line">台費: 2500</div>
-            <div class="detail-line fourth-line">12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
-          </div>
-        </div>
-        <!-- 19 -->
-        <div class="person-entry">
-          <div class="person-photo">
-            <img src="image/cat07.jpg" alt="人物照片">
-          </div>
-          <div class="person-details">
-            <div class="detail-line first-line">愛寶 · 姓名19</div>
-            <div class="detail-line second-line">165 / 50 / B</div>
-            <div class="detail-line third-line">台費: 2000</div>
-            <div class="detail-line fourth-line">12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
-          </div>
-        </div>
-        <!-- 20 -->
-        <div class="person-entry">
-          <div class="person-photo">
-            <img src="image/cat07.jpg" alt="人物照片">
-          </div>
-          <div class="person-details">
-            <div class="detail-line first-line">芯店 · 姓名20</div>
-            <div class="detail-line second-line">170 / 55 / C</div>
-            <div class="detail-line third-line">台費: 2500</div>
-            <div class="detail-line fourth-line">12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05</div>
-          </div>
+      <div class="schedule" id="schedule"></div>
+      <!-- 側邊選單面板，定位在 .content 內左側 -->
+      <div class="side-menu" id="sideMenu">
+        <button class="close-btn" id="closeMenu">×</button>
+        <h2>選單</h2>
+        <div class="menu-content">
+          <!-- 新增返回首頁按鈕，作為第一個按鈕 -->
+          <button id="m-btn-back">返回首頁</button>
+          <button id="m-btn-daily">每日班表</button>
+          <button id="m-btn-weekly">每週班表</button>
+          <button id="m-btn-search">名單搜尋</button>
+          <button id="m-btn-latest">最新心得</button>
+          <button id="m-btn-reservation">預約查詢</button>
+          <button id="m-btn-record">預約紀錄</button>
+          <button id="m-btn-favorite">收藏查詢</button>
+          <button id="m-btn-wishlist">願望清單</button>
         </div>
       </div>
-      <br>
-      <button id="btn-back" style="padding:10px 20px; border:none; background:rgba(255,255,255,0.35); border-radius:5px; cursor:pointer;">回首頁</button>
     </div>
   </div>
 
   <script>
-    // 移除原有下方選單面板，僅保留首頁內選單按鈕功能
+    // 切換首頁與每日班表頁面
     document.getElementById('btn-daily').addEventListener('click', function() {
       document.getElementById('homePage').style.display = 'none';
       document.getElementById('dailyPage').style.display = 'flex';
     });
-    document.getElementById('btn-back').addEventListener('click', function() {
+    // 刪除原本的回首頁按鈕，因為已移至側邊選單內
+    
+    // 漢堡按鈕與側邊選單功能
+    const menuBtn = document.getElementById('menuBtn');
+    const sideMenu = document.getElementById('sideMenu');
+    const closeMenu = document.getElementById('closeMenu');
+    menuBtn.addEventListener('click', function() {
+      sideMenu.classList.add('open');
+    });
+    closeMenu.addEventListener('click', function(e) {
+      e.stopPropagation();
+      sideMenu.classList.remove('open');
+    });
+    
+    // 側邊選單內返回首頁按鈕功能
+    document.getElementById('m-btn-back').addEventListener('click', function() {
       document.getElementById('dailyPage').style.display = 'none';
       document.getElementById('homePage').style.display = 'flex';
+      sideMenu.classList.remove('open');
     });
+    
+    // 定義各館別及相關資料
+    const halls = ["樂鑽", "手中情", "潘朵拉", "茶湯會", "芯苑", "八五", "寶可夢", "愛寶", "芯店", "水沙連", "木村"];
+    const times = "12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05";
+    function randomInt(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+    function randomCup() {
+      const cups = ["A", "B", "C", "D"];
+      return cups[randomInt(0, cups.length - 1)];
+    }
+    
+    // 產生各館別隨機人員資訊，每館隨機 5～15 筆
+    const hallData = {};
+    halls.forEach(hall => {
+      const count = randomInt(5, 15);
+      hallData[hall] = [];
+      for(let i = 1; i <= count; i++){
+        const height = randomInt(160, 180);
+        const weight = randomInt(45, 70);
+        const cup = randomCup();
+        const fee = randomInt(3,6) * 500;
+        hallData[hall].push({name: `姓名${i}`, height, weight, cup, fee, times});
+      }
+    });
+    
+    // 生成館別選項區
+    const hallSelectionDiv = document.getElementById('hallSelection');
+    halls.forEach(hall => {
+      const count = hallData[hall].length;
+      const div = document.createElement('div');
+      div.className = "hall-item";
+      const btn = document.createElement('button');
+      btn.innerHTML = `<span>${hall}</span><span>👤${count}</span>`;
+      btn.addEventListener('click', function(){
+        document.querySelectorAll('.hall-item button').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        renderSchedule(hall);
+      });
+      div.appendChild(btn);
+      hallSelectionDiv.appendChild(div);
+    });
+    
+    // 預設渲染第一個館別
+    renderSchedule(halls[0]);
+    document.querySelector('.hall-item button').classList.add('active');
+    
+    // 根據所選館別渲染 schedule 區塊
+    function renderSchedule(hall) {
+      const personnel = hallData[hall];
+      let html = "";
+      personnel.forEach(person => {
+        html += `
+        <div class="person-entry">
+          <div class="person-photo">
+            <img src="image/cat07.jpg" alt="人物照片">
+          </div>
+          <div class="person-details">
+            <div class="detail-line first-line">${hall} · ${person.name}</div>
+            <div class="detail-line second-line">${person.height} / ${person.weight} / ${person.cup}</div>
+            <div class="detail-line third-line">台費: ${person.fee}</div>
+            <div class="detail-line fourth-line">${person.times}</div>
+          </div>
+        </div>`;
+      });
+      document.getElementById('schedule').innerHTML = html;
+    }
   </script>
 </body>
 </html>

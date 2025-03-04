@@ -303,6 +303,8 @@
         <button class="close-btn" id="closeMenu">×</button>
         <h2>選單</h2>
         <div class="menu-content">
+          <!-- 新增返回首頁按鈕，作為第一個按鈕 -->
+          <button id="m-btn-back">返回首頁</button>
           <button id="m-btn-daily">每日班表</button>
           <button id="m-btn-weekly">每週班表</button>
           <button id="m-btn-search">名單搜尋</button>
@@ -313,8 +315,6 @@
           <button id="m-btn-wishlist">願望清單</button>
         </div>
       </div>
-      <br>
-      <button id="btn-back" style="padding:10px 20px; border:none; background:rgba(255,255,255,0.35); border-radius:5px; cursor:pointer;">回首頁</button>
     </div>
   </div>
 
@@ -324,10 +324,7 @@
       document.getElementById('homePage').style.display = 'none';
       document.getElementById('dailyPage').style.display = 'flex';
     });
-    document.getElementById('btn-back').addEventListener('click', function() {
-      document.getElementById('dailyPage').style.display = 'none';
-      document.getElementById('homePage').style.display = 'flex';
-    });
+    // 刪除原本的回首頁按鈕，因為已移至側邊選單內
     
     // 漢堡按鈕與側邊選單功能
     const menuBtn = document.getElementById('menuBtn');
@@ -338,6 +335,13 @@
     });
     closeMenu.addEventListener('click', function(e) {
       e.stopPropagation();
+      sideMenu.classList.remove('open');
+    });
+    
+    // 側邊選單內返回首頁按鈕功能
+    document.getElementById('m-btn-back').addEventListener('click', function() {
+      document.getElementById('dailyPage').style.display = 'none';
+      document.getElementById('homePage').style.display = 'flex';
       sideMenu.classList.remove('open');
     });
     

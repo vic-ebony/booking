@@ -19,7 +19,7 @@
     }
     /* 滿版背景圖片 */
     body {
-      background: url('image/05.jpg') no-repeat center center/cover;
+      background: url('image/02.jpg') no-repeat center center/cover;
       height: 100vh;
       position: relative;
       font-family: Arial, sans-serif;
@@ -69,7 +69,7 @@
       will-change: opacity, transform;
       -webkit-font-smoothing: antialiased;
       background-clip: padding-box;
-      overflow: hidden;  /* 隱藏內容區外溢 */
+      overflow: hidden;
     }
     @keyframes fadeInUp {
       0% {
@@ -101,7 +101,6 @@
       width: 150px;
       height: 100%;
       background: rgba(255,255,255,0.95);
-      box-shadow: 2px 0 5px rgba(0,0,0,0.3);
       transition: left 0.3s ease;
       z-index: 3;
       padding: 10px;
@@ -138,24 +137,28 @@
     .menu-content button:hover {
       background: rgba(0,0,0,0.2);
     }
-    /* 首頁選單按鈕區 */
+    /* 首頁選單按鈕區：一行兩個按鈕 */
     .home-menu {
       margin-top: 20px;
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(2, auto);
       gap: 10px;
+      justify-content: center;
     }
     .home-menu button {
+      width: 8em; /* 預設4個字寬度 */
       padding: 10px;
       border: none;
       background: rgba(255,255,255,0.35);
       border-radius: 5px;
       cursor: pointer;
       font-size: 1rem;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
       transition: background 0.3s;
       text-align: center;
-      white-space: pre-line;
     }
     .home-menu button:hover {
       background: rgba(255,255,255,0.5);
@@ -271,14 +274,14 @@
       <h1>首頁</h1>
       <p>這是首頁的玻璃質感設計範例</p>
       <div class="home-menu">
-        <button id="btn-daily">每日<br>班表</button>
-        <button id="btn-weekly">每週<br>班表</button>
-        <button id="btn-search">名單<br>搜尋</button>
-        <button id="btn-latest">最 新<br>心得</button>
-        <button id="btn-reservation">預約<br>查詢</button>
-        <button id="btn-record">預約<br>紀錄</button>
-        <button id="btn-favorite">收 藏<br>查詢</button>
-        <button id="btn-wishlist">願望<br>清單</button>
+        <button id="btn-daily">每日班表</button>
+        <button id="btn-weekly">每週班表</button>
+        <button id="btn-search">名單搜尋</button>
+        <button id="btn-latest">最新心得</button>
+        <button id="btn-reservation">預約查詢</button>
+        <button id="btn-record">預約紀錄</button>
+        <button id="btn-favorite">收藏查詢</button>
+        <button id="btn-wishlist">願望清單</button>
       </div>
     </div>
   </div>
@@ -300,14 +303,14 @@
         <button class="close-btn" id="closeMenu">×</button>
         <h2>選單</h2>
         <div class="menu-content">
-          <button id="m-btn-daily">每日<br>班表</button>
-          <button id="m-btn-weekly">每週<br>班表</button>
-          <button id="m-btn-search">名單<br>搜尋</button>
-          <button id="m-btn-latest">最 新<br>心得</button>
-          <button id="m-btn-reservation">預約<br>查詢</button>
-          <button id="m-btn-record">預約<br>紀錄</button>
-          <button id="m-btn-favorite">收 藏<br>查詢</button>
-          <button id="m-btn-wishlist">願望<br>清單</button>
+          <button id="m-btn-daily">每日班表</button>
+          <button id="m-btn-weekly">每週班表</button>
+          <button id="m-btn-search">名單搜尋</button>
+          <button id="m-btn-latest">最新心得</button>
+          <button id="m-btn-reservation">預約查詢</button>
+          <button id="m-btn-record">預約紀錄</button>
+          <button id="m-btn-favorite">收藏查詢</button>
+          <button id="m-btn-wishlist">願望清單</button>
         </div>
       </div>
       <br>

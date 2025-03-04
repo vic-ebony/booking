@@ -209,11 +209,25 @@
     .person-details .fourth-line::before {
       content: "可約時段: ";
     }
-    /* 新增的內嵌留言徽章 */
-    .review {
-      font-size: 0.85rem;
-      color: #666;
+    /* 新增的心得按鈕與數量：採用內聯容器方式 */
+    .review-wrapper {
+      display: inline-flex;
+      align-items: center;
       margin-left: 8px;
+    }
+    .review-btn {
+      padding: 2px 4px;
+      font-size: 0.75rem;
+      background: #eee;
+      border: none;
+      border-radius: 3px;
+      cursor: default;
+    }
+    .review-count {
+      margin-left: 4px;
+      font-size: 0.75rem;
+      color: #777;
+      font-weight: normal;
     }
     /* 館別選項區 */
     .hall-selection {
@@ -404,10 +418,16 @@
         html += `
         <div class="person-entry">
           <div class="person-photo">
-            <img src="image/2.jpg" alt="人物照片">
+            <img src="image/cat07.jpg" alt="人物照片">
           </div>
           <div class="person-details">
-            <div class="detail-line first-line">${hall} · ${person.name}<span class="review">💬 ${person.review}</span></div>
+            <div class="detail-line first-line">
+              ${hall} · ${person.name}
+              <span class="review-wrapper">
+                <button class="review-btn">心得</button>
+                <span class="review-count">${person.review}</span>
+              </span>
+            </div>
             <div class="detail-line second-line">${person.height} / ${person.weight} / ${person.cup}</div>
             <div class="detail-line third-line">台費: ${person.fee}</div>
             <div class="detail-line fourth-line">${person.times}</div>

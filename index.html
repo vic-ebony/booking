@@ -209,6 +209,12 @@
     .person-details .fourth-line::before {
       content: "可約時段: ";
     }
+    /* 新增的內嵌留言徽章 */
+    .review {
+      font-size: 0.85rem;
+      color: #666;
+      margin-left: 8px;
+    }
     /* 館別選項區 */
     .hall-selection {
       display: flex;
@@ -303,7 +309,7 @@
         <button class="close-btn" id="closeMenu">×</button>
         <h2>選單</h2>
         <div class="menu-content">
-          <!-- 新增返回首頁按鈕，作為第一個按鈕 -->
+          <!-- 新增返回首頁按鈕 -->
           <button id="m-btn-back">返回首頁</button>
           <button id="m-btn-daily">每日班表</button>
           <button id="m-btn-weekly">每週班表</button>
@@ -324,7 +330,12 @@
       document.getElementById('homePage').style.display = 'none';
       document.getElementById('dailyPage').style.display = 'flex';
     });
-    // 刪除原本的回首頁按鈕，因為已移至側邊選單內
+    // 側邊選單返回首頁按鈕功能
+    document.getElementById('m-btn-back').addEventListener('click', function() {
+      document.getElementById('dailyPage').style.display = 'none';
+      document.getElementById('homePage').style.display = 'flex';
+      document.getElementById('sideMenu').classList.remove('open');
+    });
     
     // 漢堡按鈕與側邊選單功能
     const menuBtn = document.getElementById('menuBtn');
@@ -335,13 +346,6 @@
     });
     closeMenu.addEventListener('click', function(e) {
       e.stopPropagation();
-      sideMenu.classList.remove('open');
-    });
-    
-    // 側邊選單內返回首頁按鈕功能
-    document.getElementById('m-btn-back').addEventListener('click', function() {
-      document.getElementById('dailyPage').style.display = 'none';
-      document.getElementById('homePage').style.display = 'flex';
       sideMenu.classList.remove('open');
     });
     
@@ -356,7 +360,7 @@
       return cups[randomInt(0, cups.length - 1)];
     }
     
-    // 產生各館別隨機人員資訊，每館隨機 5～15 筆
+    // 產生各館別隨機人員資訊，每館隨機 5～15 筆，並隨機產生心得數量 (0~20)
     const hallData = {};
     halls.forEach(hall => {
       const count = randomInt(5, 15);
@@ -366,7 +370,8 @@
         const weight = randomInt(45, 70);
         const cup = randomCup();
         const fee = randomInt(3,6) * 500;
-        hallData[hall].push({name: `姓名${i}`, height, weight, cup, fee, times});
+        const review = randomInt(0, 20);
+        hallData[hall].push({name: `姓名${i}`, height, weight, cup, fee, times, review});
       }
     });
     
@@ -402,7 +407,7 @@
             <img src="image/cat07.jpg" alt="人物照片">
           </div>
           <div class="person-details">
-            <div class="detail-line first-line">${hall} · ${person.name}</div>
+            <div class="detail-line first-line">${hall} · ${person.name}<span class="review">💬 ${person.review}</span></div>
             <div class="detail-line second-line">${person.height} / ${person.weight} / ${person.cup}</div>
             <div class="detail-line third-line">台費: ${person.fee}</div>
             <div class="detail-line fourth-line">${person.times}</div>

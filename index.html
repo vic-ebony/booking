@@ -81,6 +81,10 @@
         transform: translateY(0) translateZ(0);
       }
     }
+    /* 為第四行添加偽元素 */
+    .person-details .fourth-line::before {
+      content: "可約時段: ";
+    }
     /* 漢堡按鈕：放在 .content 左上角 */
     #menuBtn {
       position: absolute;
@@ -205,9 +209,6 @@
     .person-details .fourth-line {
       white-space: normal;
       word-break: break-word;
-    }
-    .person-details .fourth-line::before {
-      content: "可約時段: ";
     }
     /* 新增的心得按鈕與數量：採用內聯容器 */
     .review-wrapper {
@@ -427,8 +428,7 @@
                 <span class="review-count">${person.review}</span>
               </span>
             </div>
-            <div class="detail-line second-line">${person.height} / ${person.weight} / ${person.cup}</div>
-            <div class="detail-line third-line">台費: ${person.fee}</div>
+            <div class="detail-line second-line">${person.height}.${person.weight}.${person.cup} | $ ${person.fee}</div>
             <div class="detail-line fourth-line">${person.times}</div>
           </div>
         </div>`;

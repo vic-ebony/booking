@@ -81,6 +81,10 @@
         transform: translateY(0) translateZ(0);
       }
     }
+    /* 為第四行添加偽元素 */
+    .person-details .fourth-line::before {
+      content: "可約時段: ";
+    }
     /* 漢堡按鈕：放在 .content 左上角 */
     #menuBtn {
       position: absolute;
@@ -206,14 +210,24 @@
       white-space: normal;
       word-break: break-word;
     }
-    .person-details .fourth-line::before {
-      content: "可約時段: ";
+    /* 新增的心得按鈕與數量：採用內聯容器 */
+    .review-wrapper {
+      display: inline-flex;
+      align-items: center;
+      margin-left: 4px;
     }
-    /* 新增的內嵌留言徽章 */
-    .review {
-      font-size: 0.85rem;
-      color: #666;
-      margin-left: 8px;
+    .review-btn {
+      padding: 2px 4px;
+      font-size: 0.75rem;
+      background: #eee;
+      border: none;
+      border-radius: 3px;
+      cursor: default;
+    }
+    .review-count {
+      margin-left: 2px;
+      font-size: 0.75rem;
+      color: gray;
     }
     /* 館別選項區 */
     .hall-selection {
@@ -407,9 +421,14 @@
             <img src="image/cat07.jpg" alt="人物照片">
           </div>
           <div class="person-details">
-            <div class="detail-line first-line">${hall} · ${person.name}<span class="review">💬 ${person.review}</span></div>
-            <div class="detail-line second-line">${person.height} / ${person.weight} / ${person.cup}</div>
-            <div class="detail-line third-line">台費: ${person.fee}</div>
+            <div class="detail-line first-line">
+              ${hall} · ${person.name}
+              <span class="review-wrapper">
+                <button class="review-btn">評</button>
+                <span class="review-count">${person.review}</span>
+              </span>
+            </div>
+            <div class="detail-line second-line">${person.height}.${person.weight}.${person.cup} | $ ${person.fee}</div>
             <div class="detail-line fourth-line">${person.times}</div>
           </div>
         </div>`;

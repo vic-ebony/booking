@@ -6,7 +6,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>首頁</title>
   <style>
-    /* 基本重設與安全區域設定 */
+    /*----------------------
+      基本重設與安全區域設定
+    ------------------------*/
     html, body {
       margin: 0;
       padding: 0;
@@ -17,14 +19,18 @@
     *, *::before, *::after {
       box-sizing: inherit;
     }
-    /* 滿版背景圖片 */
+    /*----------------------
+      背景與全局字型
+    ------------------------*/
     body {
       background: url('image/02.jpg') no-repeat center center/cover;
       height: 100vh;
       position: relative;
       font-family: Arial, sans-serif;
     }
-    /* 玻璃質感容器 */
+    /*----------------------
+      玻璃質感容器
+    ------------------------*/
     .glass-overlay {
       position: absolute;
       top: 0;
@@ -37,7 +43,6 @@
       align-items: center;
       overflow: hidden;
     }
-    /* 背景模糊層 */
     .glass-background {
       position: absolute;
       top: 0;
@@ -50,7 +55,9 @@
       border: 1px solid rgba(255,255,255,0.18);
       z-index: 0;
     }
-    /* 主要內容區 */
+    /*----------------------
+      主要內容區
+    ------------------------*/
     .content {
       position: relative;
       z-index: 1;
@@ -81,17 +88,112 @@
         transform: translateY(0) translateZ(0);
       }
     }
-    /* 為第四行添加偽元素，移除冒號 */
-    .person-details .fourth-line::before {
-      content: "可約時段 ";
+    /*----------------------
+      資訊卡區塊結構
+    ------------------------*/
+    .person-entry {
+      display: flex;
+      align-items: center;
+      padding: 10px;
+      margin-bottom: 10px;
+      border: 1px solid rgba(0,0,0,0.1);
+      border-radius: 5px;
+      background: rgba(255,255,255,0.6);
     }
-    /* 強制時段文字斷行 */
-    .person-details .fourth-line {
-      white-space: normal;
-      overflow-wrap: break-word;
+    .person-photo {
+      flex: 0 0 100px;
+      width: 100px;
+      height: 120px;
+      margin-right: 20px;
+    }
+    .person-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+    .person-details {
+      flex: 1;
+      text-align: left;
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+    .info-top {
+      margin-bottom: 10px;
+    }
+    .first-line {
+      font-weight: bold;
+      margin-bottom: 6px;
+      font-size: 1rem;
+    }
+    /*----------------------
+      資訊區劃分：使用 CSS Grid 單欄排列
+    ------------------------*/
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr;  /* 單欄排列 */
+      gap: 4px 8px;
+    }
+    .info-item {
+      display: flex;
+      align-items: flex-start;
+      font-size: 0.95rem;
       word-break: break-word;
     }
-    /* 漢堡按鈕：放在 .content 左上角 */
+    .info-item .label {
+      font-weight: bold;
+      color: #555;
+      width: 50px;
+      flex-shrink: 0;
+      margin-right: 4px;
+    }
+    .info-item .value {
+      flex: 1;
+    }
+    /*----------------------
+      下方心得與收藏區
+    ------------------------*/
+    .review-section {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid #ddd;
+      padding-top: 8px;
+      margin-top: 8px;
+    }
+    .left-buttons {
+      display: flex;
+      align-items: center;
+      gap: 4px; /* 減少間距，使心得數與按鈕靠近 */
+    }
+    /* 收藏按鈕 */
+    .collect-btn {
+      padding: 4px 10px;
+      font-size: 0.95rem;
+      background: #4CAF50;  /* 綠色背景 */
+      color: white;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+    }
+    /* 心得按鈕 */
+    .review-btn {
+      padding: 4px 10px;
+      font-size: 0.95rem;
+      background: #FF9800;  /* 橘色背景 */
+      color: white;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+    }
+    /* 將心得數與心得按鈕靠得更近 */
+    .review-count {
+      font-size: 0.95rem;
+      color: gray;
+      margin-left: 2px;
+    }
+    /*----------------------
+      其他元件與排版
+    ------------------------*/
     #menuBtn {
       position: absolute;
       top: 10px;
@@ -103,11 +205,10 @@
       cursor: pointer;
       color: #333;
     }
-    /* 側邊選單面板：定位在 .content 內左側 */
     .side-menu {
       position: absolute;
       top: 0;
-      left: -150px; /* 預設隱藏 */
+      left: -150px;
       width: 150px;
       height: 100%;
       background: rgba(255,255,255,0.95);
@@ -147,7 +248,6 @@
     .menu-content button:hover {
       background: rgba(0,0,0,0.2);
     }
-    /* 首頁選單按鈕區：一行兩個按鈕 */
     .home-menu {
       margin-top: 20px;
       display: grid;
@@ -156,7 +256,7 @@
       justify-content: center;
     }
     .home-menu button {
-      width: 8em; /* 預設4個字寬度 */
+      width: 8em;
       padding: 10px;
       border: none;
       background: rgba(255,255,255,0.35);
@@ -173,79 +273,6 @@
     .home-menu button:hover {
       background: rgba(255,255,255,0.5);
     }
-    /* 每日班表內人物資訊列表 */
-    .schedule {
-      margin-top: 20px;
-      max-height: 400px;
-      overflow-y: auto;
-    }
-    /* 資訊卡：左右排列 */
-    .person-entry {
-      display: flex;
-      align-items: center;  /* 垂直置中 */
-      padding: 10px;
-      margin-bottom: 10px;
-      border: 1px solid rgba(0,0,0,0.1);
-      border-radius: 5px;
-      background: rgba(255,255,255,0.6);
-    }
-    /* 照片區：固定寬高，右側留間距 */
-    .person-photo {
-      flex: 0 0 100px;
-      width: 100px;
-      height: 120px;
-      margin-right: 20px;
-    }
-    .person-photo img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      /* 移除圓角設定，恢復原始矩形 */
-    }
-    /* 資訊區 */
-    .person-details {
-      flex: 1;
-      text-align: left;
-      font-size: 1rem; /* 設定基本字體 */
-      line-height: 1.5;
-    }
-    /* 上方資訊區 */
-    .info-top {
-      margin-bottom: 10px;
-    }
-    .first-line {
-      font-weight: bold;
-      margin-bottom: 6px;
-      font-size: 1.1rem; /* 稍大以突顯姓名與館別 */
-    }
-    .second-line {
-      margin-bottom: 6px;
-      font-size: 1rem;
-    }
-    .fourth-line {
-      margin-bottom: 6px;
-      font-size: 0.95rem;
-    }
-    /* 獨立心得區塊 */
-    .review-section {
-      border-top: 1px solid #ddd;
-      padding-top: 8px;
-      text-align: right;
-    }
-    .review-btn {
-      padding: 4px 10px;
-      font-size: 0.95rem;
-      background: #eee;
-      border: none;
-      border-radius: 3px;
-      cursor: pointer;
-    }
-    .review-count {
-      margin-left: 4px;
-      font-size: 0.95rem;
-      color: gray;
-    }
-    /* 館別選項區 */
     .hall-selection {
       display: flex;
       overflow-x: auto;
@@ -277,7 +304,11 @@
     .hall-item button span {
       display: block;
     }
-    /* 小螢幕調整 */
+    .schedule {
+      margin-top: 20px;
+      max-height: 400px;
+      overflow-y: auto;
+    }
     @media (max-width:480px) {
       .content {
         padding: 15px 20px 70px 20px;
@@ -408,7 +439,7 @@
     renderSchedule(halls[0]);
     document.querySelector('.hall-item button').classList.add('active');
     
-    // 根據所選館別渲染 schedule 區塊，調整資訊卡 HTML 結構
+    // 根據所選館別渲染 schedule 區塊
     function renderSchedule(hall) {
       const personnel = hallData[hall];
       let html = "";
@@ -421,15 +452,27 @@
           <div class="person-details">
             <div class="info-top">
               <div class="first-line">${hall} · ${person.name}</div>
-              <div class="second-line">
-                身材 ${person.height}、${person.weight}、${person.cup}<br>
-                台費 ${person.fee}
+              <div class="info-grid">
+                <div class="info-item">
+                  <span class="label">身材</span>
+                  <span class="value">${person.height}、${person.weight}、${person.cup}</span>
+                </div>
+                <div class="info-item">
+                  <span class="label">檯費</span>
+                  <span class="value">${person.fee}</span>
+                </div>
+                <div class="info-item full">
+                  <span class="label">時段</span>
+                  <span class="value">${person.times}</span>
+                </div>
               </div>
-              <div class="fourth-line">${person.times}</div>
             </div>
             <div class="review-section">
-              <button class="review-btn">心得</button>
-              <span class="review-count">${person.review}</span>
+              <div class="left-buttons">
+                <button class="collect-btn">收藏</button>
+                <button class="review-btn">心得</button>
+                <span class="review-count">${person.review}</span>
+              </div>
             </div>
           </div>
         </div>`;

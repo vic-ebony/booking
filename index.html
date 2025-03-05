@@ -56,7 +56,7 @@
       z-index: 0;
     }
     /*----------------------
-      主要內容區（左右 padding 改為 10px）
+      主要內容區（左右 padding 改為 10px，左側 padding 為 10px）
     ------------------------*/
     .content {
       position: relative;
@@ -100,12 +100,12 @@
       border-radius: 5px;
       background: rgba(255,255,255,0.6);
     }
-    /* 照片區：寬度150px、高度180px；調整右側 margin 為 5px，左側仍為 0 */
+    /* 照片區：寬度150px、高度180px；左側 margin 0，右側 margin 10px */
     .person-photo {
       flex: 0 0 150px;
       width: 150px;
       height: 180px;
-      margin: 0 5px 0 0;  /* 左側 0, 右側 5px */
+      margin: 0 10px 0 0;
       align-self: flex-start;
     }
     .person-photo img {
@@ -132,7 +132,7 @@
     }
     .label-container {
       display: inline-block;
-      width: 35px; /* 你之前調整為35px */
+      width: 35px;  /* 調整後的寬度 */
       font-weight: bold;
       color: #555;
       margin-right: 4px;
@@ -402,11 +402,11 @@
     halls.forEach(hall => {
       const count = randomInt(5, 15);
       hallData[hall] = [];
-      for(let i = 1; i <= count; i++){
+      for (let i = 1; i <= count; i++) {
         const height = randomInt(160, 180);
         const weight = randomInt(45, 70);
         const cup = randomCup();
-        const fee = randomInt(3,6) * 500;
+        const fee = randomInt(3, 6) * 500;
         const review = randomInt(0, 20);
         hallData[hall].push({name: `姓名${i}`, height, weight, cup, fee, times, review});
       }
@@ -438,10 +438,12 @@
       const personnel = hallData[hall];
       let html = "";
       personnel.forEach(person => {
+        // 隨機選擇圖片 a (1).jpg ~ a (15).jpg
+        const randomImg = "image/a (" + randomInt(1, 15) + ").jpg";
         html += `
         <div class="person-entry">
           <div class="person-photo">
-            <img src="image/cat07.jpg" alt="人物照片">
+            <img src="${randomImg}" alt="人物照片">
           </div>
           <div class="person-details">
             <div class="info-top">

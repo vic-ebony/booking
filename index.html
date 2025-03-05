@@ -60,7 +60,7 @@
       box-shadow: 0 8px 32px 0 rgba(31,38,135,0.37);
       text-align: center;
       color: #333;
-      max-width: 90%;
+      max-width: 95%;
       width: 100%;
       margin: 0 auto;
       opacity: 0;
@@ -81,9 +81,15 @@
         transform: translateY(0) translateZ(0);
       }
     }
-    /* 為第四行添加偽元素 */
+    /* 為第四行添加偽元素，移除冒號 */
     .person-details .fourth-line::before {
-      content: "可約時段: ";
+      content: "可約時段 ";
+    }
+    /* 強制時段文字斷行 */
+    .person-details .fourth-line {
+      white-space: normal;
+      overflow-wrap: break-word;
+      word-break: break-word;
     }
     /* 漢堡按鈕：放在 .content 左上角 */
     #menuBtn {
@@ -173,60 +179,70 @@
       max-height: 400px;
       overflow-y: auto;
     }
+    /* 資訊卡：左右排列 */
     .person-entry {
       display: flex;
-      align-items: flex-start;
+      align-items: center;  /* 垂直置中 */
       padding: 10px;
       margin-bottom: 10px;
       border: 1px solid rgba(0,0,0,0.1);
       border-radius: 5px;
       background: rgba(255,255,255,0.6);
     }
+    /* 照片區：固定寬高，右側留間距 */
     .person-photo {
       flex: 0 0 100px;
       width: 100px;
       height: 120px;
-      margin-right: 10px;
+      margin-right: 20px;
     }
     .person-photo img {
       width: 100%;
       height: 100%;
       object-fit: contain;
+      /* 移除圓角設定，恢復原始矩形 */
     }
+    /* 資訊區 */
     .person-details {
       flex: 1;
       text-align: left;
-      font-size: 0.9rem;
-      line-height: 1.4;
+      font-size: 1rem; /* 設定基本字體 */
+      line-height: 1.5;
     }
-    .person-details .first-line {
+    /* 上方資訊區 */
+    .info-top {
+      margin-bottom: 10px;
+    }
+    .first-line {
       font-weight: bold;
-      margin-bottom: 4px;
+      margin-bottom: 6px;
+      font-size: 1.1rem; /* 稍大以突顯姓名與館別 */
     }
-    .person-details .detail-line {
-      margin-bottom: 4px;
+    .second-line {
+      margin-bottom: 6px;
+      font-size: 1rem;
     }
-    .person-details .fourth-line {
-      white-space: normal;
-      word-break: break-word;
+    .fourth-line {
+      margin-bottom: 6px;
+      font-size: 0.95rem;
     }
-    /* 新增的心得按鈕與數量：採用內聯容器 */
-    .review-wrapper {
-      display: inline-flex;
-      align-items: center;
-      margin-left: 4px;
+    /* 獨立心得區塊 */
+    .review-section {
+      border-top: 1px solid #ddd;
+      padding-top: 8px;
+      text-align: right;
     }
     .review-btn {
-      padding: 2px 4px;
-      font-size: 0.75rem;
+      padding: 4px 10px;
+      font-size: 0.95rem;
       background: #eee;
       border: none;
       border-radius: 3px;
-      cursor: default;
+      cursor: pointer;
     }
     .review-count {
-      margin-left: 2px;
-      font-size: 0.75rem;
+      margin-left: 4px;
+      font-size: 0.95rem;
       color: gray;
     }
     /* 館別選項區 */
@@ -261,22 +277,6 @@
     .hall-item button span {
       display: block;
     }
-    /* 選單面板內的選單按鈕 */
-    .menu-content button {
-      padding: 6px;
-      border: none;
-      background: rgba(255,255,255,0.35);
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 0.9rem;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      transition: background 0.3s;
-      width: 100%;
-      margin-bottom: 6px;
-    }
-    .menu-content button:hover {
-      background: rgba(255,255,255,0.5);
-    }
     /* 小螢幕調整 */
     @media (max-width:480px) {
       .content {
@@ -310,20 +310,18 @@
   <div class="glass-overlay" id="dailyPage" style="display:none;">
     <div class="glass-background"></div>
     <div class="content">
-      <!-- 漢堡按鈕，放在內容區左上角 -->
+      <!-- 漢堡按鈕 -->
       <button id="menuBtn">≡</button>
-      
       <h1>每日班表</h1>
       <!-- 館別選項區 -->
       <div class="hall-selection" id="hallSelection"></div>
       <!-- 每日班表內人物資訊列表 -->
       <div class="schedule" id="schedule"></div>
-      <!-- 側邊選單面板，定位在 .content 內左側 -->
+      <!-- 側邊選單面板 -->
       <div class="side-menu" id="sideMenu">
         <button class="close-btn" id="closeMenu">×</button>
         <h2>選單</h2>
         <div class="menu-content">
-          <!-- 新增返回首頁按鈕 -->
           <button id="m-btn-back">返回首頁</button>
           <button id="m-btn-daily">每日班表</button>
           <button id="m-btn-weekly">每週班表</button>
@@ -410,7 +408,7 @@
     renderSchedule(halls[0]);
     document.querySelector('.hall-item button').classList.add('active');
     
-    // 根據所選館別渲染 schedule 區塊
+    // 根據所選館別渲染 schedule 區塊，調整資訊卡 HTML 結構
     function renderSchedule(hall) {
       const personnel = hallData[hall];
       let html = "";
@@ -421,18 +419,18 @@
             <img src="image/cat07.jpg" alt="人物照片">
           </div>
           <div class="person-details">
-            <div class="detail-line first-line">
-              ${hall} · ${person.name}
-              <span class="review-wrapper">
-                <button class="review-btn">評</button>
-                <span class="review-count">${person.review}</span>
-              </span>
+            <div class="info-top">
+              <div class="first-line">${hall} · ${person.name}</div>
+              <div class="second-line">
+                身材 ${person.height}、${person.weight}、${person.cup}<br>
+                台費 ${person.fee}
+              </div>
+              <div class="fourth-line">${person.times}</div>
             </div>
-            <div class="detail-line second-line">
-              ${person.height}.${person.weight}.${person.cup}<br>
-              $ ${person.fee}
+            <div class="review-section">
+              <button class="review-btn">心得</button>
+              <span class="review-count">${person.review}</span>
             </div>
-            <div class="detail-line fourth-line">${person.times}</div>
           </div>
         </div>`;
       });

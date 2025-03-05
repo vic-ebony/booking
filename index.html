@@ -81,9 +81,9 @@
         transform: translateY(0) translateZ(0);
       }
     }
-    /* 為第四行添加偽元素 */
+    /* 修改可約時段前綴：移除冒號 */
     .person-details .fourth-line::before {
-      content: "可約時段: ";
+      content: "可約時段 ";
     }
     /* 漢堡按鈕：放在 .content 左上角 */
     #menuBtn {
@@ -215,7 +215,7 @@
     .menu-content button:hover {
       background: rgba(255,255,255,0.5);
     }
-    /* 新增的橫向滑動資訊卡 */
+    /* 橫向滑動資訊卡 */
     .schedule {
       margin-top: 20px;
       display: flex;
@@ -225,7 +225,7 @@
     }
     .person-entry {
       flex: 0 0 auto;
-      width: 200px;
+      width: 150px; /* 調整為 150px */
       border: 1px solid rgba(0,0,0,0.1);
       border-radius: 5px;
       background: rgba(255,255,255,0.6);
@@ -247,7 +247,7 @@
     }
     .person-details {
       width: 100%;
-      text-align: center;
+      text-align: left; /* 文字靠左對齊 */
       font-size: 0.9rem;
       line-height: 1.4;
     }
@@ -320,7 +320,7 @@
       <h1>每日班表</h1>
       <!-- 館別選項區 -->
       <div class="hall-selection" id="hallSelection"></div>
-      <!-- 每日班表內人物資訊列表（橫向滑動）-->
+      <!-- 每日班表內資訊卡（橫向滑動） -->
       <div class="schedule" id="schedule"></div>
       <!-- 側邊選單面板，定位在 .content 內左側 -->
       <div class="side-menu" id="sideMenu">
@@ -414,7 +414,7 @@
     renderSchedule(halls[0]);
     document.querySelector('.hall-item button').classList.add('active');
     
-    // 根據所選館別渲染 schedule 區塊（資訊卡：照片在上，資訊在下）
+    // 根據所選館別渲染 schedule 區塊（資訊卡：照片在上，資訊在下，文字靠左）
     function renderSchedule(hall) {
       const personnel = hallData[hall];
       let html = "";
@@ -433,8 +433,8 @@
               </span>
             </div>
             <div class="detail-line second-line">
-              ${person.height}cm · ${person.weight}kg · ${person.cup}<br>
-              $${person.fee}
+              身材 ${person.height}、${person.weight}、${person.cup}<br>
+              台費 ${person.fee}
             </div>
             <div class="detail-line fourth-line">${person.times}</div>
           </div>

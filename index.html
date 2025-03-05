@@ -81,9 +81,9 @@
         transform: translateY(0) translateZ(0);
       }
     }
-    /* 修改可約時段前綴：移除冒號 */
+    /* 為第四行添加偽元素 */
     .person-details .fourth-line::before {
-      content: "可約時段 ";
+      content: "可約時段: ";
     }
     /* 漢堡按鈕：放在 .content 左上角 */
     #menuBtn {
@@ -167,6 +167,68 @@
     .home-menu button:hover {
       background: rgba(255,255,255,0.5);
     }
+    /* 每日班表內人物資訊列表 */
+    .schedule {
+      margin-top: 20px;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    .person-entry {
+      display: flex;
+      align-items: flex-start;
+      padding: 10px;
+      margin-bottom: 10px;
+      border: 1px solid rgba(0,0,0,0.1);
+      border-radius: 5px;
+      background: rgba(255,255,255,0.6);
+    }
+    .person-photo {
+      flex: 0 0 100px;
+      width: 100px;
+      height: 120px;
+      margin-right: 10px;
+    }
+    .person-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+    .person-details {
+      flex: 1;
+      text-align: left;
+      font-size: 0.9rem;
+      line-height: 1.4;
+    }
+    .person-details .first-line {
+      font-weight: bold;
+      margin-bottom: 4px;
+    }
+    .person-details .detail-line {
+      margin-bottom: 4px;
+    }
+    .person-details .fourth-line {
+      white-space: normal;
+      word-break: break-word;
+    }
+    /* 新增的心得按鈕與數量：採用內聯容器 */
+    .review-wrapper {
+      display: inline-flex;
+      align-items: center;
+      margin-left: 4px;
+    }
+    .review-btn {
+      padding: 2px 4px;
+      font-size: 0.75rem;
+      background: #eee;
+      border: none;
+      border-radius: 3px;
+      cursor: default;
+    }
+    .review-count {
+      margin-left: 2px;
+      font-size: 0.75rem;
+      color: gray;
+    }
     /* 館別選項區 */
     .hall-selection {
       display: flex;
@@ -215,72 +277,6 @@
     .menu-content button:hover {
       background: rgba(255,255,255,0.5);
     }
-    /* 橫向滑動資訊卡 */
-    .schedule {
-      margin-top: 20px;
-      display: flex;
-      overflow-x: auto;
-      gap: 10px;
-      padding-bottom: 10px;
-    }
-    .person-entry {
-      flex: 0 0 auto;
-      width: 150px; /* 調整為 150px */
-      border: 1px solid rgba(0,0,0,0.1);
-      border-radius: 5px;
-      background: rgba(255,255,255,0.6);
-      padding: 10px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    .person-photo {
-      width: 100%;
-      height: 120px;
-      margin-bottom: 8px;
-    }
-    .person-photo img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      border-radius: 5px;
-    }
-    .person-details {
-      width: 100%;
-      text-align: left; /* 文字靠左對齊 */
-      font-size: 0.9rem;
-      line-height: 1.4;
-    }
-    .person-details .first-line {
-      font-weight: bold;
-      margin-bottom: 4px;
-    }
-    .person-details .detail-line {
-      margin-bottom: 4px;
-    }
-    .person-details .fourth-line {
-      white-space: normal;
-      word-break: break-word;
-    }
-    /* 新增的心得按鈕與數量：採用內聯容器 */
-    .review-wrapper {
-      display: inline-flex;
-      align-items: center;
-      margin-left: 4px;
-    }
-    .review-btn {
-      padding: 2px 4px;
-      font-size: 0.75rem;
-      background: #eee;
-      border: none;
-      border-radius: 3px;
-      cursor: default;
-    }
-    .review-count {
-      margin-left: 2px;
-      font-size: 0.75rem;
-      color: gray;
-    }
     /* 小螢幕調整 */
     @media (max-width:480px) {
       .content {
@@ -320,7 +316,7 @@
       <h1>每日班表</h1>
       <!-- 館別選項區 -->
       <div class="hall-selection" id="hallSelection"></div>
-      <!-- 每日班表內資訊卡（橫向滑動） -->
+      <!-- 每日班表內人物資訊列表 -->
       <div class="schedule" id="schedule"></div>
       <!-- 側邊選單面板，定位在 .content 內左側 -->
       <div class="side-menu" id="sideMenu">
@@ -414,7 +410,7 @@
     renderSchedule(halls[0]);
     document.querySelector('.hall-item button').classList.add('active');
     
-    // 根據所選館別渲染 schedule 區塊（資訊卡：照片在上，資訊在下，文字靠左）
+    // 根據所選館別渲染 schedule 區塊
     function renderSchedule(hall) {
       const personnel = hallData[hall];
       let html = "";
@@ -433,8 +429,8 @@
               </span>
             </div>
             <div class="detail-line second-line">
-              身材 ${person.height}、${person.weight}、${person.cup}<br>
-              台費 ${person.fee}
+              ${person.height}.${person.weight}.${person.cup}<br>
+              $ ${person.fee}
             </div>
             <div class="detail-line fourth-line">${person.times}</div>
           </div>

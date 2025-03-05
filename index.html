@@ -6,9 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>首頁</title>
   <style>
-    /*----------------------
-      基本重設與安全區域設定
-    ------------------------*/
+    /* 基本重設與安全區域設定 */
     html, body {
       margin: 0;
       padding: 0;
@@ -19,18 +17,14 @@
     *, *::before, *::after {
       box-sizing: inherit;
     }
-    /*----------------------
-      背景與全局字型
-    ------------------------*/
+    /* 背景與全局字型 */
     body {
       background: url('image/02.jpg') no-repeat center center/cover;
       height: 100vh;
       position: relative;
       font-family: Arial, sans-serif;
     }
-    /*----------------------
-      玻璃質感容器
-    ------------------------*/
+    /* 玻璃質感容器 */
     .glass-overlay {
       position: absolute;
       top: 0;
@@ -55,14 +49,12 @@
       border: 1px solid rgba(255,255,255,0.18);
       z-index: 0;
     }
-    /*----------------------
-      主要內容區（左右 padding 改為 10px）
-    ------------------------*/
+    /* 主要內容區（左右 padding 調整為 10px） */
     .content {
       position: relative;
       z-index: 1;
       background: rgba(255,255,255,0.25);
-      padding: 20px 10px 70px 10px; /* 上20px, 右10px, 下70px, 左10px */
+      padding: 20px 10px 70px 10px;
       border-radius: 15px;
       box-shadow: 0 8px 32px 0 rgba(31,38,135,0.37);
       text-align: center;
@@ -88,19 +80,17 @@
         transform: translateY(0) translateZ(0);
       }
     }
-    /*----------------------
-      資訊卡區塊結構
-    ------------------------*/
+    /* 資訊卡區塊結構 */
     .person-entry {
       display: flex;
       align-items: center;
-      padding: 10px 10px 10px 0;  /* 上10, 右10, 下10, 左0 */
+      padding: 10px 10px 10px 0;
       margin-bottom: 10px;
       border: 1px solid rgba(0,0,0,0.1);
       border-radius: 5px;
       background: rgba(255,255,255,0.6);
     }
-    /* 照片區：左右 margin 10px，寬度與高度調整 */
+    /* 照片區：調整寬度150px、高度180px，左右 margin 10px，靠上對齊 */
     .person-photo {
       flex: 0 0 150px;
       width: 150px;
@@ -123,9 +113,7 @@
     .info-top {
       margin-bottom: 10px;
     }
-    /*----------------------
-      資訊區劃分：使用 CSS Grid 單欄排列
-    ------------------------*/
+    /* 資訊區劃分：使用 CSS Grid 單欄排列 */
     .info-grid {
       display: grid;
       grid-template-columns: 1fr;
@@ -147,9 +135,7 @@
     .info-item .value {
       flex: 1;
     }
-    /*----------------------
-      下方心得與收藏區
-    ------------------------*/
+    /* 下方心得與收藏區 */
     .review-section {
       display: flex;
       justify-content: space-between;
@@ -186,9 +172,7 @@
       color: gray;
       margin-left: 2px;
     }
-    /*----------------------
-      其他元件與排版
-    ------------------------*/
+    /* 其他元件與排版 */
     #menuBtn {
       position: absolute;
       top: 10px;

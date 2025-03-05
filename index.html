@@ -100,17 +100,20 @@
       border-radius: 5px;
       background: rgba(255,255,255,0.6);
     }
+    /* 照片區：固定寬度、高度，右側間距調為 10px，並靠上對齊 */
     .person-photo {
       flex: 0 0 100px;
       width: 100px;
       height: 120px;
-      margin-right: 20px;
+      margin-right: 10px;
+      align-self: flex-start;
     }
     .person-photo img {
       width: 100%;
       height: 100%;
       object-fit: contain;
     }
+    /* 右側資訊區 */
     .person-details {
       flex: 1;
       text-align: left;
@@ -119,11 +122,6 @@
     }
     .info-top {
       margin-bottom: 10px;
-    }
-    .first-line {
-      font-weight: bold;
-      margin-bottom: 6px;
-      font-size: 1rem;
     }
     /*----------------------
       資訊區劃分：使用 CSS Grid 單欄排列
@@ -139,6 +137,7 @@
       font-size: 0.95rem;
       word-break: break-word;
     }
+    /* 標籤固定寬度 */
     .info-item .label {
       font-weight: bold;
       color: #555;
@@ -163,29 +162,26 @@
     .left-buttons {
       display: flex;
       align-items: center;
-      gap: 4px; /* 減少間距，使心得數與按鈕靠近 */
+      gap: 4px;
     }
-    /* 收藏按鈕 */
     .collect-btn {
       padding: 4px 10px;
       font-size: 0.95rem;
-      background: #4CAF50;  /* 綠色背景 */
+      background: #4CAF50;
       color: white;
       border: none;
       border-radius: 3px;
       cursor: pointer;
     }
-    /* 心得按鈕 */
     .review-btn {
       padding: 4px 10px;
       font-size: 0.95rem;
-      background: #FF9800;  /* 橘色背景 */
+      background: #FF9800;
       color: white;
       border: none;
       border-radius: 3px;
       cursor: pointer;
     }
-    /* 將心得數與心得按鈕靠得更近 */
     .review-count {
       font-size: 0.95rem;
       color: gray;
@@ -451,8 +447,11 @@
           </div>
           <div class="person-details">
             <div class="info-top">
-              <div class="first-line">${hall} · ${person.name}</div>
               <div class="info-grid">
+                <div class="info-item">
+                  <span class="label">姓名</span>
+                  <span class="value">${hall} · ${person.name}</span>
+                </div>
                 <div class="info-item">
                   <span class="label">身材</span>
                   <span class="value">${person.height}、${person.weight}、${person.cup}</span>

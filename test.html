@@ -6,7 +6,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>首頁</title>
   <style>
-    /* 基本重設與安全區域設定 */
+    /*----------------------
+      基本重設與安全區域設定
+    ------------------------*/
     html, body {
       margin: 0;
       padding: 0;
@@ -17,14 +19,18 @@
     *, *::before, *::after {
       box-sizing: inherit;
     }
-    /* 滿版背景圖片 */
+    /*----------------------
+      背景與全局字型
+    ------------------------*/
     body {
       background: url('image/02.jpg') no-repeat center center/cover;
       height: 100vh;
       position: relative;
       font-family: Arial, sans-serif;
     }
-    /* 玻璃質感容器 */
+    /*----------------------
+      玻璃質感容器
+    ------------------------*/
     .glass-overlay {
       position: absolute;
       top: 0;
@@ -37,7 +43,6 @@
       align-items: center;
       overflow: hidden;
     }
-    /* 背景模糊層 */
     .glass-background {
       position: absolute;
       top: 0;
@@ -50,7 +55,9 @@
       border: 1px solid rgba(255,255,255,0.18);
       z-index: 0;
     }
-    /* 主要內容區 */
+    /*----------------------
+      主要內容區
+    ------------------------*/
     .content {
       position: relative;
       z-index: 1;
@@ -81,25 +88,108 @@
         transform: translateY(0) translateZ(0);
       }
     }
-    /* 定義標籤專用顏色及固定寬度（用於時段、身材、檯費標籤） */
-    .label {
+    /*----------------------
+      資訊卡區塊結構
+    ------------------------*/
+    .person-entry {
+      display: flex;
+      align-items: center;
+      padding: 10px;
+      margin-bottom: 10px;
+      border: 1px solid rgba(0,0,0,0.1);
+      border-radius: 5px;
+      background: rgba(255,255,255,0.6);
+    }
+    /* 照片區：固定寬度、高度，右側間距調為 10px，並靠上對齊 */
+    .person-photo {
+      flex: 0 0 100px;
+      width: 100px;
+      height: 120px;
+      margin-right: 10px;
+      align-self: flex-start;
+    }
+    .person-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+    /* 右側資訊區 */
+    .person-details {
+      flex: 1;
+      text-align: left;
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+    .info-top {
+      margin-bottom: 10px;
+    }
+    /*----------------------
+      資訊區劃分：使用 CSS Grid 單欄排列
+    ------------------------*/
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr;  /* 單欄排列 */
+      gap: 4px 8px;
+    }
+    .info-item {
+      display: flex;
+      align-items: flex-start;
+      font-size: 0.95rem;
+      word-break: break-word;
+    }
+    /* 標籤固定寬度 */
+    .info-item .label {
+      font-weight: bold;
       color: #555;
-      display: inline-block;
-      width: 40px; /* 固定寬度，根據實際需要可調整 */
-      vertical-align: top;
+      width: 50px;
+      flex-shrink: 0;
+      margin-right: 4px;
     }
-    /* 第二行：身材與檯費 */
-    .second-line {
-      margin-bottom: 6px;
+    .info-item .value {
+      flex: 1;
+    }
+    /*----------------------
+      下方心得與收藏區
+    ------------------------*/
+    .review-section {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid #ddd;
+      padding-top: 8px;
+      margin-top: 8px;
+    }
+    .left-buttons {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .collect-btn {
+      padding: 4px 10px;
       font-size: 0.95rem;
+      background: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
     }
-    /* 第三行：時段 */
-    .third-line {
-      margin-bottom: 6px;
+    .review-btn {
+      padding: 4px 10px;
       font-size: 0.95rem;
-      word-break: break-all;  /* 強制斷行 */
+      background: #FF9800;
+      color: white;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
     }
-    /* 漢堡按鈕：放在 .content 左上角 */
+    .review-count {
+      font-size: 0.95rem;
+      color: gray;
+      margin-left: 2px;
+    }
+    /*----------------------
+      其他元件與排版
+    ------------------------*/
     #menuBtn {
       position: absolute;
       top: 10px;
@@ -111,11 +201,10 @@
       cursor: pointer;
       color: #333;
     }
-    /* 側邊選單面板 */
     .side-menu {
       position: absolute;
       top: 0;
-      left: -150px; /* 預設隱藏 */
+      left: -150px;
       width: 150px;
       height: 100%;
       background: rgba(255,255,255,0.95);
@@ -155,7 +244,6 @@
     .menu-content button:hover {
       background: rgba(0,0,0,0.2);
     }
-    /* 首頁選單按鈕區 */
     .home-menu {
       margin-top: 20px;
       display: grid;
@@ -181,7 +269,6 @@
     .home-menu button:hover {
       background: rgba(255,255,255,0.5);
     }
-    /* 館別選項區 */
     .hall-selection {
       display: flex;
       overflow-x: auto;
@@ -213,69 +300,11 @@
     .hall-item button span {
       display: block;
     }
-    /* 每日班表內人物資訊列表 */
     .schedule {
       margin-top: 20px;
       max-height: 400px;
       overflow-y: auto;
     }
-    /* 資訊卡 */
-    .person-entry {
-      display: flex;
-      align-items: center;  /* 垂直置中 */
-      padding: 10px;
-      margin-bottom: 10px;
-      border: 1px solid rgba(0,0,0,0.1);
-      border-radius: 5px;
-      background: rgba(255,255,255,0.6);
-    }
-    /* 照片區 */
-    .person-photo {
-      flex: 0 0 100px;
-      width: 100px;
-      height: 120px;
-      margin-right: 20px;
-    }
-    .person-photo img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-    }
-    /* 資訊區 */
-    .person-details {
-      flex: 1;
-      text-align: left;
-      font-size: 1rem;
-      line-height: 1.5;
-    }
-    .info-top {
-      margin-bottom: 10px;
-    }
-    .first-line {
-      font-weight: bold;
-      margin-bottom: 6px;
-      font-size: 1rem;
-    }
-    /* 獨立心得區塊 */
-    .review-section {
-      border-top: 1px solid #ddd;
-      padding-top: 8px;
-      text-align: right;
-    }
-    .review-btn {
-      padding: 4px 10px;
-      font-size: 0.95rem;
-      background: #eee;
-      border: none;
-      border-radius: 3px;
-      cursor: pointer;
-    }
-    .review-count {
-      margin-left: 4px;
-      font-size: 0.95rem;
-      color: gray;
-    }
-    /* 小螢幕調整 */
     @media (max-width:480px) {
       .content {
         padding: 15px 20px 70px 20px;
@@ -418,18 +447,31 @@
           </div>
           <div class="person-details">
             <div class="info-top">
-              <div class="first-line">${hall} · ${person.name}</div>
-              <div class="second-line">
-                <span class="label">身材</span> ${person.height}、${person.weight}、${person.cup}<br>
-                <span class="label">檯費</span> ${person.fee}
-              </div>
-              <div class="third-line">
-                <span class="label">時段</span> ${person.times}
+              <div class="info-grid">
+                <div class="info-item">
+                  <span class="label">姓名</span>
+                  <span class="value">${hall} · ${person.name}</span>
+                </div>
+                <div class="info-item">
+                  <span class="label">身材</span>
+                  <span class="value">${person.height}、${person.weight}、${person.cup}</span>
+                </div>
+                <div class="info-item">
+                  <span class="label">檯費</span>
+                  <span class="value">${person.fee}</span>
+                </div>
+                <div class="info-item full">
+                  <span class="label">時段</span>
+                  <span class="value">${person.times}</span>
+                </div>
               </div>
             </div>
             <div class="review-section">
-              <button class="review-btn">心得</button>
-              <span class="review-count">${person.review}</span>
+              <div class="left-buttons">
+                <button class="collect-btn">收藏</button>
+                <button class="review-btn">心得</button>
+                <span class="review-count">${person.review}</span>
+              </div>
             </div>
           </div>
         </div>`;

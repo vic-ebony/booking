@@ -62,7 +62,7 @@
       position: relative;
       z-index: 1;
       background: rgba(255,255,255,0.25);
-      padding: 20px 30px 70px 30px; /* 下方留足空間給選單面板 */
+      padding: 20px 30px 70px 30px;
       border-radius: 15px;
       box-shadow: 0 8px 32px 0 rgba(31,38,135,0.37);
       text-align: center;
@@ -100,12 +100,12 @@
       border-radius: 5px;
       background: rgba(255,255,255,0.6);
     }
-    /* 照片區：固定寬度、高度，右側間距調為 10px，並靠上對齊 */
+    /* 照片區：將左右間距調整為 10px，容器寬度與高度調整為 150px x 180px，並靠上對齊 */
     .person-photo {
-      flex: 0 0 100px;
-      width: 100px;
-      height: 120px;
-      margin-right: 10px;
+      flex: 0 0 150px;
+      width: 150px;
+      height: 180px;
+      margin: 0 10px; 
       align-self: flex-start;
     }
     .person-photo img {
@@ -128,7 +128,7 @@
     ------------------------*/
     .info-grid {
       display: grid;
-      grid-template-columns: 1fr;  /* 單欄排列 */
+      grid-template-columns: 1fr;
       gap: 4px 8px;
     }
     .info-item {
@@ -137,7 +137,6 @@
       font-size: 0.95rem;
       word-break: break-word;
     }
-    /* 標籤固定寬度 */
     .info-item .label {
       font-weight: bold;
       color: #555;

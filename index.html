@@ -100,7 +100,7 @@
       border-radius: 5px;
       background: rgba(255,255,255,0.6);
     }
-    /* 右側照片區：寬度130px，高度156px（等比調整自150x180），左右 margin 調整為 10px */
+    /* 右側照片區 */
     .person-photo {
       flex: 0 0 130px;
       width: 130px;
@@ -124,7 +124,7 @@
       margin-bottom: 10px;
     }
     /*----------------------
-      資訊區劃分：使用容器方式分為標籤與內容
+      資訊區劃分：標籤與內容
     ----------------------*/
     .info-item {
       display: flex;
@@ -268,55 +268,44 @@
       }
     }
     
-    /*----------------------------------------------------
-      重新設計左側滑出選單：覆蓋整個每日班表方框
-    -----------------------------------------------------*/
-    .side-menu {
-      position: absolute;
+    /*--------------------------------------------------
+      模態框 (Modal) 的 CSS 設計
+    --------------------------------------------------*/
+    .modal {
+      display: none; /* 預設隱藏 */
+      position: fixed;
+      z-index: 10;
+      left: 0;
       top: 0;
-      left: -100%;
       width: 100%;
       height: 100%;
-      background: rgba(255, 255, 255, 0.98);
-      transition: left 0.3s ease;
-      z-index: 5;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.4);
+    }
+    .modal-content {
+      background-color: #fefefe;
+      margin: 10% auto;
       padding: 20px;
+      border-radius: 8px;
+      width: 80%;
+      max-width: 500px;
+      position: relative;
     }
-    .side-menu.open {
-      left: 0;
-    }
-    /* 將關閉按鈕調整到右上角 */
-    .side-menu .close-btn {
+    .close-modal {
       position: absolute;
-      top: 15px;
+      top: 10px;
       right: 15px;
-      background: transparent;
-      border: none;
-      font-size: 2rem;
+      font-size: 28px;
+      font-weight: bold;
       cursor: pointer;
-      color: #333;
     }
-    .side-menu h2 {
-      margin-top: 50px;
-      text-align: center;
-      font-size: 1.5rem;
-    }
-    .menu-content {
-      margin-top: 30px;
-    }
-    .menu-content button {
+    /* textarea 調整 */
+    #reviewText {
       width: 100%;
-      margin: 10px 0;
-      padding: 10px;
-      border: none;
-      background: rgba(0,0,0,0.1);
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 1.1rem;
-      transition: background 0.3s;
-    }
-    .menu-content button:hover {
-      background: rgba(0,0,0,0.2);
+      height: 100px;
+      margin-top: 10px;
+      padding: 5px;
+      font-size: 1rem;
     }
   </style>
 </head>
@@ -351,7 +340,8 @@
       <div class="hall-selection" id="hallSelection"></div>
       <!-- 每日班表內人物資訊列表 -->
       <div class="schedule" id="schedule"></div>
-      <!-- 重新設計的選單面板 -->
+      
+      <!-- 重新設計的選單面板（略） -->
       <div class="side-menu" id="sideMenu">
         <button class="close-btn" id="closeMenu">×</button>
         <h2>選單</h2>
@@ -366,6 +356,22 @@
           <button id="m-btn-favorite">收藏查詢</button>
           <button id="m-btn-wishlist">願望清單</button>
         </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- 模態框：心得內容與填寫表單 -->
+  <div id="reviewModal" class="modal">
+    <div class="modal-content">
+      <span class="close-modal" id="closeReviewModal">&times;</span>
+      <h2>心得內容</h2>
+      <div id="reviewList">
+        <!-- 這裡將顯示已儲存的心得 -->
+      </div>
+      <button id="openReviewForm">填寫心得</button>
+      <div id="reviewForm" style="display:none;">
+        <textarea id="reviewText" placeholder="請輸入您的心得..."></textarea>
+        <button id="submitReview">送出</button>
       </div>
     </div>
   </div>
@@ -487,6 +493,59 @@
         </div>`;
       });
       document.getElementById('schedule').innerHTML = html;
+    }
+    
+    // 事件代理：點選「心得」按鈕時，開啟模態框
+    document.getElementById('schedule').addEventListener('click', function(e) {
+      if(e.target && e.target.classList.contains('review-btn')) {
+        openReviewModal();
+      }
+    });
+    
+    /*----------------------------------------
+      模態框相關的 JavaScript
+    ----------------------------------------*/
+    function openReviewModal() {
+      document.getElementById('reviewModal').style.display = 'block';
+      loadReviews();
+    }
+    function closeReviewModal() {
+      document.getElementById('reviewModal').style.display = 'none';
+    }
+    document.getElementById('closeReviewModal').addEventListener('click', closeReviewModal);
+    
+    // 切換顯示填寫心得的表單
+    document.getElementById('openReviewForm').addEventListener('click', function() {
+      var reviewForm = document.getElementById('reviewForm');
+      reviewForm.style.display = reviewForm.style.display === 'none' ? 'block' : 'none';
+    });
+    
+    // 送出心得，存到 localStorage
+    document.getElementById('submitReview').addEventListener('click', function(){
+      var reviewText = document.getElementById('reviewText').value;
+      if(reviewText.trim() !== "") {
+        var reviews = JSON.parse(localStorage.getItem('reviews') || "[]");
+        reviews.push(reviewText);
+        localStorage.setItem('reviews', JSON.stringify(reviews));
+        document.getElementById('reviewText').value = "";
+        loadReviews();
+      }
+    });
+    
+    // 讀取 localStorage 中的心得，並顯示於模態框中
+    function loadReviews() {
+      var reviews = JSON.parse(localStorage.getItem('reviews') || "[]");
+      var reviewList = document.getElementById('reviewList');
+      reviewList.innerHTML = "";
+      if(reviews.length > 0) {
+        reviews.forEach(function(review) {
+          var p = document.createElement('p');
+          p.textContent = review;
+          reviewList.appendChild(p);
+        });
+      } else {
+        reviewList.innerHTML = "<p>目前沒有心得</p>";
+      }
     }
   </script>
 </body>

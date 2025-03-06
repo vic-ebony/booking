@@ -56,13 +56,13 @@
       z-index: 0;
     }
     /*----------------------
-      主要內容區（左右 padding 改為 10px，左側 padding 為 10px）
+      主要內容區（左右 padding 為10px）
     ------------------------*/
     .content {
       position: relative;
       z-index: 1;
       background: rgba(255,255,255,0.25);
-      padding: 20px 10px 70px 10px;
+      padding: 20px 10px 70px 10px; /* 上20px, 右10px, 下70px, 左10px */
       border-radius: 15px;
       box-shadow: 0 8px 32px 0 rgba(31,38,135,0.37);
       text-align: center;
@@ -94,18 +94,18 @@
     .person-entry {
       display: flex;
       align-items: center;
-      padding: 10px 10px 10px 0;
+      padding: 5px 5px 5px 0;  /* 上、右、下各5px，左側0 */
       margin-bottom: 10px;
       border: 1px solid rgba(0,0,0,0.1);
       border-radius: 5px;
       background: rgba(255,255,255,0.6);
     }
-    /* 照片區：寬度150px、高度180px；左側 margin 0，右側 margin 10px */
+    /* 照片區：調整寬度130px、高度156px；左側 margin 0，右側 margin 5px */
     .person-photo {
-      flex: 0 0 150px;
-      width: 150px;
-      height: 180px;
-      margin: 0 10px 0 0;
+      flex: 0 0 130px;
+      width: 130px;
+      height: 156px;
+      margin: 0 10px 0 10px;  /* 左側 0, 右側 5px */
       align-self: flex-start;
     }
     .person-photo img {
@@ -132,7 +132,7 @@
     }
     .label-container {
       display: inline-block;
-      width: 35px;  /* 調整後的寬度 */
+      width: 35px;  /* 你已調整為35px */
       font-weight: bold;
       color: #555;
       margin-right: 4px;
@@ -402,7 +402,7 @@
     halls.forEach(hall => {
       const count = randomInt(5, 15);
       hallData[hall] = [];
-      for (let i = 1; i <= count; i++) {
+      for (let i = 1; i <= count; i++){
         const height = randomInt(160, 180);
         const weight = randomInt(45, 70);
         const cup = randomCup();

@@ -56,7 +56,7 @@
       z-index: 0;
     }
     /*----------------------
-      主要內容區（左右 padding 改為 10px）
+      主要內容區（左右 padding 為10px）
     ------------------------*/
     .content {
       position: relative;
@@ -94,18 +94,18 @@
     .person-entry {
       display: flex;
       align-items: center;
-      padding: 10px 10px 10px 0;  /* 上10, 右10, 下10, 左0 */
+      padding: 5px 5px 5px 0;  /* 上、右、下各5px，左側0 */
       margin-bottom: 10px;
       border: 1px solid rgba(0,0,0,0.1);
       border-radius: 5px;
       background: rgba(255,255,255,0.6);
     }
-    /* 照片區：左右 margin 設為 10px；寬度從 150px 調整為 130px，高度按比例調整為 156px；並靠上對齊 */
+    /* 照片區：調整寬度130px、高度156px；左側 margin 0，右側 margin 5px */
     .person-photo {
       flex: 0 0 130px;
       width: 130px;
       height: 156px;
-      margin: 0 10px;
+      margin: 0 10px 0 10px;  /* 左側 0, 右側 5px */
       align-self: flex-start;
     }
     .person-photo img {
@@ -124,29 +124,27 @@
       margin-bottom: 10px;
     }
     /*----------------------
-      資訊區劃分：使用 CSS Grid 單欄排列
+      資訊區劃分：使用容器方式分為標籤與內容
     ------------------------*/
-    .info-grid {
-      display: grid;
-      grid-template-columns: 1fr;  /* 單欄排列 */
-      gap: 4px 8px;
-    }
     .info-item {
       display: flex;
-      align-items: flex-start;
-      font-size: 0.95rem;
-      word-break: break-word;
+      margin-bottom: 4px;
     }
-    /* 標籤固定寬度 */
-    .info-item .label {
+    .label-container {
+      display: inline-block;
+      width: 35px;  /* 你已調整為35px */
       font-weight: bold;
       color: #555;
-      width: 50px;
-      flex-shrink: 0;
       margin-right: 4px;
+      font-size: 0.95rem;
+      line-height: 1.5;
+      text-align: left;
     }
-    .info-item .value {
+    .value-container {
       flex: 1;
+      word-break: break-word;
+      font-size: 0.95rem;
+      line-height: 1.5;
     }
     /*----------------------
       下方心得與收藏區
@@ -404,11 +402,11 @@
     halls.forEach(hall => {
       const count = randomInt(5, 15);
       hallData[hall] = [];
-      for(let i = 1; i <= count; i++){
+      for (let i = 1; i <= count; i++){
         const height = randomInt(160, 180);
         const weight = randomInt(45, 70);
         const cup = randomCup();
-        const fee = randomInt(3,6) * 500;
+        const fee = randomInt(3, 6) * 500;
         const review = randomInt(0, 20);
         hallData[hall].push({name: `姓名${i}`, height, weight, cup, fee, times, review});
       }
@@ -440,29 +438,31 @@
       const personnel = hallData[hall];
       let html = "";
       personnel.forEach(person => {
+        // 隨機選擇圖片 a (1).jpg ~ a (15).jpg
+        const randomImg = "image/a (" + randomInt(1, 15) + ").jpg";
         html += `
         <div class="person-entry">
           <div class="person-photo">
-            <img src="image/cat07.jpg" alt="人物照片">
+            <img src="${randomImg}" alt="人物照片">
           </div>
           <div class="person-details">
             <div class="info-top">
               <div class="info-grid">
                 <div class="info-item">
-                  <span class="label">姓名</span>
-                  <span class="value">${hall} · ${person.name}</span>
+                  <div class="label-container">姓名</div>
+                  <div class="value-container">${hall} · ${person.name}</div>
                 </div>
                 <div class="info-item">
-                  <span class="label">身材</span>
-                  <span class="value">${person.height}、${person.weight}、${person.cup}</span>
+                  <div class="label-container">身材</div>
+                  <div class="value-container">${person.height}、${person.weight}、${person.cup}</div>
                 </div>
                 <div class="info-item">
-                  <span class="label">檯費</span>
-                  <span class="value">${person.fee}</span>
+                  <div class="label-container">檯費</div>
+                  <div class="value-container">${person.fee}</div>
                 </div>
-                <div class="info-item full">
-                  <span class="label">時段</span>
-                  <span class="value">${person.times}</span>
+                <div class="info-item">
+                  <div class="label-container">時段</div>
+                  <div class="value-container">${person.times}</div>
                 </div>
               </div>
             </div>

@@ -8,7 +8,7 @@
   <style>
     /*----------------------
       基本重設與安全區域設定
-    ------------------------*/
+    ----------------------*/
     html, body {
       margin: 0;
       padding: 0;
@@ -21,7 +21,7 @@
     }
     /*----------------------
       背景與全局字型
-    ------------------------*/
+    ----------------------*/
     body {
       background: url('image/02.jpg') no-repeat center center/cover;
       height: 100vh;
@@ -30,7 +30,7 @@
     }
     /*----------------------
       玻璃質感容器
-    ------------------------*/
+    ----------------------*/
     .glass-overlay {
       position: absolute;
       top: 0;
@@ -57,12 +57,12 @@
     }
     /*----------------------
       主要內容區（左右 padding 為10px）
-    ------------------------*/
+    ----------------------*/
     .content {
       position: relative;
       z-index: 1;
       background: rgba(255,255,255,0.25);
-      padding: 20px 10px 70px 10px; /* 上20px, 右10px, 下70px, 左10px */
+      padding: 20px 10px 70px 10px;
       border-radius: 15px;
       box-shadow: 0 8px 32px 0 rgba(31,38,135,0.37);
       text-align: center;
@@ -90,22 +90,22 @@
     }
     /*----------------------
       資訊卡區塊結構
-    ------------------------*/
+    ----------------------*/
     .person-entry {
       display: flex;
       align-items: center;
-      padding: 5px 5px 5px 0;  /* 上、右、下各5px，左側0 */
+      padding: 5px 5px 5px 0;
       margin-bottom: 10px;
       border: 1px solid rgba(0,0,0,0.1);
       border-radius: 5px;
       background: rgba(255,255,255,0.6);
     }
-    /* 照片區：調整寬度130px、高度156px；左側 margin 0，右側 margin 5px */
+    /* 右側照片區：寬度130px，高度156px（等比調整自150x180），左右 margin 調整為 10px */
     .person-photo {
       flex: 0 0 130px;
       width: 130px;
       height: 156px;
-      margin: 0 10px 0 10px;  /* 左側 0, 右側 5px */
+      margin: 0 10px; /* 左右各10px */
       align-self: flex-start;
     }
     .person-photo img {
@@ -113,7 +113,7 @@
       height: 100%;
       object-fit: contain;
     }
-    /* 右側資訊區 */
+    /* 左側資訊區 */
     .person-details {
       flex: 1;
       text-align: left;
@@ -125,20 +125,21 @@
     }
     /*----------------------
       資訊區劃分：使用容器方式分為標籤與內容
-    ------------------------*/
+    ----------------------*/
     .info-item {
       display: flex;
       margin-bottom: 4px;
     }
     .label-container {
       display: inline-block;
-      width: 35px;  /* 你已調整為35px */
+      /* 移除原本的固定寬度設定 */
       font-weight: bold;
       color: #555;
       margin-right: 4px;
       font-size: 0.95rem;
       line-height: 1.5;
       text-align: left;
+      padding-left: 5px; /* 新增左側內邊距 */
     }
     .value-container {
       flex: 1;
@@ -148,7 +149,7 @@
     }
     /*----------------------
       下方心得與收藏區
-    ------------------------*/
+    ----------------------*/
     .review-section {
       display: flex;
       justify-content: space-between;
@@ -156,6 +157,7 @@
       border-top: 1px solid #ddd;
       padding-top: 8px;
       margin-top: 8px;
+      padding-left: 5px; /* 新增左側內邊距 */
     }
     .left-buttons {
       display: flex;
@@ -187,7 +189,7 @@
     }
     /*----------------------
       其他元件與排版
-    ------------------------*/
+    ----------------------*/
     #menuBtn {
       position: absolute;
       top: 10px;
@@ -442,9 +444,7 @@
         const randomImg = "image/a (" + randomInt(1, 15) + ").jpg";
         html += `
         <div class="person-entry">
-          <div class="person-photo">
-            <img src="${randomImg}" alt="人物照片">
-          </div>
+          <!-- 交換位置：先放資訊區，再放照片區 -->
           <div class="person-details">
             <div class="info-top">
               <div class="info-grid">
@@ -473,6 +473,9 @@
                 <span class="review-count">${person.review}</span>
               </div>
             </div>
+          </div>
+          <div class="person-photo">
+            <img src="${randomImg}" alt="人物照片">
           </div>
         </div>`;
       });

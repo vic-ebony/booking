@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <!-- 讓網頁在各種裝置上適當縮放 -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>每日班表與心得表單</title>
+  <title>每日班表與心得</title>
   <style>
     /*----------------------
       基本重設與安全區域設定
@@ -267,10 +267,8 @@
         font-size: 0.9rem;
       }
     }
-    
     /*----------------------------------------------------
-      重新設計左側滑出選單：覆蓋整個每日班表方框
-      改用 transform 來控制滑入效果
+      左側滑出選單（保持原狀）
     -----------------------------------------------------*/
     .side-menu {
       position: absolute;
@@ -287,7 +285,6 @@
     .side-menu.open {
       transform: translateX(0);
     }
-    /* 將關閉按鈕調整到右上角 */
     .side-menu .close-btn {
       position: absolute;
       top: 15px;
@@ -320,12 +317,11 @@
     .menu-content button:hover {
       background: rgba(0,0,0,0.2);
     }
-    
     /*--------------------------------------------------
-      模態框 (Modal) 的 CSS 設計
+      模態框：心得檢視（完整資訊展示）
     --------------------------------------------------*/
     .modal {
-      display: none; /* 預設隱藏 */
+      display: none;
       position: fixed;
       z-index: 10;
       left: 0;
@@ -352,8 +348,40 @@
       font-weight: bold;
       cursor: pointer;
     }
+    /* 使用 display: table 模型來實現懸掛縮排 */
+    .review-field {
+      display: table;
+      width: 100%;
+      margin: 4px 0;
+    }
+    .field-label {
+      display: table-cell;
+      width: 60px;
+      font-weight: bold;
+      padding-right: 4px;
+      vertical-align: top;
+    }
+    .field-content {
+      display: table-cell;
+      width: auto;
+    }
+    /* review-card 邊框 */
+    .review-card {
+      border: 1px solid #ccc !important;
+      border-radius: 4px;
+      padding: 10px;
+      margin-bottom: 10px;
+      text-align: left;
+    }
+    .review-card p { margin: 4px 0; }
     /*--------------------------------------------------
-      表單欄位 CSS（心得表單在模態框內）
+      模態框：心得填寫表單（尺寸較大）
+    --------------------------------------------------*/
+    #reviewFormModal .modal-content {
+      max-width: 800px;
+    }
+    /*--------------------------------------------------
+      表單欄位 CSS（心得填寫表單在模態框內）
     --------------------------------------------------*/
     .form-group {
       margin-bottom: 15px;
@@ -397,10 +425,15 @@
     .modal-content button[type="submit"]:hover {
       background: #45a049;
     }
+    /* 額外獨立編號 */
+    .review-number {
+      font-weight: bold;
+      margin-bottom: 4px;
+    }
   </style>
 </head>
 <body>
-  <!-- 首頁玻璃質感內容區 -->
+  <!-- 首頁 -->
   <div class="glass-overlay" id="homePage">
     <div class="glass-background"></div>
     <div class="content">
@@ -419,18 +452,15 @@
     </div>
   </div>
   
-  <!-- 每日班表頁面（預設隱藏） -->
+  <!-- 每日班表頁面 -->
   <div class="glass-overlay" id="dailyPage" style="display:none;">
     <div class="glass-background"></div>
     <div class="content">
-      <!-- 漢堡按鈕 -->
       <button id="menuBtn">≡</button>
       <h1>每日班表</h1>
-      <!-- 館別選項區 -->
       <div class="hall-selection" id="hallSelection"></div>
-      <!-- 每日班表內人物資訊列表 -->
       <div class="schedule" id="schedule"></div>
-      <!-- 重新設計的選單面板 -->
+      <!-- 側邊選單 -->
       <div class="side-menu" id="sideMenu">
         <button class="close-btn" id="closeMenu">×</button>
         <h2>選單</h2>
@@ -449,35 +479,47 @@
     </div>
   </div>
   
-  <!-- 模態框：心得表單（詳細表單） -->
+  <!-- 模態框：心得檢視（完整資訊展示），填寫心得按鈕位於上方 -->
   <div id="reviewModal" class="modal">
     <div class="modal-content">
       <span class="close-modal" id="closeReviewModal">&times;</span>
-      <h2>心得表單</h2>
+      <h2>心得檢視</h2>
+      <!-- 將填寫心得按鈕放到上方 -->
+      <button id="goToReviewForm">填寫心得</button>
+      <div id="reviewList">
+        <!-- 每筆心得先獨立顯示編號，再用 review-field 輸出欄位 -->
+      </div>
+    </div>
+  </div>
+  
+  <!-- 模態框：心得填寫表單（尺寸較大） -->
+  <div id="reviewFormModal" class="modal">
+    <div class="modal-content">
+      <span class="close-modal" id="closeReviewFormModal">&times;</span>
+      <h2>填寫心得</h2>
       <form id="detailedReviewForm">
         <!-- 年紀 -->
         <div class="form-group">
           <label for="age">年紀：</label>
           <input type="text" id="age" name="age" placeholder="請輸入年紀">
         </div>
-        <!-- 樣貌 -->
+        <!-- 樣貌（複選） -->
         <div class="form-group">
-          <label for="appearance">樣貌：</label>
-          <select name="appearance" id="appearance">
-            <option value="">請選擇</option>
-            <option value="高顏值">高顏值</option>
-            <option value="醫美感">醫美感</option>
-            <option value="中上">中上</option>
-            <option value="普通">普通</option>
-            <option value="仙氣">仙氣</option>
-            <option value="甜美">甜美</option>
-            <option value="可愛">可愛</option>
-            <option value="艷麗">艷麗</option>
-            <option value="鄰家">鄰家</option>
-            <option value="素人">素人</option>
-            <option value="輕熟">輕熟</option>
-            <option value="熟女">熟女</option>
-          </select>
+          <label>樣貌：</label>
+          <div class="checkbox-group" id="appearance-group">
+            <label><input type="checkbox" name="appearance" value="高顏值"> 高顏值</label>
+            <label><input type="checkbox" name="appearance" value="醫美感"> 醫美感</label>
+            <label><input type="checkbox" name="appearance" value="中上"> 中上</label>
+            <label><input type="checkbox" name="appearance" value="普通"> 普通</label>
+            <label><input type="checkbox" name="appearance" value="仙氣"> 仙氣</label>
+            <label><input type="checkbox" name="appearance" value="甜美"> 甜美</label>
+            <label><input type="checkbox" name="appearance" value="可愛"> 可愛</label>
+            <label><input type="checkbox" name="appearance" value="艷麗"> 艷麗</label>
+            <label><input type="checkbox" name="appearance" value="鄰家"> 鄰家</label>
+            <label><input type="checkbox" name="appearance" value="素人"> 素人</label>
+            <label><input type="checkbox" name="appearance" value="輕熟"> 輕熟</label>
+            <label><input type="checkbox" name="appearance" value="熟女"> 熟女</label>
+          </div>
         </div>
         <!-- 神似 -->
         <div class="form-group">
@@ -486,26 +528,25 @@
             <option value="無">無</option>
           </select>
         </div>
-        <!-- 風格 -->
+        <!-- 風格（複選） -->
         <div class="form-group">
-          <label for="style">風格：</label>
-          <select name="style" id="style">
-            <option value="">請選擇</option>
-            <option value="女友感">女友感</option>
-            <option value="安靜">安靜</option>
-            <option value="喜歡聊天">喜歡聊天</option>
-            <option value="極度誘惑">極度誘惑</option>
-            <option value="慾女">慾女</option>
-            <option value="癡女">癡女</option>
-            <option value="89">89</option>
-            <option value="無辜">無辜</option>
-            <option value="氣質">氣質</option>
-            <option value="被動">被動</option>
-            <option value="主動">主動</option>
-            <option value="傻大姊">傻大姊</option>
-            <option value="性感">性感</option>
-            <option value="女人味">女人味</option>
-          </select>
+          <label>風格：</label>
+          <div class="checkbox-group" id="style-group">
+            <label><input type="checkbox" name="style" value="女友感"> 女友感</label>
+            <label><input type="checkbox" name="style" value="安靜"> 安靜</label>
+            <label><input type="checkbox" name="style" value="喜歡聊天"> 喜歡聊天</label>
+            <label><input type="checkbox" name="style" value="極度誘惑"> 極度誘惑</label>
+            <label><input type="checkbox" name="style" value="慾女"> 慾女</label>
+            <label><input type="checkbox" name="style" value="癡女"> 癡女</label>
+            <label><input type="checkbox" name="style" value="89"> 89</label>
+            <label><input type="checkbox" name="style" value="無辜"> 無辜</label>
+            <label><input type="checkbox" name="style" value="氣質"> 氣質</label>
+            <label><input type="checkbox" name="style" value="被動"> 被動</label>
+            <label><input type="checkbox" name="style" value="主動"> 主動</label>
+            <label><input type="checkbox" name="style" value="傻大姊"> 傻大姊</label>
+            <label><input type="checkbox" name="style" value="性感"> 性感</label>
+            <label><input type="checkbox" name="style" value="女人味"> 女人味</label>
+          </div>
         </div>
         <!-- 身材 -->
         <div class="form-group">
@@ -521,7 +562,7 @@
             <option value="棉花糖">棉花糖</option>
           </select>
         </div>
-        <!-- 胸部 -->
+        <!-- 胸部與大小整合 -->
         <div class="form-group">
           <label for="breast">胸部：</label>
           <select name="breast" id="breast">
@@ -530,7 +571,7 @@
             <option value="醫美">醫美</option>
             <option value="自體醫美">自體醫美</option>
           </select>
-          <input type="text" id="breastSize" name="breastSize" placeholder="請輸入胸部大小（選擇醫美或自體醫美時）">
+          <input type="text" id="breastSize" name="breastSize" placeholder="請輸入胸部大小">
         </div>
         <!-- 膚質 -->
         <div class="form-group">
@@ -662,37 +703,24 @@
       document.getElementById('homePage').style.display = 'none';
       document.getElementById('dailyPage').style.display = 'flex';
     });
-    // 側邊選單返回首頁按鈕功能
     document.getElementById('m-btn-back').addEventListener('click', function() {
       document.getElementById('dailyPage').style.display = 'none';
       document.getElementById('homePage').style.display = 'flex';
       document.getElementById('sideMenu').classList.remove('open');
     });
     
-    // 漢堡按鈕與側邊選單功能
+    // 漢堡與側邊選單功能
     const menuBtn = document.getElementById('menuBtn');
     const sideMenu = document.getElementById('sideMenu');
     const closeMenu = document.getElementById('closeMenu');
-    menuBtn.addEventListener('click', function() {
-      sideMenu.classList.add('open');
-    });
-    closeMenu.addEventListener('click', function(e) {
-      e.stopPropagation();
-      sideMenu.classList.remove('open');
-    });
+    menuBtn.addEventListener('click', function() { sideMenu.classList.add('open'); });
+    closeMenu.addEventListener('click', function(e) { e.stopPropagation(); sideMenu.classList.remove('open'); });
     
-    // 定義各館別及相關資料
+    // 模擬每日班表資料
     const halls = ["樂鑽", "手中情", "潘朵拉", "茶湯會", "芯苑", "八五", "寶可夢", "愛寶", "芯店", "水沙連", "木村"];
     const times = "12.13.14.15.16.17.18.19.20.21.22.23.24.01.02.03.04.05";
-    function randomInt(min, max) {
-      return Math.floor(Math.random() * (max - min + 1)) + min;
-    }
-    function randomCup() {
-      const cups = ["A", "B", "C", "D"];
-      return cups[randomInt(0, cups.length - 1)];
-    }
-    
-    // 產生各館別隨機人員資訊，每館隨機 5～15 筆，並隨機產生心得數量 (0~20)
+    function randomInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+    function randomCup() { const cups = ["A", "B", "C", "D"]; return cups[randomInt(0, cups.length - 1)]; }
     const hallData = {};
     halls.forEach(hall => {
       const count = randomInt(5, 15);
@@ -707,7 +735,7 @@
       }
     });
     
-    // 生成館別選項區
+    // 生成館別選項
     const hallSelectionDiv = document.getElementById('hallSelection');
     halls.forEach(hall => {
       const count = hallData[hall].length;
@@ -728,16 +756,14 @@
     renderSchedule(halls[0]);
     document.querySelector('.hall-item button').classList.add('active');
     
-    // 根據所選館別渲染 schedule 區塊
+    // 根據館別渲染每日班表
     function renderSchedule(hall) {
       const personnel = hallData[hall];
       let html = "";
       personnel.forEach(person => {
-        // 隨機選擇圖片 a (1).jpg ~ a (15).jpg
         const randomImg = "image/a (" + randomInt(1, 15) + ").jpg";
         html += `
         <div class="person-entry">
-          <!-- 交換位置：先放資訊區，再放照片區 -->
           <div class="person-details">
             <div class="info-top">
               <div class="info-grid">
@@ -775,50 +801,54 @@
       document.getElementById('schedule').innerHTML = html;
     }
     
-    // 事件代理：點選「心得」按鈕時，開啟模態框（顯示心得表單）
+    // 點選「心得」按鈕時顯示心得檢視模態框
     document.getElementById('schedule').addEventListener('click', function(e) {
       if(e.target && e.target.classList.contains('review-btn')) {
         openReviewModal();
       }
     });
     
-    /*----------------------------------------
-      模態框相關的 JavaScript（心得表單）
-    ----------------------------------------*/
+    // 模態框：心得檢視（完整資訊展示）
     function openReviewModal() {
       document.getElementById('reviewModal').style.display = 'block';
+      loadReviews();
     }
     function closeReviewModal() {
       document.getElementById('reviewModal').style.display = 'none';
     }
     document.getElementById('closeReviewModal').addEventListener('click', closeReviewModal);
     
-    // 服務區：加值前與加值後選項的互斥控制
+    // 點選「填寫心得」按鈕，打開心得填寫表單模態框
+    document.getElementById('goToReviewForm').addEventListener('click', function() {
+      document.getElementById('reviewFormModal').style.display = 'block';
+    });
+    
+    // 模態框：心得填寫表單關閉
+    function closeReviewFormModal() {
+      document.getElementById('reviewFormModal').style.display = 'none';
+    }
+    document.getElementById('closeReviewFormModal').addEventListener('click', closeReviewFormModal);
+    
+    // 服務區：加值前與加值後選項互斥設定（表單內）
     const preOptions = document.querySelectorAll('#pre-options input[type="checkbox"]');
     preOptions.forEach(preCheckbox => {
       preCheckbox.addEventListener('change', function() {
         const value = this.value;
         const postCheckbox = document.querySelector(`#post-options input[value="${value}"]`);
-        if (this.checked) {
-          postCheckbox.disabled = true;
-        } else {
-          postCheckbox.disabled = false;
-        }
+        postCheckbox.disabled = this.checked;
       });
     });
     
-    // 表單提交事件（以 localStorage 暫存，測試用途）
+    // 表單提交事件：整合欄位後存入 localStorage，再關閉表單模態框，更新心得檢視模態框
     document.getElementById('detailedReviewForm').addEventListener('submit', function(e) {
       e.preventDefault();
-      // 收集表單資料
       const formData = {
         age: document.getElementById('age').value,
-        appearance: document.getElementById('appearance').value,
+        appearance: Array.from(document.querySelectorAll('input[name="appearance"]:checked')).map(el => el.value),
         lookalike: document.getElementById('lookalike').value,
-        style: document.getElementById('style').value,
+        style: Array.from(document.querySelectorAll('input[name="style"]:checked')).map(el => el.value),
         body: document.getElementById('body').value,
         breast: document.getElementById('breast').value,
-        breastSize: document.getElementById('breastSize').value,
         skinQuality: document.getElementById('skinQuality').value,
         skinColor: document.getElementById('skinColor').value,
         musicService: document.getElementById('musicService').value,
@@ -827,19 +857,79 @@
         musicCostAmount: document.getElementById('musicCostAmount').value,
         sportsCostType: document.getElementById('sportsCostType').value,
         sportsCostAmount: document.getElementById('sportsCostAmount').value,
-        preOptions: Array.from(document.querySelectorAll('#pre-options input[type="checkbox"]:checked')).map(el => el.value),
-        postOptions: Array.from(document.querySelectorAll('#post-options input[type="checkbox"]:checked')).map(el => el.value),
         review: document.getElementById('review').value
       };
-      // 這裡暫時以 localStorage 儲存（正式上線時可改為送至後端）
+      formData.breastDetails = formData.breast;
+      if(document.getElementById('breastSize').value.trim() !== "") {
+        formData.breastDetails += " (" + document.getElementById('breastSize').value + ")";
+      }
+      formData.musicDetails = formData.musicService + " (" + formData.musicCostType + " " + formData.musicCostAmount + ")";
+      formData.sportsDetails = formData.sportsService + " (" + formData.sportsCostType + " " + formData.sportsCostAmount + ")";
+      formData.preOptions = Array.from(document.querySelectorAll('#pre-options input[type="checkbox"]:checked')).map(el => el.value);
+      formData.postOptions = Array.from(document.querySelectorAll('#post-options input[type="checkbox"]:checked')).map(el => el.value);
+      
       let reviews = JSON.parse(localStorage.getItem('detailedReviews') || "[]");
       reviews.push(formData);
       localStorage.setItem('detailedReviews', JSON.stringify(reviews));
       alert("表單已送出並暫存！");
-      // 重置表單
       document.getElementById('detailedReviewForm').reset();
-      closeReviewModal();
+      closeReviewFormModal();
+      loadReviews();
     });
+    
+    // 讀取 localStorage 中的詳細心得，並在心得檢視模態框中完整展示所有資訊
+    function loadReviews() {
+      let reviews = JSON.parse(localStorage.getItem('detailedReviews') || "[]");
+      const reviewList = document.getElementById('reviewList');
+      reviewList.innerHTML = "";
+      if(reviews.length > 0) {
+        reviews.forEach(function(item, index) {
+          let html = "";
+          // 編號獨立顯示
+          html += `<p class="review-number">#${index+1}</p>`;
+          html += `<p class="review-field"><span class="field-label">年紀：</span><span class="field-content">${item.age}</span></p>`;
+          html += `<p class="review-field"><span class="field-label">樣貌：</span><span class="field-content">${item.appearance.join(", ")}</span></p>`;
+          html += `<p class="review-field"><span class="field-label">神似：</span><span class="field-content">${item.lookalike}</span></p>`;
+          html += `<p class="review-field"><span class="field-label">風格：</span><span class="field-content">${item.style.join(", ")}</span></p>`;
+          html += `<p class="review-field"><span class="field-label">身材：</span><span class="field-content">${item.body}</span></p>`;
+          html += `<p class="review-field"><span class="field-label">胸部：</span><span class="field-content">${item.breastDetails}</span></p>`;
+          html += `<p class="review-field"><span class="field-label">膚質：</span><span class="field-content">${item.skinQuality}</span></p>`;
+          html += `<p class="review-field"><span class="field-label">膚色：</span><span class="field-content">${item.skinColor}</span></p>`;
+          html += `<p class="review-field"><span class="field-label">音樂：</span><span class="field-content">${item.musicDetails}</span></p>`;
+          html += `<p class="review-field"><span class="field-label">體育：</span><span class="field-content">${item.sportsDetails}</span></p>`;
+          html += `<p class="review-field"><span class="field-label">服務：</span><span class="field-content">前：${item.preOptions.join(", ")}　後：${item.postOptions.join(", ")}</span></p>`;
+          html += `<p class="review-field"><span class="field-label">心得：</span><span class="field-content">${item.review}</span></p>`;
+          const card = `<div class="review-card">${html}</div>`;
+          reviewList.innerHTML += card;
+        });
+      } else {
+        reviewList.innerHTML = "<p>目前沒有心得</p>";
+      }
+    }
   </script>
+  
+  <!-- 使用 CSS table 模型實現懸掛縮排 -->
+  <style>
+    .review-field {
+      display: table;
+      width: 100%;
+      margin: 4px 0;
+    }
+    .field-label {
+      display: table-cell;
+      width: 60px;
+      font-weight: bold;
+      padding-right: 4px;
+      vertical-align: top;
+    }
+    .field-content {
+      display: table-cell;
+      width: auto;
+    }
+    .review-number {
+      font-weight: bold;
+      margin-bottom: 4px;
+    }
+  </style>
 </body>
 </html>

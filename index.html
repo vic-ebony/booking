@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <!-- 讓網頁在各種裝置上適當縮放 -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>首頁</title>
+  <title>每日班表與心得表單</title>
   <style>
     /*----------------------
       基本重設與安全區域設定
@@ -337,11 +337,11 @@
     }
     .modal-content {
       background-color: #fefefe;
-      margin: 10% auto;
+      margin: 5% auto;
       padding: 20px;
       border-radius: 8px;
-      width: 80%;
-      max-width: 500px;
+      width: 90%;
+      max-width: 600px;
       position: relative;
     }
     .close-modal {
@@ -352,13 +352,50 @@
       font-weight: bold;
       cursor: pointer;
     }
-    /* textarea 調整 */
-    #reviewText {
+    /*--------------------------------------------------
+      表單欄位 CSS（心得表單在模態框內）
+    --------------------------------------------------*/
+    .form-group {
+      margin-bottom: 15px;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+    .form-group input[type="text"],
+    .form-group textarea,
+    .form-group select {
       width: 100%;
-      height: 100px;
-      margin-top: 10px;
-      padding: 5px;
-      font-size: 1rem;
+      padding: 8px;
+      box-sizing: border-box;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    .form-group textarea {
+      resize: vertical;
+    }
+    .checkbox-group {
+      margin-top: 5px;
+    }
+    .checkbox-group label {
+      display: inline-block;
+      margin-right: 10px;
+      font-weight: normal;
+    }
+    .modal-content button[type="submit"] {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      font-size: 1.1rem;
+      background: #4CAF50;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .modal-content button[type="submit"]:hover {
+      background: #45a049;
     }
   </style>
 </head>
@@ -412,19 +449,210 @@
     </div>
   </div>
   
-  <!-- 模態框：心得內容與填寫表單 -->
+  <!-- 模態框：心得表單（詳細表單） -->
   <div id="reviewModal" class="modal">
     <div class="modal-content">
       <span class="close-modal" id="closeReviewModal">&times;</span>
-      <h2>心得內容</h2>
-      <div id="reviewList">
-        <!-- 這裡將顯示已儲存的心得 -->
-      </div>
-      <button id="openReviewForm">填寫心得</button>
-      <div id="reviewForm" style="display:none;">
-        <textarea id="reviewText" placeholder="請輸入您的心得..."></textarea>
-        <button id="submitReview">送出</button>
-      </div>
+      <h2>心得表單</h2>
+      <form id="detailedReviewForm">
+        <!-- 年紀 -->
+        <div class="form-group">
+          <label for="age">年紀：</label>
+          <input type="text" id="age" name="age" placeholder="請輸入年紀">
+        </div>
+        <!-- 樣貌 -->
+        <div class="form-group">
+          <label for="appearance">樣貌：</label>
+          <select name="appearance" id="appearance">
+            <option value="">請選擇</option>
+            <option value="高顏值">高顏值</option>
+            <option value="醫美感">醫美感</option>
+            <option value="中上">中上</option>
+            <option value="普通">普通</option>
+            <option value="仙氣">仙氣</option>
+            <option value="甜美">甜美</option>
+            <option value="可愛">可愛</option>
+            <option value="艷麗">艷麗</option>
+            <option value="鄰家">鄰家</option>
+            <option value="素人">素人</option>
+            <option value="輕熟">輕熟</option>
+            <option value="熟女">熟女</option>
+          </select>
+        </div>
+        <!-- 神似 -->
+        <div class="form-group">
+          <label for="lookalike">神似：</label>
+          <select name="lookalike" id="lookalike">
+            <option value="無">無</option>
+          </select>
+        </div>
+        <!-- 風格 -->
+        <div class="form-group">
+          <label for="style">風格：</label>
+          <select name="style" id="style">
+            <option value="">請選擇</option>
+            <option value="女友感">女友感</option>
+            <option value="安靜">安靜</option>
+            <option value="喜歡聊天">喜歡聊天</option>
+            <option value="極度誘惑">極度誘惑</option>
+            <option value="慾女">慾女</option>
+            <option value="癡女">癡女</option>
+            <option value="89">89</option>
+            <option value="無辜">無辜</option>
+            <option value="氣質">氣質</option>
+            <option value="被動">被動</option>
+            <option value="主動">主動</option>
+            <option value="傻大姊">傻大姊</option>
+            <option value="性感">性感</option>
+            <option value="女人味">女人味</option>
+          </select>
+        </div>
+        <!-- 身材 -->
+        <div class="form-group">
+          <label for="body">身材：</label>
+          <select name="body" id="body">
+            <option value="">請選擇</option>
+            <option value="骨感">骨感</option>
+            <option value="瘦">瘦</option>
+            <option value="標準">標準</option>
+            <option value="完美">完美</option>
+            <option value="微肉">微肉</option>
+            <option value="偏肉">偏肉</option>
+            <option value="棉花糖">棉花糖</option>
+          </select>
+        </div>
+        <!-- 胸部 -->
+        <div class="form-group">
+          <label for="breast">胸部：</label>
+          <select name="breast" id="breast">
+            <option value="">請選擇</option>
+            <option value="天然">天然</option>
+            <option value="醫美">醫美</option>
+            <option value="自體醫美">自體醫美</option>
+          </select>
+          <input type="text" id="breastSize" name="breastSize" placeholder="請輸入胸部大小（選擇醫美或自體醫美時）">
+        </div>
+        <!-- 膚質 -->
+        <div class="form-group">
+          <label for="skinQuality">膚質：</label>
+          <select name="skinQuality" id="skinQuality">
+            <option value="">請選擇</option>
+            <option value="絲滑">絲滑</option>
+            <option value="普通">普通</option>
+            <option value="差">差</option>
+            <option value="一點點痘痘">一點點痘痘</option>
+          </select>
+        </div>
+        <!-- 膚色 -->
+        <div class="form-group">
+          <label for="skinColor">膚色：</label>
+          <select name="skinColor" id="skinColor">
+            <option value="">請選擇</option>
+            <option value="白皙">白皙</option>
+            <option value="偏白">偏白</option>
+            <option value="正常黃">正常黃</option>
+            <option value="偏黑">偏黑</option>
+            <option value="古銅">古銅</option>
+            <option value="黑">黑</option>
+          </select>
+        </div>
+        <!-- 加值 - 音樂 -->
+        <div class="form-group">
+          <label for="musicService">加值 - 音樂：</label>
+          <select name="musicService" id="musicService">
+            <option value="">請選擇</option>
+            <option value="沒問">沒問</option>
+            <option value="無此服務">無此服務</option>
+            <option value="有此服務">有此服務</option>
+            <option value="不一定給加值">不一定給加值</option>
+          </select>
+        </div>
+        <!-- 加值 - 體育 -->
+        <div class="form-group">
+          <label for="sportsService">加值 - 體育：</label>
+          <select name="sportsService" id="sportsService">
+            <option value="">請選擇</option>
+            <option value="沒問">沒問</option>
+            <option value="無此服務">無此服務</option>
+            <option value="有此服務">有此服務</option>
+            <option value="不一定給加值">不一定給加值</option>
+          </select>
+        </div>
+        <!-- 費用 - 音樂 -->
+        <div class="form-group">
+          <label for="musicCostType">費用 - 音樂：</label>
+          <select name="musicCostType" id="musicCostType">
+            <option value="">請選擇</option>
+            <option value="行情">行情</option>
+            <option value="高單">高單</option>
+          </select>
+          <input type="text" id="musicCostAmount" name="musicCostAmount" placeholder="請輸入金額">
+        </div>
+        <!-- 費用 - 體育 -->
+        <div class="form-group">
+          <label for="sportsCostType">費用 - 體育：</label>
+          <select name="sportsCostType" id="sportsCostType">
+            <option value="">請選擇</option>
+            <option value="行情">行情</option>
+            <option value="高單">高單</option>
+          </select>
+          <input type="text" id="sportsCostAmount" name="sportsCostAmount" placeholder="請輸入金額">
+        </div>
+        <!-- 服務 - 加值前 -->
+        <div class="form-group">
+          <label>服務 - 加值前：</label>
+          <div id="pre-options" class="checkbox-group">
+            <label>
+              <input type="checkbox" name="pre" value="LG" id="pre-lg"> LG
+            </label>
+            <label>
+              <input type="checkbox" name="pre" value="三光" id="pre-san"> 三光
+            </label>
+            <label>
+              <input type="checkbox" name="pre" value="金手指" id="pre-jin"> 金手指
+            </label>
+            <label>
+              <input type="checkbox" name="pre" value="舔" id="pre-tian"> 舔
+            </label>
+            <label>
+              <input type="checkbox" name="pre" value="親" id="pre-qin"> 親
+            </label>
+            <label>
+              <input type="checkbox" name="pre" value="素股" id="pre-sugu"> 素股
+            </label>
+          </div>
+        </div>
+        <!-- 服務 - 加值後 -->
+        <div class="form-group">
+          <label>服務 - 加值後：</label>
+          <div id="post-options" class="checkbox-group">
+            <label>
+              <input type="checkbox" name="post" value="LG" id="post-lg"> LG
+            </label>
+            <label>
+              <input type="checkbox" name="post" value="三光" id="post-san"> 三光
+            </label>
+            <label>
+              <input type="checkbox" name="post" value="金手指" id="post-jin"> 金手指
+            </label>
+            <label>
+              <input type="checkbox" name="post" value="舔" id="post-tian"> 舔
+            </label>
+            <label>
+              <input type="checkbox" name="post" value="親" id="post-qin"> 親
+            </label>
+            <label>
+              <input type="checkbox" name="post" value="素股" id="post-sugu"> 素股
+            </label>
+          </div>
+        </div>
+        <!-- 心得 -->
+        <div class="form-group">
+          <label for="review">心得：</label>
+          <textarea id="review" name="review" placeholder="請輸入您的心得"></textarea>
+        </div>
+        <button type="submit">送出表單</button>
+      </form>
     </div>
   </div>
   
@@ -547,7 +775,7 @@
       document.getElementById('schedule').innerHTML = html;
     }
     
-    // 事件代理：點選「心得」按鈕時，開啟模態框
+    // 事件代理：點選「心得」按鈕時，開啟模態框（顯示心得表單）
     document.getElementById('schedule').addEventListener('click', function(e) {
       if(e.target && e.target.classList.contains('review-btn')) {
         openReviewModal();
@@ -555,50 +783,63 @@
     });
     
     /*----------------------------------------
-      模態框相關的 JavaScript
+      模態框相關的 JavaScript（心得表單）
     ----------------------------------------*/
     function openReviewModal() {
       document.getElementById('reviewModal').style.display = 'block';
-      loadReviews();
     }
     function closeReviewModal() {
       document.getElementById('reviewModal').style.display = 'none';
     }
     document.getElementById('closeReviewModal').addEventListener('click', closeReviewModal);
     
-    // 切換顯示填寫心得的表單
-    document.getElementById('openReviewForm').addEventListener('click', function() {
-      var reviewForm = document.getElementById('reviewForm');
-      reviewForm.style.display = reviewForm.style.display === 'none' ? 'block' : 'none';
+    // 服務區：加值前與加值後選項的互斥控制
+    const preOptions = document.querySelectorAll('#pre-options input[type="checkbox"]');
+    preOptions.forEach(preCheckbox => {
+      preCheckbox.addEventListener('change', function() {
+        const value = this.value;
+        const postCheckbox = document.querySelector(`#post-options input[value="${value}"]`);
+        if (this.checked) {
+          postCheckbox.disabled = true;
+        } else {
+          postCheckbox.disabled = false;
+        }
+      });
     });
     
-    // 送出心得，存到 localStorage
-    document.getElementById('submitReview').addEventListener('click', function(){
-      var reviewText = document.getElementById('reviewText').value;
-      if(reviewText.trim() !== "") {
-        var reviews = JSON.parse(localStorage.getItem('reviews') || "[]");
-        reviews.push(reviewText);
-        localStorage.setItem('reviews', JSON.stringify(reviews));
-        document.getElementById('reviewText').value = "";
-        loadReviews();
-      }
+    // 表單提交事件（以 localStorage 暫存，測試用途）
+    document.getElementById('detailedReviewForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      // 收集表單資料
+      const formData = {
+        age: document.getElementById('age').value,
+        appearance: document.getElementById('appearance').value,
+        lookalike: document.getElementById('lookalike').value,
+        style: document.getElementById('style').value,
+        body: document.getElementById('body').value,
+        breast: document.getElementById('breast').value,
+        breastSize: document.getElementById('breastSize').value,
+        skinQuality: document.getElementById('skinQuality').value,
+        skinColor: document.getElementById('skinColor').value,
+        musicService: document.getElementById('musicService').value,
+        sportsService: document.getElementById('sportsService').value,
+        musicCostType: document.getElementById('musicCostType').value,
+        musicCostAmount: document.getElementById('musicCostAmount').value,
+        sportsCostType: document.getElementById('sportsCostType').value,
+        sportsCostAmount: document.getElementById('sportsCostAmount').value,
+        preOptions: Array.from(document.querySelectorAll('#pre-options input[type="checkbox"]:checked')).map(el => el.value),
+        postOptions: Array.from(document.querySelectorAll('#post-options input[type="checkbox"]:checked')).map(el => el.value),
+        review: document.getElementById('review').value
+      };
+      // 這裡暫時以 localStorage 儲存（正式上線時可改為送至後端）
+      let reviews = JSON.parse(localStorage.getItem('detailedReviews') || "[]");
+      reviews.push(formData);
+      localStorage.setItem('detailedReviews', JSON.stringify(reviews));
+      alert("表單已送出並暫存！");
+      // 重置表單
+      document.getElementById('detailedReviewForm').reset();
+      closeReviewModal();
     });
-    
-    // 讀取 localStorage 中的心得，並顯示於模態框中
-    function loadReviews() {
-      var reviews = JSON.parse(localStorage.getItem('reviews') || "[]");
-      var reviewList = document.getElementById('reviewList');
-      reviewList.innerHTML = "";
-      if(reviews.length > 0) {
-        reviews.forEach(function(review) {
-          var p = document.createElement('p');
-          p.textContent = review;
-          reviewList.appendChild(p);
-        });
-      } else {
-        reviewList.innerHTML = "<p>目前沒有心得</p>";
-      }
-    }
   </script>
 </body>
 </html>

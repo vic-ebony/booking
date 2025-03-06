@@ -105,7 +105,7 @@
       flex: 0 0 130px;
       width: 130px;
       height: 156px;
-      margin: 0 10px; /* 左右各10px */
+      margin: 0 10px;
       align-self: flex-start;
     }
     .person-photo img {
@@ -132,14 +132,13 @@
     }
     .label-container {
       display: inline-block;
-      /* 移除固定寬度 */
       font-weight: bold;
       color: #555;
       margin-right: 4px;
       font-size: 0.95rem;
       line-height: 1.5;
       text-align: left;
-      padding-left: 5px; /* 新增左側內邊距 */
+      padding-left: 5px;
     }
     .value-container {
       flex: 1;
@@ -157,7 +156,7 @@
       border-top: 1px solid #ddd;
       padding-top: 8px;
       margin-top: 8px;
-      padding-left: 5px; /* 新增左側內邊距 */
+      padding-left: 5px;
     }
     .left-buttons {
       display: flex;
@@ -200,49 +199,6 @@
       font-size: 2rem;
       cursor: pointer;
       color: #333;
-    }
-    .side-menu {
-      position: absolute;
-      top: 0;
-      left: -150px;
-      width: 150px;
-      height: 100%;
-      background: rgba(255,255,255,0.95);
-      transition: left 0.3s ease;
-      z-index: 3;
-      padding: 10px;
-      border-top-left-radius: 15px;
-      border-bottom-left-radius: 15px;
-    }
-    .side-menu.open {
-      left: 0;
-    }
-    .side-menu .close-btn {
-      background: transparent;
-      border: none;
-      font-size: 1.5rem;
-      float: right;
-      cursor: pointer;
-      color: #333;
-    }
-    .side-menu h2 {
-      margin: 10px 0 10px 0;
-      text-align: center;
-      font-size: 1.1rem;
-    }
-    .menu-content button {
-      width: 100%;
-      margin: 6px 0;
-      padding: 6px;
-      border: none;
-      background: rgba(0,0,0,0.1);
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 0.9rem;
-      transition: background 0.3s;
-    }
-    .menu-content button:hover {
-      background: rgba(0,0,0,0.2);
     }
     .home-menu {
       margin-top: 20px;
@@ -311,6 +267,57 @@
         font-size: 0.9rem;
       }
     }
+    
+    /*----------------------------------------------------
+      重新設計左側滑出選單：覆蓋整個每日班表方框
+    -----------------------------------------------------*/
+    .side-menu {
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.98);
+      transition: left 0.3s ease;
+      z-index: 5;
+      padding: 20px;
+    }
+    .side-menu.open {
+      left: 0;
+    }
+    /* 將關閉按鈕調整到右上角 */
+    .side-menu .close-btn {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: transparent;
+      border: none;
+      font-size: 2rem;
+      cursor: pointer;
+      color: #333;
+    }
+    .side-menu h2 {
+      margin-top: 50px;
+      text-align: center;
+      font-size: 1.5rem;
+    }
+    .menu-content {
+      margin-top: 30px;
+    }
+    .menu-content button {
+      width: 100%;
+      margin: 10px 0;
+      padding: 10px;
+      border: none;
+      background: rgba(0,0,0,0.1);
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 1.1rem;
+      transition: background 0.3s;
+    }
+    .menu-content button:hover {
+      background: rgba(0,0,0,0.2);
+    }
   </style>
 </head>
 <body>
@@ -332,7 +339,7 @@
       </div>
     </div>
   </div>
-
+  
   <!-- 每日班表頁面（預設隱藏） -->
   <div class="glass-overlay" id="dailyPage" style="display:none;">
     <div class="glass-background"></div>
@@ -344,7 +351,7 @@
       <div class="hall-selection" id="hallSelection"></div>
       <!-- 每日班表內人物資訊列表 -->
       <div class="schedule" id="schedule"></div>
-      <!-- 側邊選單面板 -->
+      <!-- 重新設計的選單面板 -->
       <div class="side-menu" id="sideMenu">
         <button class="close-btn" id="closeMenu">×</button>
         <h2>選單</h2>
@@ -362,7 +369,7 @@
       </div>
     </div>
   </div>
-
+  
   <script>
     // 切換首頁與每日班表頁面
     document.getElementById('btn-daily').addEventListener('click', function() {

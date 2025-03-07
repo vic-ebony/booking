@@ -77,6 +77,7 @@
       -webkit-font-smoothing: antialiased;
       background-clip: padding-box;
       overflow: hidden;
+      font-size: 0.875rem;
     }
     @keyframes fadeInUp {
       0% {
@@ -113,32 +114,37 @@
       height: 100%;
       object-fit: contain;
     }
-    /* 資訊卡左側資訊區：使用 CSS table 模型實現懸掛縮排 */
+    /*----------------------
+      資訊欄位區塊設定
+      .info-grid：設定內左側邊距
+      .info-field：使用 flex 進行水平排列
+      .field-label 與 .field-content：統一間距設定
+    ----------------------*/
     .info-grid {
-      /* 各資訊項目使用 info-field 輸出 */
+      padding-left: 10px;
     }
     .info-field {
-      display: table;
-      width: 100%;
+      display: flex;
       margin: 4px 0;
     }
-    .info-field .field-label {
-      display: table-cell;
-      width: 60px;
-      padding-left: 4px; /* 新增左內距 */
-      padding-right: 4px;
+    /* 固定寬度調整為45px，並移除冒號 */
+    .field-label {
+      flex: 0 0 45px;
       font-weight: bold;
-      vertical-align: top;
+      margin-right: 4px;
+      padding: 0;
     }
-    .info-field .field-content {
-      display: table-cell;
+    /* 在 HTML 內，將標籤文字中的冒號移除 */
+    .field-content {
+      flex: 1;
+      margin: 0;
+      padding: 0;
       word-wrap: break-word;
       word-break: break-all;
     }
     .person-details {
       flex: 1;
       text-align: left;
-      font-size: 1rem;
       line-height: 1.5;
     }
     .info-top {
@@ -163,7 +169,7 @@
     }
     .collect-btn {
       padding: 4px 10px;
-      font-size: 0.95rem;
+      font-size: 0.875rem;
       background: #4CAF50;
       color: white;
       border: none;
@@ -172,7 +178,7 @@
     }
     .review-btn {
       padding: 4px 10px;
-      font-size: 0.95rem;
+      font-size: 0.875rem;
       background: #FF9800;
       color: white;
       border: none;
@@ -180,7 +186,7 @@
       cursor: pointer;
     }
     .review-count {
-      font-size: 0.95rem;
+      font-size: 0.875rem;
       color: gray;
       margin-left: 2px;
     }
@@ -212,7 +218,7 @@
       background: rgba(255,255,255,0.35);
       border-radius: 5px;
       cursor: pointer;
-      font-size: 1rem;
+      font-size: 0.875rem;
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
@@ -242,7 +248,7 @@
       background: rgba(255,255,255,0.35);
       border-radius: 10px;
       cursor: pointer;
-      font-size: 0.9rem;
+      font-size: 0.875rem;
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
       transition: background 0.3s;
       white-space: nowrap;
@@ -262,7 +268,7 @@
     @media (max-width:480px) {
       .content {
         padding: 15px 20px 70px 20px;
-        font-size: 0.9rem;
+        font-size: 0.875rem;
       }
     }
     /*----------------------------------------------------
@@ -315,9 +321,9 @@
     .menu-content button:hover {
       background: rgba(0,0,0,0.2);
     }
-    /*--------------------------------------------------
+    /*----------------------------------------------------
       模態框：心得檢視（完整資訊展示）
-    --------------------------------------------------*/
+    ----------------------------------------------------*/
     .modal {
       display: none;
       position: fixed;
@@ -346,41 +352,15 @@
       font-weight: bold;
       cursor: pointer;
     }
-    /* 使用 CSS table 模型實現懸掛縮排（心得區） */
-    .review-field {
-      display: table;
-      width: 100%;
-      margin: 4px 0;
-    }
-    .field-label {
-      display: table-cell;
-      width: 60px;
-      font-weight: bold;
-      padding-right: 4px;
-      vertical-align: top;
-    }
-    .field-content {
-      display: table-cell;
-      word-wrap: break-word;
-      word-break: break-all;
-    }
-    .review-card {
-      border: 1px solid #ccc !important;
-      border-radius: 4px;
-      padding: 10px;
-      margin-bottom: 10px;
-      text-align: left;
-    }
-    .review-card p { margin: 4px 0; }
-    /*--------------------------------------------------
+    /*----------------------------------------------------
       模態框：心得填寫表單（尺寸較大）
-    --------------------------------------------------*/
+    ----------------------------------------------------*/
     #reviewFormModal .modal-content {
       max-width: 800px;
     }
-    /*--------------------------------------------------
+    /*----------------------------------------------------
       表單欄位 CSS（心得填寫表單在模態框內）
-    --------------------------------------------------*/
+    ----------------------------------------------------*/
     .form-group {
       margin-bottom: 15px;
     }
@@ -428,26 +408,25 @@
       font-weight: bold;
       margin-bottom: 4px;
     }
-    /*--------------------------------------------------
-      資訊卡左側資訊區 - info-field 使用與 review-field 相似的 table 模型
-    --------------------------------------------------*/
+    /*----------------------------------------------------
+      資訊卡左側資訊區 - 使用與心得區重複定義避免衝突，保留原始設定
+    ----------------------------------------------------*/
     .info-field {
-      display: table;
-      width: 100%;
+      display: flex;
       margin: 4px 0;
     }
     .info-field .field-label {
-      display: table-cell;
-      width: 60px;
+      flex: 0 0 45px;
       font-weight: bold;
-      padding-left: 4px; /* 新增內距 */
-      padding-right: 4px;
-      vertical-align: top;
+      margin: 0 0 0 4px;
+      padding: 0;
     }
     .info-field .field-content {
-      display: table-cell;
+      flex: 1;
       word-wrap: break-word;
       word-break: break-all;
+      margin: 0;
+      padding: 0;
     }
   </style>
 </head>
@@ -519,12 +498,12 @@
       <form id="detailedReviewForm">
         <!-- 年紀 -->
         <div class="form-group">
-          <label for="age">年紀：</label>
+          <label for="age">年紀</label>
           <input type="text" id="age" name="age" placeholder="請輸入年紀">
         </div>
         <!-- 樣貌（複選） -->
         <div class="form-group">
-          <label>樣貌：</label>
+          <label>樣貌</label>
           <div class="checkbox-group" id="appearance-group">
             <label><input type="checkbox" name="appearance" value="高顏值"> 高顏值</label>
             <label><input type="checkbox" name="appearance" value="醫美感"> 醫美感</label>
@@ -542,14 +521,14 @@
         </div>
         <!-- 神似 -->
         <div class="form-group">
-          <label for="lookalike">神似：</label>
+          <label for="lookalike">神似</label>
           <select name="lookalike" id="lookalike">
             <option value="無">無</option>
           </select>
         </div>
         <!-- 風格（複選） -->
         <div class="form-group">
-          <label>風格：</label>
+          <label>風格</label>
           <div class="checkbox-group" id="style-group">
             <label><input type="checkbox" name="style" value="女友感"> 女友感</label>
             <label><input type="checkbox" name="style" value="安靜"> 安靜</label>
@@ -569,7 +548,7 @@
         </div>
         <!-- 身材 -->
         <div class="form-group">
-          <label for="body">身材：</label>
+          <label for="body">身材</label>
           <select name="body" id="body">
             <option value="">請選擇</option>
             <option value="骨感">骨感</option>
@@ -583,7 +562,7 @@
         </div>
         <!-- 胸部與大小整合 -->
         <div class="form-group">
-          <label for="breast">胸部：</label>
+          <label for="breast">胸部</label>
           <select name="breast" id="breast">
             <option value="">請選擇</option>
             <option value="天然">天然</option>
@@ -594,7 +573,7 @@
         </div>
         <!-- 膚質 -->
         <div class="form-group">
-          <label for="skinQuality">膚質：</label>
+          <label for="skinQuality">膚質</label>
           <select name="skinQuality" id="skinQuality">
             <option value="">請選擇</option>
             <option value="絲滑">絲滑</option>
@@ -605,7 +584,7 @@
         </div>
         <!-- 膚色 -->
         <div class="form-group">
-          <label for="skinColor">膚色：</label>
+          <label for="skinColor">膚色</label>
           <select name="skinColor" id="skinColor">
             <option value="">請選擇</option>
             <option value="白皙">白皙</option>
@@ -618,7 +597,7 @@
         </div>
         <!-- 加值 - 音樂 -->
         <div class="form-group">
-          <label for="musicService">加值 - 音樂：</label>
+          <label for="musicService">加值 - 音樂</label>
           <select name="musicService" id="musicService">
             <option value="">請選擇</option>
             <option value="沒問">沒問</option>
@@ -629,7 +608,7 @@
         </div>
         <!-- 加值 - 體育 -->
         <div class="form-group">
-          <label for="sportsService">加值 - 體育：</label>
+          <label for="sportsService">加值 - 體育</label>
           <select name="sportsService" id="sportsService">
             <option value="">請選擇</option>
             <option value="沒問">沒問</option>
@@ -640,7 +619,7 @@
         </div>
         <!-- 費用 - 音樂 -->
         <div class="form-group">
-          <label for="musicCostType">費用 - 音樂：</label>
+          <label for="musicCostType">費用 - 音樂</label>
           <select name="musicCostType" id="musicCostType">
             <option value="">請選擇</option>
             <option value="行情">行情</option>
@@ -650,7 +629,7 @@
         </div>
         <!-- 費用 - 體育 -->
         <div class="form-group">
-          <label for="sportsCostType">費用 - 體育：</label>
+          <label for="sportsCostType">費用 - 體育</label>
           <select name="sportsCostType" id="sportsCostType">
             <option value="">請選擇</option>
             <option value="行情">行情</option>
@@ -660,7 +639,7 @@
         </div>
         <!-- 服務 - 加值前 -->
         <div class="form-group">
-          <label>服務 - 加值前：</label>
+          <label>服務 - 加值前</label>
           <div id="pre-options" class="checkbox-group">
             <label>
               <input type="checkbox" name="pre" value="LG" id="pre-lg"> LG
@@ -684,7 +663,7 @@
         </div>
         <!-- 服務 - 加值後 -->
         <div class="form-group">
-          <label>服務 - 加值後：</label>
+          <label>服務 - 加值後</label>
           <div id="post-options" class="checkbox-group">
             <label>
               <input type="checkbox" name="post" value="LG" id="post-lg"> LG
@@ -708,7 +687,7 @@
         </div>
         <!-- 心得 -->
         <div class="form-group">
-          <label for="review">心得：</label>
+          <label for="review">心得</label>
           <textarea id="review" name="review" placeholder="請輸入您的心得"></textarea>
         </div>
         <button type="submit">送出表單</button>
@@ -754,7 +733,7 @@
       }
     });
     
-    // 生成館別選項
+    // 生成館別選單
     const hallSelectionDiv = document.getElementById('hallSelection');
     halls.forEach(hall => {
       const count = hallData[hall].length;
@@ -775,7 +754,7 @@
     renderSchedule(halls[0]);
     document.querySelector('.hall-item button').classList.add('active');
     
-    // 根據館別渲染每日班表，資訊卡左側採用 info-field 表格模型
+    // 根據館別渲染每日班表，資訊卡左側採用 info-field flex 模型
     function renderSchedule(hall) {
       const personnel = hallData[hall];
       let html = "";
@@ -786,10 +765,22 @@
           <div class="person-details">
             <div class="info-top">
               <div class="info-grid">
-                <p class="info-field"><span class="field-label">姓名：</span><span class="field-content">${hall} · ${person.name}</span></p>
-                <p class="info-field"><span class="field-label">身材：</span><span class="field-content">${person.height}、${person.weight}、${person.cup}</span></p>
-                <p class="info-field"><span class="field-label">台費：</span><span class="field-content">${person.fee}</span></p>
-                <p class="info-field"><span class="field-label">時段：</span><span class="field-content">${person.times}</span></p>
+                <div class="info-field">
+                  <span class="field-label">姓名</span>
+                  <span class="field-content">${hall} · ${person.name}</span>
+                </div>
+                <div class="info-field">
+                  <span class="field-label">身材</span>
+                  <span class="field-content">${person.height}、${person.weight}、${person.cup}</span>
+                </div>
+                <div class="info-field">
+                  <span class="field-label">台費</span>
+                  <span class="field-content">${person.fee}</span>
+                </div>
+                <div class="info-field">
+                  <span class="field-label">時段</span>
+                  <span class="field-content">${person.times}</span>
+                </div>
               </div>
             </div>
             <div class="review-section">
@@ -894,18 +885,18 @@
           let html = "";
           // 獨立編號
           html += `<p class="review-number">#${index+1}</p>`;
-          html += `<p class="review-field"><span class="field-label">年紀：</span><span class="field-content">${item.age}</span></p>`;
-          html += `<p class="review-field"><span class="field-label">樣貌：</span><span class="field-content">${item.appearance.join(", ")}</span></p>`;
-          html += `<p class="review-field"><span class="field-label">神似：</span><span class="field-content">${item.lookalike}</span></p>`;
-          html += `<p class="review-field"><span class="field-label">風格：</span><span class="field-content">${item.style.join(", ")}</span></p>`;
-          html += `<p class="review-field"><span class="field-label">身材：</span><span class="field-content">${item.body}</span></p>`;
-          html += `<p class="review-field"><span class="field-label">胸部：</span><span class="field-content">${item.breastDetails}</span></p>`;
-          html += `<p class="review-field"><span class="field-label">膚質：</span><span class="field-content">${item.skinQuality}</span></p>`;
-          html += `<p class="review-field"><span class="field-label">膚色：</span><span class="field-content">${item.skinColor}</span></p>`;
-          html += `<p class="review-field"><span class="field-label">音樂：</span><span class="field-content">${item.musicDetails}</span></p>`;
-          html += `<p class="review-field"><span class="field-label">體育：</span><span class="field-content">${item.sportsDetails}</span></p>`;
-          html += `<p class="review-field"><span class="field-label">服務：</span><span class="field-content">前：${item.preOptions.join(", ")}　後：${item.postOptions.join(", ")}</span></p>`;
-          html += `<p class="review-field"><span class="field-label">心得：</span><span class="field-content">${item.review}</span></p>`;
+          html += `<div class="review-field"><span class="field-label">年紀</span><span class="field-content">${item.age}</span></div>`;
+          html += `<div class="review-field"><span class="field-label">樣貌</span><span class="field-content">${item.appearance.join(", ")}</span></div>`;
+          html += `<div class="review-field"><span class="field-label">神似</span><span class="field-content">${item.lookalike}</span></div>`;
+          html += `<div class="review-field"><span class="field-label">風格</span><span class="field-content">${item.style.join(", ")}</span></div>`;
+          html += `<div class="review-field"><span class="field-label">身材</span><span class="field-content">${item.body}</span></div>`;
+          html += `<div class="review-field"><span class="field-label">胸部</span><span class="field-content">${item.breastDetails}</span></div>`;
+          html += `<div class="review-field"><span class="field-label">膚質</span><span class="field-content">${item.skinQuality}</span></div>`;
+          html += `<div class="review-field"><span class="field-label">膚色</span><span class="field-content">${item.skinColor}</span></div>`;
+          html += `<div class="review-field"><span class="field-label">音樂</span><span class="field-content">${item.musicDetails}</span></div>`;
+          html += `<div class="review-field"><span class="field-label">體育</span><span class="field-content">${item.sportsDetails}</span></div>`;
+          html += `<div class="review-field"><span class="field-label">服務</span><span class="field-content">前：${item.preOptions.join(", ")} 後：${item.postOptions.join(", ")}</span></div>`;
+          html += `<div class="review-field"><span class="field-label">心得</span><span class="field-content">${item.review}</span></div>`;
           const card = `<div class="review-card">${html}</div>`;
           reviewList.innerHTML += card;
         });
@@ -915,24 +906,24 @@
     }
   </script>
   
-  <!-- 使用 CSS table 模型實現懸掛縮排效果 -->
+  <!-- 使用 flex 模型實現懸掛縮排效果（review-field 與 info-field 共用） -->
   <style>
     .review-field {
-      display: table;
-      width: 100%;
+      display: flex;
       margin: 4px 0;
     }
     .field-label {
-      display: table-cell;
-      width: 60px;
+      flex: 0 0 45px;
       font-weight: bold;
-      padding-right: 4px;
-      vertical-align: top;
+      padding: 0;
+      margin: 0 0 0 4px; /* 此設定用於心得區 */
     }
     .field-content {
-      display: table-cell;
+      flex: 1;
       word-wrap: break-word;
       word-break: break-all;
+      padding: 0;
+      margin: 0;
     }
     .review-number {
       font-weight: bold;

@@ -77,6 +77,8 @@
       -webkit-font-smoothing: antialiased;
       background-clip: padding-box;
       overflow: hidden;
+      /* 全局字體調整為 0.875rem (約14px) */
+      font-size: 0.875rem;
     }
     @keyframes fadeInUp {
       0% {
@@ -113,38 +115,34 @@
       height: 100%;
       object-fit: contain;
     }
-    /* 左側資訊區 */
+    /* 資訊卡左側資訊區：使用 CSS table 模型實現懸掛縮排 */
+    .info-field {
+      display: table;
+      width: 100%;
+      margin: 4px 0;
+    }
+    .info-field .field-label {
+      display: table-cell;
+      width: 60px;
+      padding-left: 4px;  /* 左內距 */
+      padding-right: 0;   /* 調整右側為 0 */
+      font-weight: bold;
+      vertical-align: top;
+    }
+    .info-field .field-content {
+      display: table-cell;
+      word-wrap: break-word;
+      word-break: break-all;
+      padding: 0;
+      margin: 0;
+    }
     .person-details {
       flex: 1;
       text-align: left;
-      font-size: 1rem;
       line-height: 1.5;
     }
     .info-top {
       margin-bottom: 10px;
-    }
-    /*----------------------
-      資訊區劃分：標籤與內容
-    ----------------------*/
-    .info-item {
-      display: flex;
-      margin-bottom: 4px;
-    }
-    .label-container {
-      display: inline-block;
-      font-weight: bold;
-      color: #555;
-      margin-right: 4px;
-      font-size: 0.95rem;
-      line-height: 1.5;
-      text-align: left;
-      padding-left: 5px;
-    }
-    .value-container {
-      flex: 1;
-      word-break: break-word;
-      font-size: 0.95rem;
-      line-height: 1.5;
     }
     /*----------------------
       下方心得與收藏區
@@ -165,7 +163,7 @@
     }
     .collect-btn {
       padding: 4px 10px;
-      font-size: 0.95rem;
+      font-size: 0.875rem;
       background: #4CAF50;
       color: white;
       border: none;
@@ -174,7 +172,7 @@
     }
     .review-btn {
       padding: 4px 10px;
-      font-size: 0.95rem;
+      font-size: 0.875rem;
       background: #FF9800;
       color: white;
       border: none;
@@ -182,7 +180,7 @@
       cursor: pointer;
     }
     .review-count {
-      font-size: 0.95rem;
+      font-size: 0.875rem;
       color: gray;
       margin-left: 2px;
     }
@@ -214,7 +212,7 @@
       background: rgba(255,255,255,0.35);
       border-radius: 5px;
       cursor: pointer;
-      font-size: 1rem;
+      font-size: 0.875rem;
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
@@ -244,7 +242,7 @@
       background: rgba(255,255,255,0.35);
       border-radius: 10px;
       cursor: pointer;
-      font-size: 0.9rem;
+      font-size: 0.875rem;
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
       transition: background 0.3s;
       white-space: nowrap;
@@ -264,7 +262,7 @@
     @media (max-width:480px) {
       .content {
         padding: 15px 20px 70px 20px;
-        font-size: 0.9rem;
+        font-size: 0.875rem;
       }
     }
     /*----------------------------------------------------
@@ -348,7 +346,7 @@
       font-weight: bold;
       cursor: pointer;
     }
-    /* 使用 display: table 模型來實現懸掛縮排 */
+    /* 使用 CSS table 模型實現懸掛縮排（心得區） */
     .review-field {
       display: table;
       width: 100%;
@@ -358,14 +356,14 @@
       display: table-cell;
       width: 60px;
       font-weight: bold;
-      padding-right: 4px;
+      padding-right: 0; /* 調整為 0，使內容更靠近 */
       vertical-align: top;
     }
     .field-content {
       display: table-cell;
-      width: auto;
+      word-wrap: break-word;
+      word-break: break-all;
     }
-    /* review-card 邊框 */
     .review-card {
       border: 1px solid #ccc !important;
       border-radius: 4px;
@@ -425,10 +423,31 @@
     .modal-content button[type="submit"]:hover {
       background: #45a049;
     }
-    /* 額外獨立編號 */
+    /* 獨立編號樣式 */
     .review-number {
       font-weight: bold;
       margin-bottom: 4px;
+    }
+    /*--------------------------------------------------
+      資訊卡左側資訊區 - info-field 使用與 review-field 相似的 table 模型
+    --------------------------------------------------*/
+    .info-field {
+      display: table;
+      width: 100%;
+      margin: 4px 0;
+    }
+    .info-field .field-label {
+      display: table-cell;
+      width: 60px;
+      font-weight: bold;
+      padding-left: 4px;
+      padding-right: 0;
+      vertical-align: top;
+    }
+    .info-field .field-content {
+      display: table-cell;
+      word-wrap: break-word;
+      word-break: break-all;
     }
   </style>
 </head>
@@ -487,7 +506,7 @@
       <!-- 將填寫心得按鈕放到上方 -->
       <button id="goToReviewForm">填寫心得</button>
       <div id="reviewList">
-        <!-- 每筆心得先獨立顯示編號，再用 review-field 輸出欄位 -->
+        <!-- 每筆心得先獨立顯示編號，再以 review-field 輸出各欄位 -->
       </div>
     </div>
   </div>
@@ -756,7 +775,7 @@
     renderSchedule(halls[0]);
     document.querySelector('.hall-item button').classList.add('active');
     
-    // 根據館別渲染每日班表
+    // 根據館別渲染每日班表，資訊卡左側採用 info-field 表格模型
     function renderSchedule(hall) {
       const personnel = hallData[hall];
       let html = "";
@@ -767,22 +786,10 @@
           <div class="person-details">
             <div class="info-top">
               <div class="info-grid">
-                <div class="info-item">
-                  <div class="label-container">姓名</div>
-                  <div class="value-container">${hall} · ${person.name}</div>
-                </div>
-                <div class="info-item">
-                  <div class="label-container">身材</div>
-                  <div class="value-container">${person.height}、${person.weight}、${person.cup}</div>
-                </div>
-                <div class="info-item">
-                  <div class="label-container">台費</div>
-                  <div class="value-container">${person.fee}</div>
-                </div>
-                <div class="info-item">
-                  <div class="label-container">時段</div>
-                  <div class="value-container">${person.times}</div>
-                </div>
+                <p class="info-field"><span class="field-label">姓名：</span><span class="field-content">${hall} · ${person.name}</span></p>
+                <p class="info-field"><span class="field-label">身材：</span><span class="field-content">${person.height}、${person.weight}、${person.cup}</span></p>
+                <p class="info-field"><span class="field-label">台費：</span><span class="field-content">${person.fee}</span></p>
+                <p class="info-field"><span class="field-label">時段：</span><span class="field-content">${person.times}</span></p>
               </div>
             </div>
             <div class="review-section">
@@ -885,7 +892,7 @@
       if(reviews.length > 0) {
         reviews.forEach(function(item, index) {
           let html = "";
-          // 編號獨立顯示
+          // 獨立編號
           html += `<p class="review-number">#${index+1}</p>`;
           html += `<p class="review-field"><span class="field-label">年紀：</span><span class="field-content">${item.age}</span></p>`;
           html += `<p class="review-field"><span class="field-label">樣貌：</span><span class="field-content">${item.appearance.join(", ")}</span></p>`;
@@ -908,7 +915,7 @@
     }
   </script>
   
-  <!-- 使用 CSS table 模型實現懸掛縮排 -->
+  <!-- 使用 CSS table 模型實現懸掛縮排效果 -->
   <style>
     .review-field {
       display: table;
@@ -919,12 +926,13 @@
       display: table-cell;
       width: 60px;
       font-weight: bold;
-      padding-right: 4px;
+      padding-right: 0;
       vertical-align: top;
     }
     .field-content {
       display: table-cell;
-      width: auto;
+      word-wrap: break-word;
+      word-break: break-all;
     }
     .review-number {
       font-weight: bold;

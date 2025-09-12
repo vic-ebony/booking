@@ -1,884 +1,494 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="zh-TW">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>班表系統</title>
-  <!-- 引入 Font Awesome -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" 
-        integrity="sha512-2T5G0sRV0QEj2QZqOCiD/f3pZpXk/q1c6eJZe9g/s4fPPpBy/jF37sx6jK0S5FqgQ7b0jwJJYOrpZhdk+sQF8g==" 
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
-  <style>
-    /* 以下 CSS 內容保持不變 */
-    * { box-sizing: border-box; }
-    html { font-size: 16px; }
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: Arial, sans-serif;
-      background-color: #778899;
-      color: #333;
-      overflow-y: auto;
-    }
-    #header {
-      position: fixed;
-      top: 0;
-      left: 65px;
-      right: 0;
-      height: 50px;
-      background-color: #fff;
-      border-bottom: 1px solid #ddd;
-      z-index: 1001;
-      text-align: center;
-      line-height: 50px;
-    }
-    #header h2 { margin: 0; font-size: 1.5rem; }
-    #branchesContainer {
-      position: fixed;
-      top: 0;
-      left: 0;
-      bottom: 0;
-      width: 65px;
-      background-color: #34495e;
-      padding: 5px;
-      z-index: 1000;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      overflow: visible;
-    }
-    .nav-btn {
-      width: 55px;
-      margin: 5px 0;
-      padding: 8px;
-      font-size: 0.9rem;
-      color: #fff;
-      background: transparent;
-      border: none;
-      cursor: pointer;
-    }
-    .nav-btn.active { background: #2c3e50; border-radius: 4px; }
-    .branch-tab {
-      position: relative;
-      width: 45px;
-      height: 45px;
-      margin: 5px 0;
-      background: #ecf0f1;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      font-size: 0.9rem;
-      color: #2c3e50;
-    }
-    .branch-tab .branch-name { white-space: normal; text-align: center; line-height: 1.2; }
-    .branch-tab.active { background: #3498db; color: #fff; }
-    .branch-tab[data-branch] {
-      background: transparent;
-      overflow: visible;
-    }
-    .branch-tab[data-branch]::before {
-      content: "";
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(255, 255, 255, 0.2);
-      backdrop-filter: blur(5px);
-      -webkit-backdrop-filter: blur(5px);
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      border-radius: inherit;
-      z-index: 0;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
-    }
-    .branch-tab[data-branch] > * {
-      position: relative;
-      z-index: 1;
-    }
-    .branch-tab[data-branch] .badge {
-      position: absolute;
-      top: -3px;
-      right: -3px;
-      z-index: 2;
-      background: #e74c3c;
-      color: #fff;
-      border-radius: 50%;
-      width: 16px;
-      height: 16px;
-      font-size: 0.65rem;
-      text-align: center;
-      line-height: 16px;
-    }
-    #menuOptionsContainer {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 65px;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      transform: translateX(-100%);
-      transition: transform 0.5s ease;
-      z-index: 1100;
-    }
-    #mainContent {
-      position: absolute;
-      top: 50px;
-      left: 65px;
-      right: 0;
-      bottom: 0;
-      padding: 12px 16px;
-      overflow-y: auto;
-    }
-    #homeContent, #cardsContainer, #weeklyContent { display: none; }
-    #cardsContainer .card {
-      position: relative;
-      display: flex;
-      background: transparent;
-      border-radius: 8px;
-      margin: 12px 0;
-      overflow: hidden;
-      text-align: left;
-    }
-    #cardsContainer .card::before {
-      content: "";
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(255, 255, 255, 0.2);
-      backdrop-filter: blur(5px);
-      -webkit-backdrop-filter: blur(5px);
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      border-radius: inherit;
-      z-index: 0;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.15);
-    }
-    #cardsContainer .card > * {
-      position: relative;
-      z-index: 1;
-    }
-    .left-column {
-      flex: 0 0 165px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      border-right: 1px solid #ddd;
-      padding: 12px 0;
-    }
-    .photo-container { width: 100%; display: flex; justify-content: center; align-items: center; margin-bottom: 8px; }
-    .photo { width: 145px; display: flex; justify-content: center; align-items: center; }
-    .photo img { width: 100%; display: block; object-fit: cover; border-radius: 8px; }
-    .activity-times-container { width: 100%; text-align: center; }
-    .activity-times {
-      width: 100%;
-      padding: 6px 8px;
-      background: #eee;
-      border: 1px solid #ddd;
-      font-size: 0.9rem;
-      overflow-wrap: break-word;
-    }
-    .activity-times span.label { display: block; font-weight: bold; color: #555; margin-bottom: 4px; }
-    .right-column {
-      flex: 1;
-      padding: 16px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      overflow: hidden;
-    }
-    .data-area .name {
-      font-size: 1.1rem;
-      font-weight: bold;
-      margin-bottom: 6px;
-    }
-    .data-area .details, .data-area .price { font-size: 1rem; margin-bottom: 6px; }
-    .intro-area { font-size: 1rem; line-height: 1.4; margin: 10px 0; }
-    .intro-area p { margin: 0; }
-    .action-container {
-      width: 100%;
-      display: flex;
-      gap: 10px;
-      margin-top: 12px;
-      justify-content: flex-start;
-    }
-    .action-btn {
-      position: relative;
-      width: 45px;
-      height: 45px;
-      border-radius: 8px;
-      background: #ecf0f1;
-      border: none;
-      cursor: pointer;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      font-size: 1rem;
-      line-height: 1.2;
-      color: #2c3e50;
-    }
-    .action-btn .badge {
-      position: absolute;
-      top: -3px;
-      right: -3px;
-      background: #e74c3c;
-      color: #fff;
-      border-radius: 50%;
-      width: 16px;
-      height: 16px;
-      font-size: 0.65rem;
-      text-align: center;
-      line-height: 16px;
-      z-index: 2;
-    }
-    #sidePanel {
-      position: fixed;
-      top: 50px;
-      left: 65px;
-      right: 0;
-      height: calc(100vh - 50px);
-      background: #fff;
-      box-shadow: -2px 0 5px rgba(0,0,0,0.2);
-      transition: transform 0.3s ease;
-      z-index: 2000;
-      padding: 20px;
-      border-top-left-radius: 10px;
-      border-bottom-left-radius: 10px;
-      font-size: 1.1rem;
-      color: #333;
-      transform: translateX(100%);
-      display: block;
-    }
-    #sidePanel.active { transform: translateX(0); }
-    #sidePanelHeader {
-      padding: 10px;
-      border-bottom: 1px solid #ddd;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: #f0f0f0;
-    }
-    #sidePanelHeader h3 { margin: 0; font-size: 1.3rem; }
-    #headerButtons { display: flex; gap: 10px; align-items: center; }
-    #reviewToggleBtn, .close-btn {
-      font-size: 0.95rem;
-      padding: 4px 8px;
-      background: #2c3e50;
-      color: #fff;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      white-space: nowrap;
-    }
-    #sidePanelTabs {
-      display: flex;
-      justify-content: space-around;
-      border-bottom: 1px solid #ddd;
-      background: #f7f7f7;
-    }
-    .side-tab {
-      flex: 1;
-      padding: 8px 0;
-      font-size: 1rem;
-      background: none;
-      border: none;
-      cursor: pointer;
-      color: #333;
-    }
-    .side-tab.active { border-bottom: 2px solid #333; }
-    #sidePanelContent {
-      overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
-      font-size: 0.95rem;
-      padding: 10px;
-      color: #333;
-      text-align: left;
-    }
-    #sidePanelContent .side-tab-content { display: none; }
-    #sidePanelContent .side-tab-content.active { display: block; }
-    #sideTabComments {
-      max-height: calc(100vh - 150px);
-      overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
-    }
-    #reviewFormContainer { max-height: 80vh; overflow-y: auto; }
-    #overlay {
-      position: fixed;
-      top: 50px;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: linear-gradient(to bottom, rgba(0,0,0,0.2), rgba(0,0,0,0.5));
-      z-index: 1500;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-      pointer-events: none;
-      display: none;
-    }
-    #overlay.active { display: block; opacity: 1; pointer-events: auto; }
-    .form-section { margin-bottom: 12px; padding: 0 10px; text-align: left; }
-    .form-section label { display: block; margin-bottom: 4px; font-weight: bold; }
-    input[type="range"],
-    select,
-    input[type="number"],
-    textarea {
-      width: 100%;
-      padding: 8px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      font-size: 1rem;
-    }
-    .chip-container { display: flex; flex-wrap: wrap; gap: 8px; }
-    .chip {
-      padding: 6px 10px;
-      background: #eee;
-      border-radius: 16px;
-      cursor: pointer;
-      user-select: none;
-      transition: background 0.2s;
-      font-size: 1rem;
-    }
-    .chip.selected { background: #007bff; color: #fff; }
-    .chip.disabled { opacity: 0.5; pointer-events: none; }
-    .rating { display: flex; }
-    .rating span {
-      font-size: 1.5em;
-      cursor: pointer;
-      color: #ccc;
-      transition: color 0.2s;
-    }
-    .rating span.selected { color: gold; }
-    .review-details {
-      display: grid;
-      grid-template-columns: auto 1fr;
-      gap: 5px 10px;
-      font-size: 0.95rem;
-    }
-    .review-label { text-align: right; font-weight: bold; padding-right: 5px; word-break: break-all; }
-    .review-content { text-align: left; word-break: break-all; }
-    .review { margin-bottom: 10px; padding: 8px; border-bottom: 1px solid #eee; }
-    .review-header { display: flex; justify-content: space-between; margin-bottom: 4px; font-size: 1rem; }
-    .review-rating span { color: gold; }
-    .scale-row {
-      display: flex;
-      gap: 10px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      padding: 4px;
-      background: #fafafa;
-    }
-    .review-scale-group { flex: 1; }
-    .review-scale-title {
-      font-weight: bold;
-      margin-bottom: 4px;
-      font-size: 0.95rem;
-      border-bottom: 1px solid #ccc;
-      padding-bottom: 2px;
-      text-align: center;
-    }
-    .review-scale-content { font-size: 0.95rem; text-align: center; }
-    .scale-container { display: flex; gap: 10px; margin-bottom: 12px; }
-    .scale-group {
-      flex: 1;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      padding: 8px;
-      background: #fafafa;
-    }
-    .scale-title { font-weight: bold; margin-bottom: 4px; text-align: center; font-size: 0.95rem; }
-  </style>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>每日班表</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+    
+    <!-- 1. 引入 GSAP 主程式 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <!-- 2. 引入 GSAP 的 ScrollTo 插件 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollToPlugin.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            height: 100dvh;
+            /* 防止整個頁面滾動，滾動將由內部容器控制 */
+            overflow: hidden; 
+        }
+        .tab-active {
+            border-bottom: 2px solid #3b82f6;
+            color: #3b82f6;
+        }
+        .main-container {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        .scrollable-content {
+            flex-grow: 1;
+            overflow-y: auto;
+            position: relative; /* 讓高亮框可以相對於它定位 */
+            /* 為了讓觸控滑動在手機上更流暢 */
+            -webkit-overflow-scrolling: touch;
+            /* 隱藏滾動條，因為我們將透過事件控制滾動 */
+            scrollbar-width: none; /* Firefox */
+        }
+        .scrollable-content::-webkit-scrollbar {
+            display: none; /* Safari and Chrome */
+        }
+        #profile-section {
+            height: 150px; 
+        }
+        #profile-section .w-1\/3 {
+            height: 100%;
+        }
+        #profile-details {
+            height: 100%;
+            min-height: 100%; 
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        /* ▼▼▼▼▼【新增/修改的 CSS】▼▼▼▼▼ */
+        
+        /* 移動式高亮框的樣式 */
+        #selection-highlighter {
+            position: absolute;
+            top: 0;
+            left: 0;
+            background-color: #dbeafe; /* 淺藍色背景，等同於 bg-blue-100 */
+            border-radius: 0.5rem; /* 等同於 rounded-lg */
+            z-index: 0; /* 確保它在班表項目下方 */
+            /* 核心：為所有變動的屬性加上平滑的過渡動畫 */
+            transition: transform 0.35s cubic-bezier(0.25, 0.8, 0.25, 1), 
+                        width 0.35s cubic-bezier(0.25, 0.8, 0.25, 1),
+                        height 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        /* 讓班表項目本身有相對定位，以便 z-index 生效，顯示在高亮框之上 */
+        .schedule-item {
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* ▲▲▲▲▲【新增/修改的 CSS】▲▲▲▲▲ */
+    </style>
 </head>
-<body onload="showPage('dailySchedule')">
-  <!-- 頂部 header -->
-  <div id="header">
-    <h2>每日班表</h2>
-  </div>
-  
-  <!-- 左側導覽區 -->
-  <div id="branchesContainer"></div>
-  
-  <!-- 右側主要內容區 -->
-  <div id="mainContent">
-    <div id="homeContent"></div>
-    <div id="cardsContainer"></div>
-    <div id="weeklyContent"></div>
-  </div>
-  
-  <!-- 右側面板 -->
-  <div id="sidePanel">
-    <div id="sidePanelHeader">
-      <h3 id="sidePanelTitle"></h3>
-      <div id="headerButtons">
-        <button id="reviewToggleBtn" onclick="toggleReviewForm()">心得填寫</button>
-        <button class="close-btn" onclick="closeSidePanel()">×</button>
-      </div>
-    </div>
-    <div id="sidePanelTabs">
-      <button class="side-tab" id="sideTabBtn_comments" onclick="switchSideTab('comments')">心得</button>
-      <button class="side-tab" id="sideTabBtn_reservation" onclick="switchSideTab('reservation')">下週搶約</button>
-      <button class="side-tab" id="sideTabBtn_rename" onclick="switchSideTab('rename')">改名紀錄</button>
-    </div>
-    <div id="sidePanelContent">
-      <div id="sideTabComments" class="side-tab-content">
-        <div id="reviewFormContainer" style="display:none;"></div>
-        <div id="reviewList"></div>
-      </div>
-      <div id="sideTabReservation" class="side-tab-content" style="display:none;"></div>
-      <div id="sideTabRename" class="side-tab-content" style="display:none;"></div>
-    </div>
-  </div>
-  
-  <!-- 漸變遮罩 -->
-  <div id="overlay"></div>
-  
-  <script>
-    // 全域變數
-    let currentPage = "dailySchedule";  // 初始改為每日班表，方便測試圖片
-    let menuVisible = false;
-    const branchList = ["樂鑽", "手中情", "潘朵拉", "茶湯會", "芯苑", "八五", "寶可夢", "愛寶", "芯店", "水沙連"];
-    let currentBranch = branchList[0];
-    
-    function updateHeaderTitle(pageId) {
-      const headerTitle = document.querySelector("#header h2");
-      if (pageId === "homePage") headerTitle.textContent = "首頁";
-      else if (pageId === "dailySchedule") headerTitle.textContent = "每日班表";
-      else if (pageId === "weeklySchedule") headerTitle.textContent = "每週班表";
-      else headerTitle.textContent = "班表系統";
-    }
-    
-    function showPage(pageId) {
-      currentPage = pageId;
-      updateHeaderTitle(pageId);
-      document.getElementById('homeContent').style.display = "none";
-      document.getElementById('cardsContainer').style.display = "none";
-      document.getElementById('weeklyContent').style.display = "none";
-      if (pageId === "homePage") {
-        document.getElementById('homeContent').style.display = "block";
-      } else if (pageId === "dailySchedule") {
-        document.getElementById('cardsContainer').style.display = "block";
-        updateCards();
-      } else if (pageId === "weeklySchedule") {
-        document.getElementById('weeklyContent').style.display = "block";
-      }
-      updateNav();
-    }
-    
-    function updateNav() {
-      let navHTML = "";
-      if (currentPage === "homePage") {
-        navHTML = `
-          <button class="branch-tab" onclick="menuSelect('dailySchedule')" title="每日班表">每日班表</button>
-          <button class="branch-tab" onclick="menuSelect('weeklySchedule')" title="每週班表">每週班表</button>
-          <button class="branch-tab" onclick="alert('最新心得')" title="最新心得">最新心得</button>
-          <button class="branch-tab" onclick="alert('熱門通知')" title="熱門通知">熱門通知</button>
-          <button class="branch-tab" onclick="alert('預約紀錄')" title="預約紀錄">預約紀錄</button>
-          <button class="branch-tab" onclick="alert('預約查詢')" title="預約查詢">預約查詢</button>
-          <button class="branch-tab" onclick="alert('收藏查詢')" title="收藏查詢">收藏查詢</button>
-        `;
-      } else {
-        navHTML = `<button class="nav-btn" onclick="toggleMenu(event)">選單</button>`;
-        if (currentPage === "dailySchedule") {
-          branchList.forEach(branch => {
-            navHTML += `<button class="branch-tab" data-branch="${branch}" title="${branch}">
-                          <span class="branch-name">${branch}</span>
-                          <span class="badge">30</span>
-                        </button>`;
-          });
-        }
-      }
-      document.getElementById('branchesContainer').innerHTML = navHTML;
-      
-      if (currentPage === "dailySchedule" && currentPage !== "homePage") {
-        const branchTabs = document.querySelectorAll('.branch-tab[data-branch]');
-        branchTabs.forEach(tab => {
-          tab.addEventListener('click', function() {
-            currentBranch = tab.getAttribute('data-branch');
-            branchTabs.forEach(t => t.classList.remove('active'));
-            tab.classList.add('active');
-            updateCards();
-          });
-        });
-        if (branchTabs.length) {
-          branchTabs[0].classList.add('active');
-          currentBranch = branchList[0];
-        }
-      }
-      const navBtns = document.querySelectorAll('#branchesContainer > .nav-btn, #branchesContainer > .branch-tab');
-      navBtns.forEach(btn => btn.classList.remove('active'));
-      if (navBtns.length) navBtns[0].classList.add('active');
-    }
-    
-    function updateCards() {
-      const images = [
-        "image\cat01.jpg",
-        "image/cat02.jpg",
-        "image/cat03.jpg"
-      ];
-      let cardsHTML = "";
-      for (let i = 1; i <= 30; i++) {
-        const numComments = Math.floor(Math.random() * 6) + 5;
-        const numReservation = Math.floor(Math.random() * 3) + 1;
-        const randomImage = images[Math.floor(Math.random() * images.length)];
-        cardsHTML += `
-          <div class="card">
-            <div class="left-column">
-              <div class="photo-container">
-                <div class="photo">
-                  <img src="${randomImage}" alt="動物照片">
+
+<body class="bg-gray-100">
+    <div class="max-w-md mx-auto bg-white main-container" id="app">
+        <header class="bg-white p-4 flex justify-between items-center shadow-sm flex-shrink-0">
+            <span class="material-icons text-gray-700">home</span>
+            <div class="text-sm text-gray-500">192.168.137.1:8000</div>
+            <div class="flex items-center space-x-4">
+                <span class="material-icons text-gray-700">crop_square</span>
+                <span class="material-icons text-gray-700">more_vert</span>
+            </div>
+        </header>
+        
+        <div class="flex-shrink-0 bg-white">
+            <div class="p-4 pb-0">
+                <div class="flex justify-between items-center mb-4">
+                    <h1 class="text-lg font-bold">每日班表</h1>
+                    <div class="flex items-center text-sm text-gray-500">
+                        <input class="mr-2 h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" id="showNotes" type="checkbox" />
+                        <label for="showNotes">顯示筆記</label>
+                        <span class="material-icons ml-4 text-gray-700">close</span>
+                    </div>
                 </div>
-              </div>
-              <div class="activity-times-container">
-                <div class="activity-times">
-                  <span class="label">活動時段</span>
-                  <div>12-13-14-15-16-17-18-19-20-21-22-23-24-01-02-03-04-05</div>
+            </div>
+
+            <div class="px-4 mb-4">
+                <div class="flex border-b">
+                    <button class="flex-1 py-2 text-center text-gray-500 tab-active">茶湯會</button>
+                    <button class="flex-1 py-2 text-center text-gray-500">寶可夢</button>
+                    <button class="flex-1 py-2 text-center text-gray-500">澤澤</button>
+                    <button class="flex-1 py-2 text-center text-gray-500">愛寶</button>
+                    <button class="flex-1 py-2 text-center text-gray-500">手</button>
                 </div>
-              </div>
             </div>
-            <div class="right-column">
-              <div class="data-area">
-                <div class="name">${currentBranch} - 動物 ${i}</div>
-                <div class="details">100 / 50 / 1</div>
-                <div class="price">💰 3000</div>
-                <div class="intro-area">
-                  <p>本館收藏珍禽異獸，各具特色，歡迎蒞臨賞析探索。</p>
+
+            <div class="px-4">
+                <div class="flex mb-4" id="profile-section">
+                    <div class="w-1/3 bg-gray-200 flex items-center justify-center rounded-lg overflow-hidden">
+                        <img alt="Profile picture" class="w-full h-full object-cover" id="profile-image" src="" />
+                        <span class="text-gray-500 hidden" id="no-photo-text">無照片</span>
+                    </div>
+                    <div class="w-2/3 pl-4" id="profile-details"></div>
                 </div>
-              </div>
-              <div class="action-container">
-                <button class="action-btn reservation-btn" onclick="openSidePanel('${currentBranch} - 動物 ${i}', ${numReservation}, 'reservation')">
-                  <span class="btn-text">下週<br>搶約</span>
-                  <span class="badge">${numReservation}</span>
-                </button>
-                <button class="action-btn comments-btn" onclick="openSidePanel('${currentBranch} - 動物 ${i}', ${numComments}, 'comments')">
-                  <span class="btn-text">體驗<br>心得</span>
-                  <span class="badge">${numComments}</span>
-                </button>
-              </div>
             </div>
-          </div>
-        `;
-      }
-      document.getElementById('cardsContainer').innerHTML = cardsHTML;
-      document.getElementById('cardsContainer').scrollTop = 0;
-    }
-    
-    const tabOrder = ['comments', 'reservation', 'rename'];
-    function switchSideTab(tabName) {
-      document.querySelectorAll('.side-tab').forEach(btn => btn.classList.remove('active'));
-      document.querySelectorAll('.side-tab-content').forEach(div => div.classList.remove('active'));
-      if (tabName === 'comments') {
-        document.getElementById('sideTabComments').classList.add('active');
-        document.getElementById('sideTabBtn_comments').classList.add('active');
-      } else if (tabName === 'reservation') {
-        document.getElementById('sideTabReservation').classList.add('active');
-        document.getElementById('sideTabBtn_reservation').classList.add('active');
-      } else if (tabName === 'rename') {
-        document.getElementById('sideTabRename').classList.add('active');
-        document.getElementById('sideTabBtn_rename').classList.add('active');
-      }
-    }
-    
-    const sidePanelContentEl = document.getElementById('sidePanelContent');
-    let sideStartX = 0;
-    sidePanelContentEl.addEventListener('touchstart', e => { sideStartX = e.changedTouches[0].pageX; }, false);
-    sidePanelContentEl.addEventListener('touchend', e => {
-      const endX = e.changedTouches[0].pageX;
-      const diff = endX - sideStartX;
-      if (Math.abs(diff) > 50) {
-        let currentIndex = tabOrder.findIndex(name => document.getElementById('sideTabBtn_' + name).classList.contains('active'));
-        if (diff < 0) { currentIndex = (currentIndex + 1) % tabOrder.length; }
-        else { currentIndex = (currentIndex - 1 + tabOrder.length) % tabOrder.length; }
-        switchSideTab(tabOrder[currentIndex]);
-      }
-    }, false);
-    
-    function toggleReviewForm() {
-      const container = document.getElementById('reviewFormContainer');
-      if (container.style.display === "" || container.style.display === "none") {
-        container.innerHTML = `
-          <form id="reviewForm" onsubmit="return handleReviewFormSubmit(event);">
-            <div class="form-section">
-              <label for="ageRange">年紀 (18~40)：<span id="ageValue">18</span></label>
-              <input type="range" id="ageRange" name="age" min="18" max="40" value="18" oninput="document.getElementById('ageValue').innerText=this.value">
+
+            <div class="grid grid-cols-12 text-center text-sm text-gray-500 py-2 px-4">
+                <div class="col-span-1"></div>
+                <div class="col-span-3">美容師</div>
+                <div class="col-span-4">時段</div>
+                <div class="col-span-2">台費</div>
+                <div class="col-span-2">心得</div>
             </div>
-            <div class="form-section">
-              <label>外型 (可複選)：</label>
-              <div class="chip-container" id="appearanceContainer">
-                <span class="chip" onclick="toggleChip(this)">甜美</span>
-                <span class="chip" onclick="toggleChip(this)">可愛</span>
-                <span class="chip" onclick="toggleChip(this)">氣質</span>
-                <span class="chip" onclick="toggleChip(this)">漂亮</span>
-                <span class="chip" onclick="toggleChip(this)">艷麗</span>
-                <span class="chip" onclick="toggleChip(this)">鄰家</span>
-                <span class="chip" onclick="toggleChip(this)">素人</span>
-              </div>
-            </div>
-            <div class="form-section">
-              <label>身材：</label>
-              <div class="chip-container" id="bodyTypeContainer">
-                <span class="chip" onclick="selectSingleChip(this, 'bodyTypeContainer')">骨感</span>
-                <span class="chip" onclick="selectSingleChip(this, 'bodyTypeContainer')">瘦</span>
-                <span class="chip" onclick="selectSingleChip(this, 'bodyTypeContainer')">均勻</span>
-                <span class="chip" onclick="selectSingleChip(this, 'bodyTypeContainer')">微肉</span>
-                <span class="chip" onclick="selectSingleChip(this, 'bodyTypeContainer')">棉花糖</span>
-              </div>
-            </div>
-            <div class="form-section">
-              <label for="cupSize">罩杯：</label>
-              <select id="cupSize" name="cupSize">
-                <option value="">請選擇</option>
-              </select>
-            </div>
-            <div class="form-section">
-              <label>膚質：</label>
-              <div class="chip-container" id="skinQualityContainer">
-                <span class="chip" onclick="selectSingleChip(this, 'skinQualityContainer')">絲滑</span>
-                <span class="chip" onclick="selectSingleChip(this, 'skinQualityContainer')">普通</span>
-                <span class="chip" onclick="selectSingleChip(this, 'skinQualityContainer')">差</span>
-              </div>
-            </div>
-            <div class="form-section">
-              <label>膚色：</label>
-              <div class="chip-container" id="skinColorContainer">
-                <span class="chip" onclick="selectSingleChip(this, 'skinColorContainer')">白皙</span>
-                <span class="chip" onclick="selectSingleChip(this, 'skinColorContainer')">偏白</span>
-                <span class="chip" onclick="selectSingleChip(this, 'skinColorContainer')">正常</span>
-                <span class="chip" onclick="selectSingleChip(this, 'skinColorContainer')">偏黃</span>
-                <span class="chip" onclick="selectSingleChip(this, 'skinColorContainer')">黑</span>
-              </div>
-            </div>
-            <div class="form-section">
-              <label>尺度：</label>
-              <div class="scale-container">
-                <div class="scale-group">
-                  <div class="scale-title">加值前</div>
-                  <div class="chip-container" id="valueAddedBeforeContainer">
-                    <span class="chip" onclick="toggleChip(this)">LG</span>
-                    <span class="chip" onclick="toggleChip(this)">三光</span>
-                    <span class="chip" onclick="toggleChip(this)">摳</span>
-                    <span class="chip" onclick="toggleChip(this)">舔</span>
-                    <span class="chip" onclick="toggleChip(this)">親</span>
-                  </div>
-                </div>
-                <div class="scale-group">
-                  <div class="scale-title">加值後</div>
-                  <div class="chip-container" id="valueAddedAfterContainer">
-                    <span class="chip" onclick="toggleChip(this)">LG</span>
-                    <span class="chip" onclick="toggleChip(this)">三光</span>
-                    <span class="chip" onclick="toggleChip(this)">摳</span>
-                    <span class="chip" onclick="toggleChip(this)">舔</span>
-                    <span class="chip" onclick="toggleChip(this)">親</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="form-section">
-              <label for="musicFee">音樂 (金額)：</label>
-              <input type="number" id="musicFee" name="musicFee" placeholder="請輸入金額">
-            </div>
-            <div class="form-section">
-              <label for="sportsFee">體育 (金額)：</label>
-              <input type="number" id="sportsFee" name="sportsFee" placeholder="請輸入金額">
-            </div>
-            <div class="form-section">
-              <label for="reviewText">心得：</label>
-              <textarea id="reviewText" name="reviewText" rows="4" placeholder="請輸入您的心得..."></textarea>
-            </div>
-            <button type="submit">提交心得</button>
-          </form>
-        `;
-        document.getElementById('reviewFormContainer').style.display = "block";
-        generateCupSizeOptions();
-      } else {
-        document.getElementById('reviewFormContainer').style.display = "none";
-        document.getElementById('reviewFormContainer').innerHTML = "";
-      }
-    }
-    
-    function openSidePanel(cardTitle, count, actionType) {
-      const sidePanel = document.getElementById('sidePanel');
-      const overlay = document.getElementById('overlay');
-      document.getElementById('sidePanelTitle').textContent = cardTitle;
-      if (actionType === 'comments') {
-        document.getElementById('sideTabBtn_comments').textContent = `心得 (${count})`;
-        document.getElementById('sideTabComments').innerHTML = '<div id="reviewFormContainer" style="display:none;"></div><div id="reviewList"></div>';
-      } else if (actionType === 'reservation') {
-        document.getElementById('sideTabBtn_reservation').textContent = `下週搶約`;
-        let html = `<table style="width:100%; font-size:1.1rem; text-align:left; border-collapse: collapse;">`;
-        html += `<tr><th>Date</th><th>Time</th></tr>`;
-        for (let i = 1; i <= count; i++) {
-          html += `<tr><td>2023-09-${i+10}</td><td>${9+i}:00 - ${10+i}:00</td></tr>`;
-        }
-        html += `</table>`;
-        document.getElementById('sideTabReservation').innerHTML = html;
-      } else if (actionType === 'rename') {
-        document.getElementById('sideTabBtn_rename').textContent = `改名紀錄`;
-        document.getElementById('sideTabRename').innerHTML = `<p>暫無改名紀錄</p>`;
-      }
-      switchSideTab(actionType);
-      overlay.style.display = "block";
-      sidePanel.style.display = "block";
-      setTimeout(() => {
-        overlay.classList.add('active');
-        sidePanel.classList.add('active');
-      }, 20);
-    }
-    
-    function closeSidePanel() {
-      const sidePanel = document.getElementById('sidePanel');
-      const overlay = document.getElementById('overlay');
-      sidePanel.classList.remove('active');
-      overlay.classList.remove('active');
-      setTimeout(() => {
-        sidePanel.style.display = "none";
-        overlay.style.display = "none";
-      }, 300);
-    }
-    
-    function generateCupSizeOptions() {
-      const cupSizeSelect = document.getElementById('cupSize');
-      cupSizeSelect.innerHTML = '<option value="">請選擇</option>';
-      for (let c = 65; c <= 90; c++) {
-        let letter = String.fromCharCode(c);
-        cupSizeSelect.innerHTML += `<option value="${letter}">${letter}</option>`;
-      }
-    }
-    
-    function handleReviewFormSubmit(e) {
-      e.preventDefault();
-      const age = document.getElementById('ageRange').value;
-      const appearanceElems = document.querySelectorAll('#appearanceContainer .chip.selected');
-      let appearance = [];
-      appearanceElems.forEach(elem => { appearance.push(elem.textContent); });
-      const bodyChip = document.querySelector('#bodyTypeContainer .chip.selected');
-      const bodyText = bodyChip ? bodyChip.textContent : "";
-      const cupSize = document.getElementById('cupSize').value;
-      const skinQualityChip = document.querySelector('#skinQualityContainer .chip.selected');
-      const skinQuality = skinQualityChip ? skinQualityChip.textContent : "";
-      const skinColorChip = document.querySelector('#skinColorContainer .chip.selected');
-      const skinColor = skinColorChip ? skinColorChip.textContent : "";
-      const valueAddedBeforeElems = document.querySelectorAll('#valueAddedBeforeContainer .chip.selected');
-      let valueAddedBefore = [];
-      valueAddedBeforeElems.forEach(elem => { valueAddedBefore.push(elem.textContent); });
-      const valueAddedAfterElems = document.querySelectorAll('#valueAddedAfterContainer .chip.selected');
-      let valueAddedAfter = [];
-      valueAddedAfterElems.forEach(elem => { valueAddedAfter.push(elem.textContent); });
-      const musicFee = document.getElementById('musicFee').value;
-      const sportsFee = document.getElementById('sportsFee').value;
-      const reviewText = document.getElementById('reviewText').value;
-      
-      const reviewList = document.getElementById('reviewList');
-      const newReviewHTML = `
-        <div class="review-details">
-          <div class="review-label">年紀：</div>
-          <div class="review-content">${age}</div>
-          <div class="review-label">外型：</div>
-          <div class="review-content">${appearance.join(', ')}</div>
-          <div class="review-label">身材：</div>
-          <div class="review-content">${bodyText}</div>
-          <div class="review-label">罩杯：</div>
-          <div class="review-content">${cupSize}</div>
-          <div class="review-label">膚質：</div>
-          <div class="review-content">${skinQuality}</div>
-          <div class="review-label">膚色：</div>
-          <div class="review-content">${skinColor}</div>
-          <div class="review-label">尺度：</div>
-          <div class="review-content">
-            <div class="scale-row">
-              <div class="review-scale-group">
-                <div class="review-scale-title">加值前</div>
-                <div class="review-scale-content">${valueAddedBefore.join(', ') || '-'}</div>
-              </div>
-              <div class="review-scale-group">
-                <div class="review-scale-title">加值後</div>
-                <div class="review-scale-content">${valueAddedAfter.join(', ') || '-'}</div>
-              </div>
-            </div>
-          </div>
-          <div class="review-label">音樂：</div>
-          <div class="review-content">${musicFee}</div>
-          <div class="review-label">體育：</div>
-          <div class="review-content">${sportsFee}</div>
-          <div class="review-label">心得：</div>
-          <div class="review-content">${reviewText}</div>
         </div>
-      `;
-      const newReview = document.createElement('div');
-      newReview.className = "review";
-      newReview.innerHTML = newReviewHTML;
-      reviewList.innerHTML += newReview.outerHTML;
-      
-      document.getElementById('reviewForm').reset();
-      document.querySelectorAll('.chip.selected').forEach(chip => chip.classList.remove('selected'));
-      document.querySelectorAll('.chip.disabled').forEach(chip => chip.classList.remove('disabled'));
-      document.getElementById('ageValue').innerText = "18";
-      
-      document.getElementById('reviewFormContainer').style.display = "none";
-      document.getElementById('reviewFormContainer').innerHTML = "";
-      
-      return false;
-    }
-    
-    function toggleMenu(e) {
-      if (e) e.stopPropagation();
-      if (!menuVisible) { showMenu(); }
-      else { hideMenu(); }
-    }
-    
-    function showMenu() {
-      menuVisible = true;
-      const container = document.getElementById('branchesContainer');
-      const menuDiv = document.createElement('div');
-      menuDiv.id = "menuOptionsContainer";
-      menuDiv.style.display = "flex";
-      menuDiv.style.flexDirection = "column";
-      menuDiv.style.alignItems = "center";
-      menuDiv.style.position = "absolute";
-      menuDiv.style.top = "0";
-      menuDiv.style.left = "0";
-      menuDiv.style.width = "65px";
-      menuDiv.style.height = "100%";
-      menuDiv.style.backgroundColor = "#34495e";
-      menuDiv.style.transform = "translateX(-100%)";
-      menuDiv.style.transition = "transform 0.5s ease";
-      menuDiv.innerHTML = `
-        <button class="branch-tab" onclick="menuSelect('dailySchedule')" title="每日班表">每日班表</button>
-        <button class="branch-tab" onclick="menuSelect('weeklySchedule')" title="每週班表">每週班表</button>
-        <button class="branch-tab" onclick="alert('最新心得')" title="最新心得">最新心得</button>
-        <button class="branch-tab" onclick="alert('熱門通知')" title="熱門通知">熱門通知</button>
-        <button class="branch-tab" onclick="alert('預約紀錄')" title="預約紀錄">預約紀錄</button>
-        <button class="branch-tab" onclick="alert('預約查詢')" title="預約查詢">預約查詢</button>
-        <button class="branch-tab" onclick="alert('收藏查詢')" title="收藏查詢">收藏查詢</button>
-      `;
-      container.appendChild(menuDiv);
-      setTimeout(() => { menuDiv.style.transform = "translateX(0)"; }, 20);
-      setTimeout(() => { document.addEventListener('click', menuOutsideClick); }, 0);
-    }
-    
-    function menuOutsideClick(e) {
-      const menuDiv = document.getElementById('menuOptionsContainer');
-      const container = document.getElementById('branchesContainer');
-      if (menuDiv && !container.contains(e.target)) {
-        hideMenu();
-        document.removeEventListener('click', menuOutsideClick);
-      }
-    }
-    
-    function hideMenu() {
-      menuVisible = false;
-      const menuDiv = document.getElementById('menuOptionsContainer');
-      if (menuDiv) {
-        menuDiv.style.transform = "translateX(-100%)";
-        setTimeout(() => { menuDiv.remove(); updateNav(); }, 500);
-      }
-      document.removeEventListener('click', menuOutsideClick);
-    }
-    
-    function menuSelect(pageId) {
-      showPage(pageId);
-      hideMenu();
-      document.removeEventListener('click', menuOutsideClick);
-    }
-  </script>
+
+        <main class="scrollable-content">
+            <!-- ▼▼▼▼▼【新增的 HTML 元素】▼▼▼▼▼ -->
+            <div id="selection-highlighter"></div>
+            <!-- ▲▲▲▲▲【新增的 HTML 元素】▲▲▲▲▲ -->
+            
+            <div class="space-y-2 px-4 pb-4" id="schedule-container">
+                <!-- 美容師列表 (已擴充至 20 位) -->
+                <div class="schedule-item grid grid-cols-12 items-center text-center p-2 rounded-lg cursor-pointer" data-id="1">
+                    <div class="col-span-1"><span class="material-icons text-gray-400">add_circle_outline</span></div>
+                    <div class="col-span-3 text-left">
+                        <p class="font-bold">ROSE</p>
+                        <p class="text-xs text-gray-500">153.45.D</p>
+                    </div>
+                    <div class="col-span-4 grid grid-cols-4 gap-1 text-xs"><span class="bg-gray-200 p-1 rounded">01</span><span class="bg-gray-200 p-1 rounded">02</span><span class="bg-gray-200 p-1 rounded">03</span><span class="bg-gray-200 p-1 rounded">04</span><span class="bg-gray-200 p-1 rounded">05</span><span class="bg-gray-200 p-1 rounded">06</span><span class="bg-gray-200 p-1 rounded">07</span>
+                    <span class="bg-gray-200 p-1 rounded">08</span><span class="bg-gray-200 p-1 rounded">09</span><span class="bg-gray-200 p-1 rounded">10</span></div>
+                    <div class="col-span-2">2800</div>
+                    <div class="col-span-2"><span class="inline-block w-6 h-6 rounded-full border border-blue-500 text-blue-500 flex items-center justify-center text-xs">0</span></div>
+                </div>
+                <!-- ... 其他美容師列表項目 ... -->
+                <div class="schedule-item grid grid-cols-12 items-center text-center p-2 rounded-lg cursor-pointer" data-id="2">
+                    <div class="col-span-1"><span class="material-icons text-gray-400">add_circle_outline</span></div>
+                    <div class="col-span-3 text-left">
+                        <p class="font-bold">七喜</p>
+                        <p class="text-xs text-gray-500">160.45.C</p>
+                    </div>
+                    <div class="col-span-4 grid grid-cols-4 gap-1 text-xs"><span class="bg-gray-200 p-1 rounded">01</span><span class="bg-gray-200 p-1 rounded">02</span><span class="bg-gray-200 p-1 rounded">04</span></div>
+                    <div class="col-span-2">3100</div>
+                    <div class="col-span-2"><span class="inline-block w-6 h-6 rounded-full border border-blue-500 text-blue-500 flex items-center justify-center text-xs">0</span></div>
+                </div>
+                <div class="schedule-item grid grid-cols-12 items-center text-center p-2 rounded-lg cursor-pointer" data-id="3">
+                    <div class="col-span-1"><span class="material-icons text-gray-400">add_circle_outline</span></div>
+                    <div class="col-span-3 text-left">
+                        <p class="font-bold">小凡</p>
+                        <p class="text-xs text-gray-500">174.55.D</p>
+                    </div>
+                    <div class="col-span-4 grid grid-cols-4 gap-1 text-xs"><span class="bg-gray-200 p-1 rounded">24</span><span class="bg-gray-200 p-1 rounded">01</span></div>
+                    <div class="col-span-2">2900</div>
+                    <div class="col-span-2"><span class="inline-block w-6 h-6 rounded-full border border-blue-500 text-blue-500 flex items-center justify-center text-xs">0</span></div>
+                </div>
+                <div class="schedule-item grid grid-cols-12 items-center text-center p-2 rounded-lg cursor-pointer" data-id="4">
+                    <div class="col-span-1"><span class="material-icons text-gray-400">add_circle_outline</span></div>
+                    <div class="col-span-3 text-left">
+                        <p class="font-bold">小雪</p>
+                        <p class="text-xs text-gray-500">168.43.C</p>
+                    </div>
+                    <div class="col-span-4 grid grid-cols-4 gap-1 text-xs"><span class="bg-gray-200 p-1 rounded">24</span><span class="bg-gray-200 p-1 rounded">01</span></div>
+                    <div class="col-span-2">3500</div>
+                    <div class="col-span-2"><span class="inline-block w-6 h-6 rounded-full border border-blue-500 text-blue-500 flex items-center justify-center text-xs">0</span></div>
+                </div>
+                <div class="schedule-item grid grid-cols-12 items-center text-center p-2 rounded-lg cursor-pointer" data-id="5">
+                    <div class="col-span-1"><span class="material-icons text-gray-400">add_circle_outline</span></div>
+                    <div class="col-span-3 text-left">
+                        <p class="font-bold">奶糖</p>
+                        <p class="text-xs text-gray-500">156.42.F</p>
+                    </div>
+                    <div class="col-span-4 grid grid-cols-4 gap-1 text-xs"><span class="bg-gray-200 p-1 rounded">02</span><span class="bg-gray-200 p-1 rounded">03</span><span class="bg-gray-200 p-1 rounded">04</span><span class="bg-gray-200 p-1 rounded">05</span></div>
+                    <div class="col-span-2">3400</div>
+                    <div class="col-span-2"><span class="inline-block w-6 h-6 rounded-full border border-blue-500 text-blue-500 flex items-center justify-center text-xs">0</span></div>
+                </div>
+                <div class="schedule-item grid grid-cols-12 items-center text-center p-2 rounded-lg cursor-pointer" data-id="6">
+                    <div class="col-span-1"><span class="material-icons text-gray-400">add_circle_outline</span></div>
+                    <div class="col-span-3 text-left">
+                        <p class="font-bold">小愛</p>
+                        <p class="text-xs text-gray-500">162.50.E</p>
+                    </div>
+                    <div class="col-span-4 grid grid-cols-4 gap-1 text-xs"><span class="bg-gray-200 p-1 rounded">22</span><span class="bg-gray-200 p-1 rounded">23</span><span class="bg-gray-200 p-1 rounded">24</span></div>
+                    <div class="col-span-2">3200</div>
+                    <div class="col-span-2"><span class="inline-block w-6 h-6 rounded-full border border-blue-500 text-blue-500 flex items-center justify-center text-xs">0</span></div>
+                </div>
+                <div class="schedule-item grid grid-cols-12 items-center text-center p-2 rounded-lg cursor-pointer" data-id="7">
+                    <div class="col-span-1"><span class="material-icons text-gray-400">add_circle_outline</span></div>
+                    <div class="col-span-3 text-left">
+                        <p class="font-bold">花花</p>
+                        <p class="text-xs text-gray-500">165.48.D</p>
+                    </div>
+                    <div class="col-span-4 grid grid-cols-4 gap-1 text-xs"><span class="bg-gray-200 p-1 rounded">10</span><span class="bg-gray-200 p-1 rounded">11</span><span class="bg-gray-200 p-1 rounded">12</span></div>
+                    <div class="col-span-2">3000</div>
+                    <div class="col-span-2"><span class="inline-block w-6 h-6 rounded-full border border-blue-500 text-blue-500 flex items-center justify-center text-xs">0</span></div>
+                </div>
+                <div class="schedule-item grid grid-cols-12 items-center text-center p-2 rounded-lg cursor-pointer" data-id="8">
+                    <div class="col-span-1"><span class="material-icons text-gray-400">add_circle_outline</span></div>
+                    <div class="col-span-3 text-left">
+                        <p class="font-bold">琳琳</p>
+                        <p class="text-xs text-gray-500">158.46.C</p>
+                    </div>
+                    <div class="col-span-4 grid grid-cols-4 gap-1 text-xs"><span class="bg-gray-200 p-1 rounded">14</span><span class="bg-gray-200 p-1 rounded">15</span><span class="bg-gray-200 p-1 rounded">16</span><span class="bg-gray-200 p-1 rounded">17</span></div>
+                    <div class="col-span-2">3300</div>
+                    <div class="col-span-2"><span class="inline-block w-6 h-6 rounded-full border border-blue-500 text-blue-500 flex items-center justify-center text-xs">0</span></div>
+                </div>
+                <div class="schedule-item grid grid-cols-12 items-center text-center p-2 rounded-lg cursor-pointer" data-id="9">
+                    <div class="col-span-1"><span class="material-icons text-gray-400">add_circle_outline</span></div>
+                    <div class="col-span-3 text-left">
+                        <p class="font-bold">娜娜</p>
+                        <p class="text-xs text-gray-500">170.52.E</p>
+                    </div>
+                    <div class="col-span-4 grid grid-cols-4 gap-1 text-xs"><span class="bg-gray-200 p-1 rounded">18</span><span class="bg-gray-200 p-1 rounded">19</span><span class="bg-gray-200 p-1 rounded">20</span></div>
+                    <div class="col-span-2">3600</div>
+                    <div class="col-span-2"><span class="inline-block w-6 h-6 rounded-full border border-blue-500 text-blue-500 flex items-center justify-center text-xs">0</span></div>
+                </div>
+                <div class="schedule-item grid grid-cols-12 items-center text-center p-2 rounded-lg cursor-pointer" data-id="10">
+                    <div class="col-span-1"><span class="material-icons text-gray-400">add_circle_outline</span></div>
+                    <div class="col-span-3 text-left">
+                        <p class="font-bold">妮妮</p>
+                        <p class="text-xs text-gray-500">163.47.D</p>
+                    </div>
+                    <div class="col-span-4 grid grid-cols-4 gap-1 text-xs"><span class="bg-gray-200 p-1 rounded">13</span><span class="bg-gray-200 p-1 rounded">14</span><span class="bg-gray-200 p-1 rounded">15</span></div>
+                    <div class="col-span-2">3150</div>
+                    <div class="col-span-2"><span class="inline-block w-6 h-6 rounded-full border border-blue-500 text-blue-500 flex items-center justify-center text-xs">0</span></div>
+                </div>
+                <div class="schedule-item grid grid-cols-12 items-center text-center p-2 rounded-lg cursor-pointer" data-id="11">
+                    <div class="col-span-1"><span class="material-icons text-gray-400">add_circle_outline</span></div>
+                    <div class="col-span-3 text-left">
+                        <p class="font-bold">樂樂</p>
+                        <p class="text-xs text-gray-500">159.44.C</p>
+                    </div>
+                    <div class="col-span-4 grid grid-cols-4 gap-1 text-xs"><span class="bg-gray-200 p-1 rounded">20</span><span class="bg-gray-200 p-1 rounded">21</span><span class="bg-gray-200 p-1 rounded">22</span><span class="bg-gray-200 p-1 rounded">23</span><span class="bg-gray-200 p-1 rounded">24</span></div>
+                    <div class="col-span-2">2950</div>
+                    <div class="col-span-2"><span class="inline-block w-6 h-6 rounded-full border border-blue-500 text-blue-500 flex items-center justify-center text-xs">0</span></div>
+                </div>
+                <div class="schedule-item grid grid-cols-12 items-center text-center p-2 rounded-lg cursor-pointer" data-id="12">
+                    <div class="col-span-1"><span class="material-icons text-gray-400">add_circle_outline</span></div>
+                    <div class="col-span-3 text-left">
+                        <p class="font-bold">糖糖</p>
+                        <p class="text-xs text-gray-500">166.49.E</p>
+                    </div>
+                    <div class="col-span-4 grid grid-cols-4 gap-1 text-xs"><span class="bg-gray-200 p-1 rounded">10</span><span class="bg-gray-200 p-1 rounded">11</span><span class="bg-gray-200 p-1 rounded">12</span><span class="bg-gray-200 p-1 rounded">13</span><span class="bg-gray-200 p-1 rounded">14</span></div>
+                    <div class="col-span-2">3800</div>
+                    <div class="col-span-2"><span class="inline-block w-6 h-6 rounded-full border border-blue-500 text-blue-500 flex items-center justify-center text-xs">0</span></div>
+                </div>
+                <div class="schedule-item grid grid-cols-12 items-center text-center p-2 rounded-lg cursor-pointer" data-id="13">
+                    <div class="col-span-1"><span class="material-icons text-gray-400">add_circle_outline</span></div>
+                    <div class="col-span-3 text-left">
+                        <p class="font-bold">可可</p>
+                        <p class="text-xs text-gray-500">172.53.D</p>
+                    </div>
+                    <div class="col-span-4 grid grid-cols-4 gap-1 text-xs"><span class="bg-gray-200 p-1 rounded">15</span><span class="bg-gray-200 p-1 rounded">16</span><span class="bg-gray-200 p-1 rounded">17</span></div>
+                    <div class="col-span-2">3450</div>
+                    <div class="col-span-2"><span class="inline-block w-6 h-6 rounded-full border border-blue-500 text-blue-500 flex items-center justify-center text-xs">0</span></div>
+                </div>
+                <div class="schedule-item grid grid-cols-12 items-center text-center p-2 rounded-lg cursor-pointer" data-id="14">
+                    <div class="col-span-1"><span class="material-icons text-gray-400">add_circle_outline</span></div>
+                    <div class="col-span-3 text-left">
+                        <p class="font-bold">貝貝</p>
+                        <p class="text-xs text-gray-500">155.43.C</p>
+                    </div>
+                    <div class="col-span-4 grid grid-cols-4 gap-1 text-xs"><span class="bg-gray-200 p-1 rounded">09</span><span class="bg-gray-200 p-1 rounded">10</span><span class="bg-gray-200 p-1 rounded">11</span></div>
+                    <div class="col-span-2">2850</div>
+                    <div class="col-span-2"><span class="inline-block w-6 h-6 rounded-full border border-blue-500 text-blue-500 flex items-center justify-center text-xs">0</span></div>
+                </div>
+                <div class="schedule-item grid grid-cols-12 items-center text-center p-2 rounded-lg cursor-pointer" data-id="15">
+                    <div class="col-span-1"><span class="material-icons text-gray-400">add_circle_outline</span></div>
+                    <div class="col-span-3 text-left">
+                        <p class="font-bold">琪琪</p>
+                        <p class="text-xs text-gray-500">169.51.D</p>
+                    </div>
+                    <div class="col-span-4 grid grid-cols-4 gap-1 text-xs"><span class="bg-gray-200 p-1 rounded">18</span><span class="bg-gray-200 p-1 rounded">19</span><span class="bg-gray-200 p-1 rounded">20</span><span class="bg-gray-200 p-1 rounded">21</span></div>
+                    <div class="col-span-2">3350</div>
+                    <div class="col-span-2"><span class="inline-block w-6 h-6 rounded-full border border-blue-500 text-blue-500 flex items-center justify-center text-xs">0</span></div>
+                </div>
+                <div class="schedule-item grid grid-cols-12 items-center text-center p-2 rounded-lg cursor-pointer" data-id="16">
+                    <div class="col-span-1"><span class="material-icons text-gray-400">add_circle_outline</span></div>
+                    <div class="col-span-3 text-left">
+                        <p class="font-bold">姍姍</p>
+                        <p class="text-xs text-gray-500">161.46.C</p>
+                    </div>
+                    <div class="col-span-4 grid grid-cols-4 gap-1 text-xs"><span class="bg-gray-200 p-1 rounded">12</span><span class="bg-gray-200 p-1 rounded">13</span><span class="bg-gray-200 p-1 rounded">14</span></div>
+                    <div class="col-span-2">3050</div>
+                    <div class="col-span-2"><span class="inline-block w-6 h-6 rounded-full border border-blue-500 text-blue-500 flex items-center justify-center text-xs">0</span></div>
+                </div>
+                <div class="schedule-item grid grid-cols-12 items-center text-center p-2 rounded-lg cursor-pointer" data-id="17">
+                    <div class="col-span-1"><span class="material-icons text-gray-400">add_circle_outline</span></div>
+                    <div class="col-span-3 text-left">
+                        <p class="font-bold">菲菲</p>
+                        <p class="text-xs text-gray-500">167.48.E</p>
+                    </div>
+                    <div class="col-span-4 grid grid-cols-4 gap-1 text-xs"><span class="bg-gray-200 p-1 rounded">22</span><span class="bg-gray-200 p-1 rounded">23</span><span class="bg-gray-200 p-1 rounded">24</span><span class="bg-gray-200 p-1 rounded">01</span></div>
+                    <div class="col-span-2">3700</div>
+                    <div class="col-span-2"><span class="inline-block w-6 h-6 rounded-full border border-blue-500 text-blue-500 flex items-center justify-center text-xs">0</span></div>
+                </div>
+                <div class="schedule-item grid grid-cols-12 items-center text-center p-2 rounded-lg cursor-pointer" data-id="18">
+                    <div class="col-span-1"><span class="material-icons text-gray-400">add_circle_outline</span></div>
+                    <div class="col-span-3 text-left">
+                        <p class="font-bold">柚柚</p>
+                        <p class="text-xs text-gray-500">157.44.D</p>
+                    </div>
+                    <div class="col-span-4 grid grid-cols-4 gap-1 text-xs"><span class="bg-gray-200 p-1 rounded">16</span><span class="bg-gray-200 p-1 rounded">17</span><span class="bg-gray-200 p-1 rounded">18</span></div>
+                    <div class="col-span-2">3250</div>
+                    <div class="col-span-2"><span class="inline-block w-6 h-6 rounded-full border border-blue-500 text-blue-500 flex items-center justify-center text-xs">0</span></div>
+                </div>
+                <div class="schedule-item grid grid-cols-12 items-center text-center p-2 rounded-lg cursor-pointer" data-id="19">
+                    <div class="col-span-1"><span class="material-icons text-gray-400">add_circle_outline</span></div>
+                    <div class="col-span-3 text-left">
+                        <p class="font-bold">咪咪</p>
+                        <p class="text-xs text-gray-500">171.50.C</p>
+                    </div>
+                    <div class="col-span-4 grid grid-cols-4 gap-1 text-xs"><span class="bg-gray-200 p-1 rounded">19</span><span class="bg-gray-200 p-1 rounded">20</span><span class="bg-gray-200 p-1 rounded">21</span><span class="bg-gray-200 p-1 rounded">22</span><span class="bg-gray-200 p-1 rounded">23</span></div>
+                    <div class="col-span-2">3550</div>
+                    <div class="col-span-2"><span class="inline-block w-6 h-6 rounded-full border border-blue-500 text-blue-500 flex items-center justify-center text-xs">0</span></div>
+                </div>
+                <div class="schedule-item grid grid-cols-12 items-center text-center p-2 rounded-lg cursor-pointer" data-id="20">
+                    <div class="col-span-1"><span class="material-icons text-gray-400">add_circle_outline</span></div>
+                    <div class="col-span-3 text-left">
+                        <p class="font-bold">悅悅</p>
+                        <p class="text-xs text-gray-500">164.48.D</p>
+                    </div>
+                    <div class="col-span-4 grid grid-cols-4 gap-1 text-xs"><span class="bg-gray-200 p-1 rounded">11</span><span class="bg-gray-200 p-1 rounded">12</span><span class="bg-gray-200 p-1 rounded">13</span><span class="bg-gray-200 p-1 rounded">14</span></div>
+                    <div class="col-span-2">3400</div>
+                    <div class="col-span-2"><span class="inline-block w-6 h-6 rounded-full border border-blue-500 text-blue-500 flex items-center justify-center text-xs">0</span></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // 美容師資料
+            const staffData = { "1":{name:"ROSE",image:"https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?q=80&w=1887&auto=format&fit=crop",description:["經驗豐富的按摩師","擅長泰式古法按摩","溫柔細心，服務周到","讓您身心靈完全放鬆"]},"2":{name:"七喜",image:"https://images.unsplash.com/photo-1516244793086-242d48334b07?q=80&w=1887&auto=format&fit=crop",description:["活力四射的陽光女孩","專精運動按摩","互動活潑，充滿能量","幫您消除疲勞"]},"3":{name:"小凡",image:"https://images.unsplash.com/photo-1614283233556-f35b7c-80a299?q=80&w=1887&auto=format&fit=crop",description:["無經驗素人 <span class='text-red-500 font-bold'>禁</span> 不視訊","<span class='bg-red-500 text-white px-1 py-0.5 rounded-sm text-xs'>禁</span> 禁職業粗魯","初入森林的小白兔 短","髮活力互動超甜蜜"]},"4":{name:"小雪",image:"https://images.unsplash.com/photo-1542314831-068cd1dbb5ed?q=80&w=2070&auto=format&fit=crop",description:["溫柔婉約的氣質美女","擅長精油芳療","手法輕柔，療癒身心","帶給您寧靜的體驗"]},"5":{name:"奶糖",image:"https://images.unsplash.com/photo-1596701062944-59a435805319?q=80&w=1887&auto=format&fit=crop",description:["甜美可愛的鄰家女孩","專注於舒緩按摩","笑容甜美，親和力強","讓您忘卻煩惱"]},"6":{name:"小愛",image:"https://images.unsplash.com/photo-1504703395950-b8914mat&fit=crop",description:["熱情奔放的性感女郎","精通深層組織按摩","互動大膽，魅力無法擋","給您不一樣的刺激體驗"]},"7":{name:"花花",image:"https://images.unsplash.com/photo-1517841905240-472988babdf9?q=80&w=1887&auto=format&fit=crop",description:["清新脫俗的文青女孩","擅長中式指壓","氣質典雅，談吐不凡","讓您體驗文化的薰陶"]},"8":{name:"琳琳",image:"https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=1964&auto=format&fit=crop",description:["成熟嫵媚的都會女性","專精淋巴排毒","風情萬種，充滿魅力","為您帶來極致的享受"]},"9":{name:"娜娜",image:"https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=1887&auto=format&fit=crop",description:["異國風情的神秘女郎","擅長夏威夷Lomi Lomi","熱情奔放，舞姿動人","帶您體驗海島的熱情"]},"10":{name:"妮妮",image:"https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=1961&auto=format&fit=crop",description:["空靈系少女","手法輕柔如羽毛","專注於臉部撥筋","讓您容光煥發"]},"11":{name:"樂樂",image:"https://images.unsplash.com/photo-1611042553365-9b10e481ba2a?q=80&w=1887&auto=format&fit=crop",description:["犬系陽光女孩","笑容是她的招牌","擅長活力指壓","帶走您所有煩憂"]},"12":{name:"糖糖",image:"https://images.unsplash.com/photo-1609505884375-d533897b264a?q=80&w=1887&auto=format&fit=crop",description:["日系甜美風格","服務貼心周到","專精日式香氛按摩","給您公主般的呵護"]},"13":{name:"可可",image:"https://images.unsplash.com/photo-1628890920690-9e29d0019b9b?q=80&w=1887&auto=format&fit=crop",description:["歐美混血感","身材高挑，健談開朗","專長運動後肌肉放鬆","是您健身後的好夥伴"]},"14":{name:"貝貝",image:"https://images.unsplash.com/photo-1618641986557-1ecd230959aa?q=80&w=1887&auto=format&fit=crop",description:["可愛小隻馬","活潑好動，鬼靈精怪","獨創節奏感按摩","讓您體驗全新的感受"]},"15":{name:"琪琪",image:"https://images.unsplash.com/photo-1552695845-4a0237de1a84?q=80&w=1887&auto=format&fit=crop",description:["知性御姐范","氣質出眾，溫文儒雅","擅長經絡疏通","調理您的身體平衡"]},"16":{name:"姍姍",image:"https://images.unsplash.com/photo-1619325493236-16f38a84-7158?q=80&w=1887&auto=format&fit=crop",description:["鄰家大姐姐","親切溫和，有耐心","專注於頭部舒壓","幫您釋放壓力，改善睡眠"]},"17":{name:"菲菲",image:"https://images.unsplash.com/photo-1604004555029-41a892982398?q=80&w=1887&auto=format&fit=crop",description:["性感貓系女友","眼神嫵媚，姿態撩人","精通巴里島式按摩","帶您進入感官的盛宴"]},"18":{name:"柚柚",image:"https://images.unsplash.com/photo-1621294793532-66b6ddd19853?q=80&w=1887&auto=format&fit=crop",description:["文靜小清新","話不多，但很細心","擅長瑞典式按摩","給您最純粹的放鬆"]},"19":{name:"咪咪",image:"https://images.unsplash.com/photo-1599942033333-e53b4a243b7e?q=80&w=1887&auto=format&fit=crop",description:["派對女王","熱情如火，互動滿分","專長熱石療法","溫暖您的每一寸肌膚"]},"20":{name:"悅悅",image:"https://images.unsplash.com/photo-1620021313936-232a5893c206?q=80&w=1887&auto=format&fit=crop",description:["古典美人","舉手投足充滿韻味","精通中式穴位指壓","傳承古老的養生智慧"]}};
+
+            // ▼▼▼▼▼【修改後的 JavaScript】▼▼▼▼▼
+            const profileImage = document.getElementById('profile-image');
+            const noPhotoText = document.getElementById('no-photo-text');
+            const profileDetails = document.getElementById('profile-details');
+            const scheduleItems = document.querySelectorAll('.schedule-item');
+            const scrollContainer = document.querySelector('.scrollable-content');
+            
+            // 新增：獲取高亮框元素
+            const selectionHighlighter = document.getElementById('selection-highlighter');
+            
+            let currentActiveItem = null;
+            let isAnimating = false;
+            let touchStartY = 0;
+
+            gsap.registerPlugin(ScrollToPlugin);
+
+            function updateProfile(id) {
+                const data = staffData[id];
+                if (!data) return;
+                profileImage.src = data.image || '';
+                profileImage.classList.toggle('hidden', !data.image);
+                noPhotoText.classList.toggle('hidden', !!data.image);
+                profileImage.parentElement.classList.toggle('items-center', !data.image);
+                profileImage.parentElement.classList.toggle('justify-center', !data.image);
+                profileImage.parentElement.classList.toggle('bg-gray-200', !data.image);
+                profileDetails.innerHTML = data.description.map(line => `<p class="text-gray-600 text-sm">${line}</p>`).join('');
+            }
+
+            /**
+             * 新增：移動高亮框到指定元素的位置和大小
+             * @param {HTMLElement} targetItem - 目標元素
+             */
+            function moveHighlighter(targetItem) {
+                if (!targetItem) return;
+
+                const targetRect = {
+                    width: targetItem.offsetWidth,
+                    height: targetItem.offsetHeight,
+                    top: targetItem.offsetTop,
+                    left: targetItem.offsetLeft
+                };
+
+                selectionHighlighter.style.width = `${targetRect.width}px`;
+                selectionHighlighter.style.height = `${targetRect.height}px`;
+                // 使用 transform 來移動，性能更好
+                selectionHighlighter.style.transform = `translate(${targetRect.left}px, ${targetRect.top}px)`;
+            }
+
+            /**
+             * 重構：更新當前選中的項目
+             * @param {HTMLElement} targetItem - 目標元素
+             */
+            function updateActiveItem(targetItem) {
+                if (!targetItem || targetItem === currentActiveItem) return;
+                
+                currentActiveItem = targetItem;
+                updateProfile(targetItem.dataset.id);
+
+                // 核心改變：不再操作項目本身，而是移動高亮框
+                moveHighlighter(targetItem);
+            }
+            
+            /**
+             * 核心滾動與選擇邏輯 (微調)
+             * @param {HTMLElement} targetItem - 要選擇並居中的目標元素
+             */
+            function selectAndCenterItem(targetItem) {
+                if (isAnimating || !targetItem || targetItem === currentActiveItem) return;
+
+                // 1. 更新選擇狀態 (移動高亮框、更新 Profile)
+                updateActiveItem(targetItem);
+                
+                isAnimating = true;
+                gsap.to(scrollContainer, {
+                    duration: 0.4,
+                    scrollTo: { 
+                        y: targetItem, 
+                        offsetY: scrollContainer.clientHeight / 2 - targetItem.clientHeight / 2 
+                    },
+                    ease: "power2.inOut",
+                    overwrite: true,
+                    onComplete: () => { 
+                        isAnimating = false; 
+                    }
+                });
+            }
+
+            function handleScroll(direction) {
+                if (!currentActiveItem) return;
+                const nextItem = (direction === 'down')
+                    ? currentActiveItem.nextElementSibling
+                    : currentActiveItem.previousElementSibling;
+                if (nextItem && nextItem.classList.contains('schedule-item')) {
+                    selectAndCenterItem(nextItem);
+                }
+            }
+            
+            // --- 事件監聽設置 (保持不變) ---
+            scrollContainer.addEventListener('wheel', (event) => {
+                event.preventDefault();
+                const direction = event.deltaY > 0 ? 'down' : 'up';
+                handleScroll(direction);
+            }, { passive: false });
+
+            scrollContainer.addEventListener('touchstart', (event) => {
+                touchStartY = event.touches[0].clientY;
+            }, { passive: true });
+
+            scrollContainer.addEventListener('touchend', (event) => {
+                const touchEndY = event.changedTouches[0].clientY;
+                const swipeDistance = touchStartY - touchEndY;
+                if (Math.abs(swipeDistance) > 30) { 
+                    const direction = swipeDistance > 0 ? 'down' : 'up';
+                    handleScroll(direction);
+                }
+            }, { passive: true });
+            
+            scrollContainer.addEventListener('touchmove', (event) => {
+                event.preventDefault();
+            }, { passive: false });
+
+            scheduleItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    selectAndCenterItem(item);
+                });
+            });
+
+            // --- 頁面初始化 ---
+            if (scheduleItems.length > 0) {
+                // 頁面加載後，默認選擇第一個項目
+                // 為了讓高亮框有出現的動畫，延遲一小段時間執行
+                setTimeout(() => {
+                    updateActiveItem(scheduleItems[0]); 
+                }, 100);
+                scrollContainer.scrollTop = 0; 
+            }
+            // ▲▲▲▲▲【修改後的 JavaScript】▲▲▲▲▲
+        });
+    </script>
 </body>
 </html>

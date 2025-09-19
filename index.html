@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>每日班表 (優化版)</title>
+    <title>每日班表 (左側高亮優化版)</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
     
@@ -16,7 +16,6 @@
         body {
             font-family: 'Roboto', sans-serif;
             height: 100dvh;
-            /* 防止整個頁面滾動，滾動將由內部容器控制 */
             overflow: hidden; 
         }
         .tab-active {
@@ -31,10 +30,8 @@
         .scrollable-content {
             flex-grow: 1;
             overflow-y: auto;
-            position: relative; /* 讓高亮框可以相對於它定位 */
-            /* 為了讓觸控滑動在手機上更流暢 */
+            position: relative;
             -webkit-overflow-scrolling: touch;
-            /* 隱藏滾動條，因為我們將透過事件控制滾動 */
             scrollbar-width: none; /* Firefox */
         }
         .scrollable-content::-webkit-scrollbar {
@@ -57,26 +54,28 @@
 
         /* ▼▼▼▼▼【優化後的 CSS】▼▼▼▼▼ */
         
-        /* 移動式高亮框的樣式 */
+        /* 將高亮框樣式改為左側豎條 */
         #selection-highlighter {
             position: absolute;
             top: 0;
-            left: 0;
-            background-color: #dbeafe; /* 淺藍色背景，等同於 bg-blue-100 */
-            border-radius: 0.5rem; /* 等同於 rounded-lg */
-            z-index: 0; /* 確保它在班表項目下方 */
-            
-            /* 【修改點 1】: 移除 transition 屬性。動畫現在完全由 GSAP (JavaScript) 控制，以確保同步。*/
-            /* transition: ... ; */
-
-            /* 【修改點 2】: 新增 will-change。這是一個性能提示，告訴瀏覽器這些屬性即將發生動畫，可以提前優化。*/
-            will-change: transform, width, height;
+            left: 0; /* 定位在容器最左側 */
+            width: 5px; /* 固定寬度 */
+            background-color: #3b82f6; /* 藍色，等同於 bg-blue-500 */
+            border-radius: 9999px; /* 兩端圓角 */
+            z-index: 2; /* 提高層級，確保可見 */
+            will-change: transform, height; /* 優化提示 */
         }
 
-        /* 讓班表項目本身有相對定位，以便 z-index 生效，顯示在高亮框之上 */
+        /* 讓班表項目本身有相對定位，以便 z-index 生效 */
         .schedule-item {
             position: relative;
             z-index: 1;
+            transition: color 0.3s ease; /* 為文字顏色變化增加過渡效果 */
+        }
+        
+        /* 新增：當前選中項目的文字樣式 */
+        .item-selected .font-bold, .item-selected .text-gray-500 {
+            color: #2563eb; /* 深一點的藍色，使其更突出 */
         }
         
         /* ▲▲▲▲▲【優化後的 CSS】▲▲▲▲▲ */
@@ -85,6 +84,7 @@
 
 <body class="bg-gray-100">
     <div class="max-w-md mx-auto bg-white main-container" id="app">
+        <!-- Header, Profile, etc. (HTML 結構不變) -->
         <header class="bg-white p-4 flex justify-between items-center shadow-sm flex-shrink-0">
             <span class="material-icons text-gray-700">home</span>
             <div class="text-sm text-gray-500">192.168.137.1:8000</div>
@@ -138,7 +138,7 @@
         <main class="scrollable-content">
             <div id="selection-highlighter"></div>
             <div class="space-y-2 px-4 pb-4" id="schedule-container">
-                <!-- 美容師列表 (已擴充至 20 位) -->
+                <!-- 美容師列表 (HTML 結構不變) -->
                 <div class="schedule-item grid grid-cols-12 items-center text-center p-2 rounded-lg cursor-pointer" data-id="1">
                     <div class="col-span-1"><span class="material-icons text-gray-400">add_circle_outline</span></div>
                     <div class="col-span-3 text-left">
@@ -206,56 +206,55 @@
             }
 
             /**
-             * 更新當前選中的項目 (僅更新數據，不動 DOM)
-             * @param {HTMLElement} targetItem - 目標元素
+             * 【修改】更新當前選中的項目，並管理高亮 class
              */
             function updateActiveItem(targetItem) {
-                if (!targetItem || targetItem === currentActiveItem) return;
+                if (!targetItem) return;
                 
-                currentActiveItem = targetItem;
-                updateProfile(targetItem.dataset.id);
+                // 移除舊項目上的 class
+                if (currentActiveItem) {
+                    currentActiveItem.classList.remove('item-selected');
+                }
 
-                // 【修改點 3】: 移除這裡的高亮框移動邏輯，將其統一到 selectAndCenterItem 函數中。
+                // 更新當前項目並添加 class
+                currentActiveItem = targetItem;
+                currentActiveItem.classList.add('item-selected');
+
+                // 更新 Profile 資訊
+                updateProfile(targetItem.dataset.id);
             }
             
             /**
-             * 核心滾動與選擇邏輯 (重構為同步動畫)
-             * @param {HTMLElement} targetItem - 要選擇並居中的目標元素
+             * 核心滾動與選擇邏輯 (動畫目標已簡化)
              */
             function selectAndCenterItem(targetItem) {
                 if (isAnimating || !targetItem || targetItem === currentActiveItem) return;
 
-                // 1. 更新 Profile 資訊並設置新的 active item
+                // 1. 更新 Profile 資訊並設置新的 active item (包含 class 切換)
                 updateActiveItem(targetItem);
                 
-                // 2. 計算高亮框的目標 Y 座標
-                const targetY = targetItem.offsetTop;
-
                 isAnimating = true;
                 
-                // 【修改點 4 - 核心】: 使用單一的 GSAP 調用來同步控制兩個獨立的動畫
-                
-                // 動畫 A: 滾動容器
+                // 2. 動畫 A: 滾動容器 (不變)
                 gsap.to(scrollContainer, {
-                    duration: 0.2, // 統一的動畫時間
+                    duration: 0.35,
                     scrollTo: { 
                         y: targetItem, 
                         offsetY: scrollContainer.clientHeight / 2 - targetItem.clientHeight / 2 
                     },
-                    ease: "power2.inOut", // 使用平滑的缓動效果
+                    ease: "power2.inOut",
                     overwrite: true,
                     onComplete: () => { 
                         isAnimating = false; 
                     }
                 });
                 
-                // 動畫 B: 移動高亮框
+                // 3. 【修改】動畫 B: 移動高亮豎條，現在只控制 y 和 height
                 gsap.to(selectionHighlighter, {
-                    duration: 0.35, // 與滾動動畫完全相同的時間
-                    y: targetY,     // 使用 transform 的 y 屬性進行移動，性能更好
-                    width: targetItem.offsetWidth,
-                    height: targetItem.offsetHeight,
-                    ease: "power2.inOut", // 與滾動動畫完全相同的缓動效果
+                    duration: 0.35,
+                    y: targetItem.offsetTop, // 垂直位置
+                    height: targetItem.offsetHeight, // 高度
+                    ease: "power2.inOut",
                     overwrite: true,
                 });
             }
@@ -271,50 +270,23 @@
             }
             
             // --- 事件監聽設置 (保持不變) ---
-            scrollContainer.addEventListener('wheel', (event) => {
-                event.preventDefault();
-                const direction = event.deltaY > 0 ? 'down' : 'up';
-                handleScroll(direction);
-            }, { passive: false });
-
-            scrollContainer.addEventListener('touchstart', (event) => {
-                touchStartY = event.touches[0].clientY;
-            }, { passive: true });
-
-            scrollContainer.addEventListener('touchend', (event) => {
-                const touchEndY = event.changedTouches[0].clientY;
-                const swipeDistance = touchStartY - touchEndY;
-                if (Math.abs(swipeDistance) > 30) { 
-                    const direction = swipeDistance > 0 ? 'down' : 'up';
-                    handleScroll(direction);
-                }
-            }, { passive: true });
-            
-            scrollContainer.addEventListener('touchmove', (event) => {
-                event.preventDefault();
-            }, { passive: false });
-
-            scheduleItems.forEach(item => {
-                item.addEventListener('click', () => {
-                    selectAndCenterItem(item);
-                });
-            });
+            scrollContainer.addEventListener('wheel', (event) => { event.preventDefault(); const direction = event.deltaY > 0 ? 'down' : 'up'; handleScroll(direction); }, { passive: false });
+            scrollContainer.addEventListener('touchstart', (event) => { touchStartY = event.touches[0].clientY; }, { passive: true });
+            scrollContainer.addEventListener('touchend', (event) => { const touchEndY = event.changedTouches[0].clientY; const swipeDistance = touchStartY - touchEndY; if (Math.abs(swipeDistance) > 30) { const direction = swipeDistance > 0 ? 'down' : 'up'; handleScroll(direction); } }, { passive: true });
+            scrollContainer.addEventListener('touchmove', (event) => { event.preventDefault(); }, { passive: false });
+            scheduleItems.forEach(item => { item.addEventListener('click', () => { selectAndCenterItem(item); }); });
 
             // --- 頁面初始化 ---
             if (scheduleItems.length > 0) {
                 const firstItem = scheduleItems[0];
                 
-                // 【修改點 5】: 頁面加載後，立即更新資訊並使用 gsap.set() 無動畫地設置高亮框初始位置。
+                // 【修改】初始化時，更新資訊並為第一個項目添加 class
                 updateActiveItem(firstItem);
                 
+                // 使用 gsap.set() 無動畫地設置高亮豎條的初始位置和大小
                 gsap.set(selectionHighlighter, {
                     y: firstItem.offsetTop,
-                    width: firstItem.offsetWidth,
                     height: firstItem.offsetHeight,
-                    // 使用 transform 來移動，所以 left 設為 0
-                    left: firstItem.offsetLeft, 
-                    // 由於 GSAP 會自動處理 transform，我們用 y 屬性代替 transform: translate()
-                    // 但為了保險起見，我們這裡直接用 y 屬性
                 });
 
                 scrollContainer.scrollTop = 0; 

@@ -218,12 +218,12 @@
                 
                 // 動畫 A: 滾動容器
                 gsap.to(scrollContainer, {
-                    duration: 0.2, // 【修改點】: 將動畫時間從 0.35 秒縮短為 0.2 秒
+                    duration: 0.25, // 【修改點】: 將動畫時間從 0.35 秒縮短為 0.2 秒
                     scrollTo: { 
                         y: targetItem, 
                         offsetY: scrollContainer.clientHeight / 2 - targetItem.clientHeight / 2 
                     },
-                    ease: "power2.inOut",
+                    ease: "power2.Out",
                     overwrite: true,
                     onComplete: () => { 
                         isAnimating = false; 
@@ -232,10 +232,10 @@
                 
                 // 動畫 B: 移動高亮豎條
                 gsap.to(selectionHighlighter, {
-                    duration: 0.2, // 【修改點】: 同樣縮短為 0.2 秒以保持同步
+                    duration: 0.25, // 【修改點】: 同樣縮短為 0.2 秒以保持同步
                     y: targetItem.offsetTop,
                     height: targetItem.offsetHeight,
-                    ease: "power2.inOut",
+                    ease: "power2.Out",
                     overwrite: true,
                 });
             }

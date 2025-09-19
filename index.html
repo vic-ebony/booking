@@ -247,7 +247,7 @@
                         y: targetItem, 
                         offsetY: scrollContainer.clientHeight / 2 - targetItem.clientHeight / 2 
                     },
-                    ease: "power1.Out",
+                    ease: "power4.Out",
                     overwrite: true,
                     onComplete: () => { 
                         isAnimating = false; 
@@ -259,7 +259,7 @@
                     duration: 0.2,
                     y: targetItem.offsetTop,
                     height: targetItem.offsetHeight,
-                    ease: "power1.Out",
+                    ease: "power4.Out",
                     overwrite: true,
                 });
             }

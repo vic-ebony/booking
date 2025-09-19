@@ -242,7 +242,7 @@
                 
                 // 動畫 A: 滾動容器 (保持 0.2 秒的快速動畫)
                 gsap.to(scrollContainer, {
-                    duration: 0.2,
+                    duration: 0.15,
                     scrollTo: { 
                         y: targetItem, 
                         offsetY: scrollContainer.clientHeight / 2 - targetItem.clientHeight / 2 
@@ -256,7 +256,7 @@
                 
                 // 動畫 B: 移動高亮豎條 (保持 0.2 秒的快速動畫)
                 gsap.to(selectionHighlighter, {
-                    duration: 0.2,
+                    duration: 0.15,
                     y: targetItem.offsetTop,
                     height: targetItem.offsetHeight,
                     ease: "power1.Out",

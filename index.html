@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>每日班表</title>
+    <title>每日班表 (優化版)</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
     
@@ -55,7 +55,7 @@
             overflow: hidden;
         }
 
-        /* ▼▼▼▼▼【新增/修改的 CSS】▼▼▼▼▼ */
+        /* ▼▼▼▼▼【優化後的 CSS】▼▼▼▼▼ */
         
         /* 移動式高亮框的樣式 */
         #selection-highlighter {
@@ -65,10 +65,12 @@
             background-color: #dbeafe; /* 淺藍色背景，等同於 bg-blue-100 */
             border-radius: 0.5rem; /* 等同於 rounded-lg */
             z-index: 0; /* 確保它在班表項目下方 */
-            /* 核心：為所有變動的屬性加上平滑的過渡動畫 */
-            transition: transform 0.35s cubic-bezier(0.25, 0.8, 0.25, 1), 
-                        width 0.35s cubic-bezier(0.25, 0.8, 0.25, 1),
-                        height 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
+            
+            /* 【修改點 1】: 移除 transition 屬性。動畫現在完全由 GSAP (JavaScript) 控制，以確保同步。*/
+            /* transition: ... ; */
+
+            /* 【修改點 2】: 新增 will-change。這是一個性能提示，告訴瀏覽器這些屬性即將發生動畫，可以提前優化。*/
+            will-change: transform, width, height;
         }
 
         /* 讓班表項目本身有相對定位，以便 z-index 生效，顯示在高亮框之上 */
@@ -77,7 +79,7 @@
             z-index: 1;
         }
         
-        /* ▲▲▲▲▲【新增/修改的 CSS】▲▲▲▲▲ */
+        /* ▲▲▲▲▲【優化後的 CSS】▲▲▲▲▲ */
     </style>
 </head>
 
@@ -134,10 +136,7 @@
         </div>
 
         <main class="scrollable-content">
-            <!-- ▼▼▼▼▼【新增的 HTML 元素】▼▼▼▼▼ -->
             <div id="selection-highlighter"></div>
-            <!-- ▲▲▲▲▲【新增的 HTML 元素】▲▲▲▲▲ -->
-            
             <div class="space-y-2 px-4 pb-4" id="schedule-container">
                 <!-- 美容師列表 (已擴充至 20 位) -->
                 <div class="schedule-item grid grid-cols-12 items-center text-center p-2 rounded-lg cursor-pointer" data-id="1">
@@ -152,213 +151,40 @@
                     <div class="col-span-2"><span class="inline-block w-6 h-6 rounded-full border border-blue-500 text-blue-500 flex items-center justify-center text-xs">0</span></div>
                 </div>
                 <!-- ... 其他美容師列表項目 ... -->
-                <div class="schedule-item grid grid-cols-12 items-center text-center p-2 rounded-lg cursor-pointer" data-id="2">
-                    <div class="col-span-1"><span class="material-icons text-gray-400">add_circle_outline</span></div>
-                    <div class="col-span-3 text-left">
-                        <p class="font-bold">七喜</p>
-                        <p class="text-xs text-gray-500">160.45.C</p>
-                    </div>
-                    <div class="col-span-4 grid grid-cols-4 gap-1 text-xs"><span class="bg-gray-200 p-1 rounded">01</span><span class="bg-gray-200 p-1 rounded">02</span><span class="bg-gray-200 p-1 rounded">04</span></div>
-                    <div class="col-span-2">3100</div>
-                    <div class="col-span-2"><span class="inline-block w-6 h-6 rounded-full border border-blue-500 text-blue-500 flex items-center justify-center text-xs">0</span></div>
-                </div>
-                <div class="schedule-item grid grid-cols-12 items-center text-center p-2 rounded-lg cursor-pointer" data-id="3">
-                    <div class="col-span-1"><span class="material-icons text-gray-400">add_circle_outline</span></div>
-                    <div class="col-span-3 text-left">
-                        <p class="font-bold">小凡</p>
-                        <p class="text-xs text-gray-500">174.55.D</p>
-                    </div>
-                    <div class="col-span-4 grid grid-cols-4 gap-1 text-xs"><span class="bg-gray-200 p-1 rounded">24</span><span class="bg-gray-200 p-1 rounded">01</span></div>
-                    <div class="col-span-2">2900</div>
-                    <div class="col-span-2"><span class="inline-block w-6 h-6 rounded-full border border-blue-500 text-blue-500 flex items-center justify-center text-xs">0</span></div>
-                </div>
-                <div class="schedule-item grid grid-cols-12 items-center text-center p-2 rounded-lg cursor-pointer" data-id="4">
-                    <div class="col-span-1"><span class="material-icons text-gray-400">add_circle_outline</span></div>
-                    <div class="col-span-3 text-left">
-                        <p class="font-bold">小雪</p>
-                        <p class="text-xs text-gray-500">168.43.C</p>
-                    </div>
-                    <div class="col-span-4 grid grid-cols-4 gap-1 text-xs"><span class="bg-gray-200 p-1 rounded">24</span><span class="bg-gray-200 p-1 rounded">01</span></div>
-                    <div class="col-span-2">3500</div>
-                    <div class="col-span-2"><span class="inline-block w-6 h-6 rounded-full border border-blue-500 text-blue-500 flex items-center justify-center text-xs">0</span></div>
-                </div>
-                <div class="schedule-item grid grid-cols-12 items-center text-center p-2 rounded-lg cursor-pointer" data-id="5">
-                    <div class="col-span-1"><span class="material-icons text-gray-400">add_circle_outline</span></div>
-                    <div class="col-span-3 text-left">
-                        <p class="font-bold">奶糖</p>
-                        <p class="text-xs text-gray-500">156.42.F</p>
-                    </div>
-                    <div class="col-span-4 grid grid-cols-4 gap-1 text-xs"><span class="bg-gray-200 p-1 rounded">02</span><span class="bg-gray-200 p-1 rounded">03</span><span class="bg-gray-200 p-1 rounded">04</span><span class="bg-gray-200 p-1 rounded">05</span></div>
-                    <div class="col-span-2">3400</div>
-                    <div class="col-span-2"><span class="inline-block w-6 h-6 rounded-full border border-blue-500 text-blue-500 flex items-center justify-center text-xs">0</span></div>
-                </div>
-                <div class="schedule-item grid grid-cols-12 items-center text-center p-2 rounded-lg cursor-pointer" data-id="6">
-                    <div class="col-span-1"><span class="material-icons text-gray-400">add_circle_outline</span></div>
-                    <div class="col-span-3 text-left">
-                        <p class="font-bold">小愛</p>
-                        <p class="text-xs text-gray-500">162.50.E</p>
-                    </div>
-                    <div class="col-span-4 grid grid-cols-4 gap-1 text-xs"><span class="bg-gray-200 p-1 rounded">22</span><span class="bg-gray-200 p-1 rounded">23</span><span class="bg-gray-200 p-1 rounded">24</span></div>
-                    <div class="col-span-2">3200</div>
-                    <div class="col-span-2"><span class="inline-block w-6 h-6 rounded-full border border-blue-500 text-blue-500 flex items-center justify-center text-xs">0</span></div>
-                </div>
-                <div class="schedule-item grid grid-cols-12 items-center text-center p-2 rounded-lg cursor-pointer" data-id="7">
-                    <div class="col-span-1"><span class="material-icons text-gray-400">add_circle_outline</span></div>
-                    <div class="col-span-3 text-left">
-                        <p class="font-bold">花花</p>
-                        <p class="text-xs text-gray-500">165.48.D</p>
-                    </div>
-                    <div class="col-span-4 grid grid-cols-4 gap-1 text-xs"><span class="bg-gray-200 p-1 rounded">10</span><span class="bg-gray-200 p-1 rounded">11</span><span class="bg-gray-200 p-1 rounded">12</span></div>
-                    <div class="col-span-2">3000</div>
-                    <div class="col-span-2"><span class="inline-block w-6 h-6 rounded-full border border-blue-500 text-blue-500 flex items-center justify-center text-xs">0</span></div>
-                </div>
-                <div class="schedule-item grid grid-cols-12 items-center text-center p-2 rounded-lg cursor-pointer" data-id="8">
-                    <div class="col-span-1"><span class="material-icons text-gray-400">add_circle_outline</span></div>
-                    <div class="col-span-3 text-left">
-                        <p class="font-bold">琳琳</p>
-                        <p class="text-xs text-gray-500">158.46.C</p>
-                    </div>
-                    <div class="col-span-4 grid grid-cols-4 gap-1 text-xs"><span class="bg-gray-200 p-1 rounded">14</span><span class="bg-gray-200 p-1 rounded">15</span><span class="bg-gray-200 p-1 rounded">16</span><span class="bg-gray-200 p-1 rounded">17</span></div>
-                    <div class="col-span-2">3300</div>
-                    <div class="col-span-2"><span class="inline-block w-6 h-6 rounded-full border border-blue-500 text-blue-500 flex items-center justify-center text-xs">0</span></div>
-                </div>
-                <div class="schedule-item grid grid-cols-12 items-center text-center p-2 rounded-lg cursor-pointer" data-id="9">
-                    <div class="col-span-1"><span class="material-icons text-gray-400">add_circle_outline</span></div>
-                    <div class="col-span-3 text-left">
-                        <p class="font-bold">娜娜</p>
-                        <p class="text-xs text-gray-500">170.52.E</p>
-                    </div>
-                    <div class="col-span-4 grid grid-cols-4 gap-1 text-xs"><span class="bg-gray-200 p-1 rounded">18</span><span class="bg-gray-200 p-1 rounded">19</span><span class="bg-gray-200 p-1 rounded">20</span></div>
-                    <div class="col-span-2">3600</div>
-                    <div class="col-span-2"><span class="inline-block w-6 h-6 rounded-full border border-blue-500 text-blue-500 flex items-center justify-center text-xs">0</span></div>
-                </div>
-                <div class="schedule-item grid grid-cols-12 items-center text-center p-2 rounded-lg cursor-pointer" data-id="10">
-                    <div class="col-span-1"><span class="material-icons text-gray-400">add_circle_outline</span></div>
-                    <div class="col-span-3 text-left">
-                        <p class="font-bold">妮妮</p>
-                        <p class="text-xs text-gray-500">163.47.D</p>
-                    </div>
-                    <div class="col-span-4 grid grid-cols-4 gap-1 text-xs"><span class="bg-gray-200 p-1 rounded">13</span><span class="bg-gray-200 p-1 rounded">14</span><span class="bg-gray-200 p-1 rounded">15</span></div>
-                    <div class="col-span-2">3150</div>
-                    <div class="col-span-2"><span class="inline-block w-6 h-6 rounded-full border border-blue-500 text-blue-500 flex items-center justify-center text-xs">0</span></div>
-                </div>
-                <div class="schedule-item grid grid-cols-12 items-center text-center p-2 rounded-lg cursor-pointer" data-id="11">
-                    <div class="col-span-1"><span class="material-icons text-gray-400">add_circle_outline</span></div>
-                    <div class="col-span-3 text-left">
-                        <p class="font-bold">樂樂</p>
-                        <p class="text-xs text-gray-500">159.44.C</p>
-                    </div>
-                    <div class="col-span-4 grid grid-cols-4 gap-1 text-xs"><span class="bg-gray-200 p-1 rounded">20</span><span class="bg-gray-200 p-1 rounded">21</span><span class="bg-gray-200 p-1 rounded">22</span><span class="bg-gray-200 p-1 rounded">23</span><span class="bg-gray-200 p-1 rounded">24</span></div>
-                    <div class="col-span-2">2950</div>
-                    <div class="col-span-2"><span class="inline-block w-6 h-6 rounded-full border border-blue-500 text-blue-500 flex items-center justify-center text-xs">0</span></div>
-                </div>
-                <div class="schedule-item grid grid-cols-12 items-center text-center p-2 rounded-lg cursor-pointer" data-id="12">
-                    <div class="col-span-1"><span class="material-icons text-gray-400">add_circle_outline</span></div>
-                    <div class="col-span-3 text-left">
-                        <p class="font-bold">糖糖</p>
-                        <p class="text-xs text-gray-500">166.49.E</p>
-                    </div>
-                    <div class="col-span-4 grid grid-cols-4 gap-1 text-xs"><span class="bg-gray-200 p-1 rounded">10</span><span class="bg-gray-200 p-1 rounded">11</span><span class="bg-gray-200 p-1 rounded">12</span><span class="bg-gray-200 p-1 rounded">13</span><span class="bg-gray-200 p-1 rounded">14</span></div>
-                    <div class="col-span-2">3800</div>
-                    <div class="col-span-2"><span class="inline-block w-6 h-6 rounded-full border border-blue-500 text-blue-500 flex items-center justify-center text-xs">0</span></div>
-                </div>
-                <div class="schedule-item grid grid-cols-12 items-center text-center p-2 rounded-lg cursor-pointer" data-id="13">
-                    <div class="col-span-1"><span class="material-icons text-gray-400">add_circle_outline</span></div>
-                    <div class="col-span-3 text-left">
-                        <p class="font-bold">可可</p>
-                        <p class="text-xs text-gray-500">172.53.D</p>
-                    </div>
-                    <div class="col-span-4 grid grid-cols-4 gap-1 text-xs"><span class="bg-gray-200 p-1 rounded">15</span><span class="bg-gray-200 p-1 rounded">16</span><span class="bg-gray-200 p-1 rounded">17</span></div>
-                    <div class="col-span-2">3450</div>
-                    <div class="col-span-2"><span class="inline-block w-6 h-6 rounded-full border border-blue-500 text-blue-500 flex items-center justify-center text-xs">0</span></div>
-                </div>
-                <div class="schedule-item grid grid-cols-12 items-center text-center p-2 rounded-lg cursor-pointer" data-id="14">
-                    <div class="col-span-1"><span class="material-icons text-gray-400">add_circle_outline</span></div>
-                    <div class="col-span-3 text-left">
-                        <p class="font-bold">貝貝</p>
-                        <p class="text-xs text-gray-500">155.43.C</p>
-                    </div>
-                    <div class="col-span-4 grid grid-cols-4 gap-1 text-xs"><span class="bg-gray-200 p-1 rounded">09</span><span class="bg-gray-200 p-1 rounded">10</span><span class="bg-gray-200 p-1 rounded">11</span></div>
-                    <div class="col-span-2">2850</div>
-                    <div class="col-span-2"><span class="inline-block w-6 h-6 rounded-full border border-blue-500 text-blue-500 flex items-center justify-center text-xs">0</span></div>
-                </div>
-                <div class="schedule-item grid grid-cols-12 items-center text-center p-2 rounded-lg cursor-pointer" data-id="15">
-                    <div class="col-span-1"><span class="material-icons text-gray-400">add_circle_outline</span></div>
-                    <div class="col-span-3 text-left">
-                        <p class="font-bold">琪琪</p>
-                        <p class="text-xs text-gray-500">169.51.D</p>
-                    </div>
-                    <div class="col-span-4 grid grid-cols-4 gap-1 text-xs"><span class="bg-gray-200 p-1 rounded">18</span><span class="bg-gray-200 p-1 rounded">19</span><span class="bg-gray-200 p-1 rounded">20</span><span class="bg-gray-200 p-1 rounded">21</span></div>
-                    <div class="col-span-2">3350</div>
-                    <div class="col-span-2"><span class="inline-block w-6 h-6 rounded-full border border-blue-500 text-blue-500 flex items-center justify-center text-xs">0</span></div>
-                </div>
-                <div class="schedule-item grid grid-cols-12 items-center text-center p-2 rounded-lg cursor-pointer" data-id="16">
-                    <div class="col-span-1"><span class="material-icons text-gray-400">add_circle_outline</span></div>
-                    <div class="col-span-3 text-left">
-                        <p class="font-bold">姍姍</p>
-                        <p class="text-xs text-gray-500">161.46.C</p>
-                    </div>
-                    <div class="col-span-4 grid grid-cols-4 gap-1 text-xs"><span class="bg-gray-200 p-1 rounded">12</span><span class="bg-gray-200 p-1 rounded">13</span><span class="bg-gray-200 p-1 rounded">14</span></div>
-                    <div class="col-span-2">3050</div>
-                    <div class="col-span-2"><span class="inline-block w-6 h-6 rounded-full border border-blue-500 text-blue-500 flex items-center justify-center text-xs">0</span></div>
-                </div>
-                <div class="schedule-item grid grid-cols-12 items-center text-center p-2 rounded-lg cursor-pointer" data-id="17">
-                    <div class="col-span-1"><span class="material-icons text-gray-400">add_circle_outline</span></div>
-                    <div class="col-span-3 text-left">
-                        <p class="font-bold">菲菲</p>
-                        <p class="text-xs text-gray-500">167.48.E</p>
-                    </div>
-                    <div class="col-span-4 grid grid-cols-4 gap-1 text-xs"><span class="bg-gray-200 p-1 rounded">22</span><span class="bg-gray-200 p-1 rounded">23</span><span class="bg-gray-200 p-1 rounded">24</span><span class="bg-gray-200 p-1 rounded">01</span></div>
-                    <div class="col-span-2">3700</div>
-                    <div class="col-span-2"><span class="inline-block w-6 h-6 rounded-full border border-blue-500 text-blue-500 flex items-center justify-center text-xs">0</span></div>
-                </div>
-                <div class="schedule-item grid grid-cols-12 items-center text-center p-2 rounded-lg cursor-pointer" data-id="18">
-                    <div class="col-span-1"><span class="material-icons text-gray-400">add_circle_outline</span></div>
-                    <div class="col-span-3 text-left">
-                        <p class="font-bold">柚柚</p>
-                        <p class="text-xs text-gray-500">157.44.D</p>
-                    </div>
-                    <div class="col-span-4 grid grid-cols-4 gap-1 text-xs"><span class="bg-gray-200 p-1 rounded">16</span><span class="bg-gray-200 p-1 rounded">17</span><span class="bg-gray-200 p-1 rounded">18</span></div>
-                    <div class="col-span-2">3250</div>
-                    <div class="col-span-2"><span class="inline-block w-6 h-6 rounded-full border border-blue-500 text-blue-500 flex items-center justify-center text-xs">0</span></div>
-                </div>
-                <div class="schedule-item grid grid-cols-12 items-center text-center p-2 rounded-lg cursor-pointer" data-id="19">
-                    <div class="col-span-1"><span class="material-icons text-gray-400">add_circle_outline</span></div>
-                    <div class="col-span-3 text-left">
-                        <p class="font-bold">咪咪</p>
-                        <p class="text-xs text-gray-500">171.50.C</p>
-                    </div>
-                    <div class="col-span-4 grid grid-cols-4 gap-1 text-xs"><span class="bg-gray-200 p-1 rounded">19</span><span class="bg-gray-200 p-1 rounded">20</span><span class="bg-gray-200 p-1 rounded">21</span><span class="bg-gray-200 p-1 rounded">22</span><span class="bg-gray-200 p-1 rounded">23</span></div>
-                    <div class="col-span-2">3550</div>
-                    <div class="col-span-2"><span class="inline-block w-6 h-6 rounded-full border border-blue-500 text-blue-500 flex items-center justify-center text-xs">0</span></div>
-                </div>
-                <div class="schedule-item grid grid-cols-12 items-center text-center p-2 rounded-lg cursor-pointer" data-id="20">
-                    <div class="col-span-1"><span class="material-icons text-gray-400">add_circle_outline</span></div>
-                    <div class="col-span-3 text-left">
-                        <p class="font-bold">悅悅</p>
-                        <p class="text-xs text-gray-500">164.48.D</p>
-                    </div>
-                    <div class="col-span-4 grid grid-cols-4 gap-1 text-xs"><span class="bg-gray-200 p-1 rounded">11</span><span class="bg-gray-200 p-1 rounded">12</span><span class="bg-gray-200 p-1 rounded">13</span><span class="bg-gray-200 p-1 rounded">14</span></div>
-                    <div class="col-span-2">3400</div>
-                    <div class="col-span-2"><span class="inline-block w-6 h-6 rounded-full border border-blue-500 text-blue-500 flex items-center justify-center text-xs">0</span></div>
-                </div>
+                <div class="schedule-item grid grid-cols-12 items-center text-center p-2 rounded-lg cursor-pointer" data-id="2"><div class="col-span-1"><span class="material-icons text-gray-400">add_circle_outline</span></div><div class="col-span-3 text-left"><p class="font-bold">七喜</p><p class="text-xs text-gray-500">160.45.C</p></div><div class="col-span-4 grid grid-cols-4 gap-1 text-xs"><span class="bg-gray-200 p-1 rounded">01</span><span class="bg-gray-200 p-1 rounded">02</span><span class="bg-gray-200 p-1 rounded">04</span></div><div class="col-span-2">3100</div><div class="col-span-2"><span class="inline-block w-6 h-6 rounded-full border border-blue-500 text-blue-500 flex items-center justify-center text-xs">0</span></div></div>
+                <div class="schedule-item grid grid-cols-12 items-center text-center p-2 rounded-lg cursor-pointer" data-id="3"><div class="col-span-1"><span class="material-icons text-gray-400">add_circle_outline</span></div><div class="col-span-3 text-left"><p class="font-bold">小凡</p><p class="text-xs text-gray-500">174.55.D</p></div><div class="col-span-4 grid grid-cols-4 gap-1 text-xs"><span class="bg-gray-200 p-1 rounded">24</span><span class="bg-gray-200 p-1 rounded">01</span></div><div class="col-span-2">2900</div><div class="col-span-2"><span class="inline-block w-6 h-6 rounded-full border border-blue-500 text-blue-500 flex items-center justify-center text-xs">0</span></div></div>
+                <div class="schedule-item grid grid-cols-12 items-center text-center p-2 rounded-lg cursor-pointer" data-id="4"><div class="col-span-1"><span class="material-icons text-gray-400">add_circle_outline</span></div><div class="col-span-3 text-left"><p class="font-bold">小雪</p><p class="text-xs text-gray-500">168.43.C</p></div><div class="col-span-4 grid grid-cols-4 gap-1 text-xs"><span class="bg-gray-200 p-1 rounded">24</span><span class="bg-gray-200 p-1 rounded">01</span></div><div class="col-span-2">3500</div><div class="col-span-2"><span class="inline-block w-6 h-6 rounded-full border border-blue-500 text-blue-500 flex items-center justify-center text-xs">0</span></div></div>
+                <div class="schedule-item grid grid-cols-12 items-center text-center p-2 rounded-lg cursor-pointer" data-id="5"><div class="col-span-1"><span class="material-icons text-gray-400">add_circle_outline</span></div><div class="col-span-3 text-left"><p class="font-bold">奶糖</p><p class="text-xs text-gray-500">156.42.F</p></div><div class="col-span-4 grid grid-cols-4 gap-1 text-xs"><span class="bg-gray-200 p-1 rounded">02</span><span class="bg-gray-200 p-1 rounded">03</span><span class="bg-gray-200 p-1 rounded">04</span><span class="bg-gray-200 p-1 rounded">05</span></div><div class="col-span-2">3400</div><div class="col-span-2"><span class="inline-block w-6 h-6 rounded-full border border-blue-500 text-blue-500 flex items-center justify-center text-xs">0</span></div></div>
+                <div class="schedule-item grid grid-cols-12 items-center text-center p-2 rounded-lg cursor-pointer" data-id="6"><div class="col-span-1"><span class="material-icons text-gray-400">add_circle_outline</span></div><div class="col-span-3 text-left"><p class="font-bold">小愛</p><p class="text-xs text-gray-500">162.50.E</p></div><div class="col-span-4 grid grid-cols-4 gap-1 text-xs"><span class="bg-gray-200 p-1 rounded">22</span><span class="bg-gray-200 p-1 rounded">23</span><span class="bg-gray-200 p-1 rounded">24</span></div><div class="col-span-2">3200</div><div class="col-span-2"><span class="inline-block w-6 h-6 rounded-full border border-blue-500 text-blue-500 flex items-center justify-center text-xs">0</span></div></div>
+                <div class="schedule-item grid grid-cols-12 items-center text-center p-2 rounded-lg cursor-pointer" data-id="7"><div class="col-span-1"><span class="material-icons text-gray-400">add_circle_outline</span></div><div class="col-span-3 text-left"><p class="font-bold">花花</p><p class="text-xs text-gray-500">165.48.D</p></div><div class="col-span-4 grid grid-cols-4 gap-1 text-xs"><span class="bg-gray-200 p-1 rounded">10</span><span class="bg-gray-200 p-1 rounded">11</span><span class="bg-gray-200 p-1 rounded">12</span></div><div class="col-span-2">3000</div><div class="col-span-2"><span class="inline-block w-6 h-6 rounded-full border border-blue-500 text-blue-500 flex items-center justify-center text-xs">0</span></div></div>
+                <div class="schedule-item grid grid-cols-12 items-center text-center p-2 rounded-lg cursor-pointer" data-id="8"><div class="col-span-1"><span class="material-icons text-gray-400">add_circle_outline</span></div><div class="col-span-3 text-left"><p class="font-bold">琳琳</p><p class="text-xs text-gray-500">158.46.C</p></div><div class="col-span-4 grid grid-cols-4 gap-1 text-xs"><span class="bg-gray-200 p-1 rounded">14</span><span class="bg-gray-200 p-1 rounded">15</span><span class="bg-gray-200 p-1 rounded">16</span><span class="bg-gray-200 p-1 rounded">17</span></div><div class="col-span-2">3300</div><div class="col-span-2"><span class="inline-block w-6 h-6 rounded-full border border-blue-500 text-blue-500 flex items-center justify-center text-xs">0</span></div></div>
+                <div class="schedule-item grid grid-cols-12 items-center text-center p-2 rounded-lg cursor-pointer" data-id="9"><div class="col-span-1"><span class="material-icons text-gray-400">add_circle_outline</span></div><div class="col-span-3 text-left"><p class="font-bold">娜娜</p><p class="text-xs text-gray-500">170.52.E</p></div><div class="col-span-4 grid grid-cols-4 gap-1 text-xs"><span class="bg-gray-200 p-1 rounded">18</span><span class="bg-gray-200 p-1 rounded">19</span><span class="bg-gray-200 p-1 rounded">20</span></div><div class="col-span-2">3600</div><div class="col-span-2"><span class="inline-block w-6 h-6 rounded-full border border-blue-500 text-blue-500 flex items-center justify-center text-xs">0</span></div></div>
+                <div class="schedule-item grid grid-cols-12 items-center text-center p-2 rounded-lg cursor-pointer" data-id="10"><div class="col-span-1"><span class="material-icons text-gray-400">add_circle_outline</span></div><div class="col-span-3 text-left"><p class="font-bold">妮妮</p><p class="text-xs text-gray-500">163.47.D</p></div><div class="col-span-4 grid grid-cols-4 gap-1 text-xs"><span class="bg-gray-200 p-1 rounded">13</span><span class="bg-gray-200 p-1 rounded">14</span><span class="bg-gray-200 p-1 rounded">15</span></div><div class="col-span-2">3150</div><div class="col-span-2"><span class="inline-block w-6 h-6 rounded-full border border-blue-500 text-blue-500 flex items-center justify-center text-xs">0</span></div></div>
+                <div class="schedule-item grid grid-cols-12 items-center text-center p-2 rounded-lg cursor-pointer" data-id="11"><div class="col-span-1"><span class="material-icons text-gray-400">add_circle_outline</span></div><div class="col-span-3 text-left"><p class="font-bold">樂樂</p><p class="text-xs text-gray-500">159.44.C</p></div><div class="col-span-4 grid grid-cols-4 gap-1 text-xs"><span class="bg-gray-200 p-1 rounded">20</span><span class="bg-gray-200 p-1 rounded">21</span><span class="bg-gray-200 p-1 rounded">22</span><span class="bg-gray-200 p-1 rounded">23</span><span class="bg-gray-200 p-1 rounded">24</span></div><div class="col-span-2">2950</div><div class="col-span-2"><span class="inline-block w-6 h-6 rounded-full border border-blue-500 text-blue-500 flex items-center justify-center text-xs">0</span></div></div>
+                <div class="schedule-item grid grid-cols-12 items-center text-center p-2 rounded-lg cursor-pointer" data-id="12"><div class="col-span-1"><span class="material-icons text-gray-400">add_circle_outline</span></div><div class="col-span-3 text-left"><p class="font-bold">糖糖</p><p class="text-xs text-gray-500">166.49.E</p></div><div class="col-span-4 grid grid-cols-4 gap-1 text-xs"><span class="bg-gray-200 p-1 rounded">10</span><span class="bg-gray-200 p-1 rounded">11</span><span class="bg-gray-200 p-1 rounded">12</span><span class="bg-gray-200 p-1 rounded">13</span><span class="bg-gray-200 p-1 rounded">14</span></div><div class="col-span-2">3800</div><div class="col-span-2"><span class="inline-block w-6 h-6 rounded-full border border-blue-500 text-blue-500 flex items-center justify-center text-xs">0</span></div></div>
+                <div class="schedule-item grid grid-cols-12 items-center text-center p-2 rounded-lg cursor-pointer" data-id="13"><div class="col-span-1"><span class="material-icons text-gray-400">add_circle_outline</span></div><div class="col-span-3 text-left"><p class="font-bold">可可</p><p class="text-xs text-gray-500">172.53.D</p></div><div class="col-span-4 grid grid-cols-4 gap-1 text-xs"><span class="bg-gray-200 p-1 rounded">15</span><span class="bg-gray-200 p-1 rounded">16</span><span class="bg-gray-200 p-1 rounded">17</span></div><div class="col-span-2">3450</div><div class="col-span-2"><span class="inline-block w-6 h-6 rounded-full border border-blue-500 text-blue-500 flex items-center justify-center text-xs">0</span></div></div>
+                <div class="schedule-item grid grid-cols-12 items-center text-center p-2 rounded-lg cursor-pointer" data-id="14"><div class="col-span-1"><span class="material-icons text-gray-400">add_circle_outline</span></div><div class="col-span-3 text-left"><p class="font-bold">貝貝</p><p class="text-xs text-gray-500">155.43.C</p></div><div class="col-span-4 grid grid-cols-4 gap-1 text-xs"><span class="bg-gray-200 p-1 rounded">09</span><span class="bg-gray-200 p-1 rounded">10</span><span class="bg-gray-200 p-1 rounded">11</span></div><div class="col-span-2">2850</div><div class="col-span-2"><span class="inline-block w-6 h-6 rounded-full border border-blue-500 text-blue-500 flex items-center justify-center text-xs">0</span></div></div>
+                <div class="schedule-item grid grid-cols-12 items-center text-center p-2 rounded-lg cursor-pointer" data-id="15"><div class="col-span-1"><span class="material-icons text-gray-400">add_circle_outline</span></div><div class="col-span-3 text-left"><p class="font-bold">琪琪</p><p class="text-xs text-gray-500">169.51.D</p></div><div class="col-span-4 grid grid-cols-4 gap-1 text-xs"><span class="bg-gray-200 p-1 rounded">18</span><span class="bg-gray-200 p-1 rounded">19</span><span class="bg-gray-200 p-1 rounded">20</span><span class="bg-gray-200 p-1 rounded">21</span></div><div class="col-span-2">3350</div><div class="col-span-2"><span class="inline-block w-6 h-6 rounded-full border border-blue-500 text-blue-500 flex items-center justify-center text-xs">0</span></div></div>
+                <div class="schedule-item grid grid-cols-12 items-center text-center p-2 rounded-lg cursor-pointer" data-id="16"><div class="col-span-1"><span class="material-icons text-gray-400">add_circle_outline</span></div><div class="col-span-3 text-left"><p class="font-bold">姍姍</p><p class="text-xs text-gray-500">161.46.C</p></div><div class="col-span-4 grid grid-cols-4 gap-1 text-xs"><span class="bg-gray-200 p-1 rounded">12</span><span class="bg-gray-200 p-1 rounded">13</span><span class="bg-gray-200 p-1 rounded">14</span></div><div class="col-span-2">3050</div><div class="col-span-2"><span class="inline-block w-6 h-6 rounded-full border border-blue-500 text-blue-500 flex items-center justify-center text-xs">0</span></div></div>
+                <div class="schedule-item grid grid-cols-12 items-center text-center p-2 rounded-lg cursor-pointer" data-id="17"><div class="col-span-1"><span class="material-icons text-gray-400">add_circle_outline</span></div><div class="col-span-3 text-left"><p class="font-bold">菲菲</p><p class="text-xs text-gray-500">167.48.E</p></div><div class="col-span-4 grid grid-cols-4 gap-1 text-xs"><span class="bg-gray-200 p-1 rounded">22</span><span class="bg-gray-200 p-1 rounded">23</span><span class="bg-gray-200 p-1 rounded">24</span><span class="bg-gray-200 p-1 rounded">01</span></div><div class="col-span-2">3700</div><div class="col-span-2"><span class="inline-block w-6 h-6 rounded-full border border-blue-500 text-blue-500 flex items-center justify-center text-xs">0</span></div></div>
+                <div class="schedule-item grid grid-cols-12 items-center text-center p-2 rounded-lg cursor-pointer" data-id="18"><div class="col-span-1"><span class="material-icons text-gray-400">add_circle_outline</span></div><div class="col-span-3 text-left"><p class="font-bold">柚柚</p><p class="text-xs text-gray-500">157.44.D</p></div><div class="col-span-4 grid grid-cols-4 gap-1 text-xs"><span class="bg-gray-200 p-1 rounded">16</span><span class="bg-gray-200 p-1 rounded">17</span><span class="bg-gray-200 p-1 rounded">18</span></div><div class="col-span-2">3250</div><div class="col-span-2"><span class="inline-block w-6 h-6 rounded-full border border-blue-500 text-blue-500 flex items-center justify-center text-xs">0</span></div></div>
+                <div class="schedule-item grid grid-cols-12 items-center text-center p-2 rounded-lg cursor-pointer" data-id="19"><div class="col-span-1"><span class="material-icons text-gray-400">add_circle_outline</span></div><div class="col-span-3 text-left"><p class="font-bold">咪咪</p><p class="text-xs text-gray-500">171.50.C</p></div><div class="col-span-4 grid grid-cols-4 gap-1 text-xs"><span class="bg-gray-200 p-1 rounded">19</span><span class="bg-gray-200 p-1 rounded">20</span><span class="bg-gray-200 p-1 rounded">21</span><span class="bg-gray-200 p-1 rounded">22</span><span class="bg-gray-200 p-1 rounded">23</span></div><div class="col-span-2">3550</div><div class="col-span-2"><span class="inline-block w-6 h-6 rounded-full border border-blue-500 text-blue-500 flex items-center justify-center text-xs">0</span></div></div>
+                <div class="schedule-item grid grid-cols-12 items-center text-center p-2 rounded-lg cursor-pointer" data-id="20"><div class="col-span-1"><span class="material-icons text-gray-400">add_circle_outline</span></div><div class="col-span-3 text-left"><p class="font-bold">悅悅</p><p class="text-xs text-gray-500">164.48.D</p></div><div class="col-span-4 grid grid-cols-4 gap-1 text-xs"><span class="bg-gray-200 p-1 rounded">11</span><span class="bg-gray-200 p-1 rounded">12</span><span class="bg-gray-200 p-1 rounded">13</span><span class="bg-gray-200 p-1 rounded">14</span></div><div class="col-span-2">3400</div><div class="col-span-2"><span class="inline-block w-6 h-6 rounded-full border border-blue-500 text-blue-500 flex items-center justify-center text-xs">0</span></div></div>
             </div>
         </main>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // 美容師資料
+            // 美容師資料 (保持不變)
             const staffData = { "1":{name:"ROSE",image:"https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?q=80&w=1887&auto=format&fit=crop",description:["經驗豐富的按摩師","擅長泰式古法按摩","溫柔細心，服務周到","讓您身心靈完全放鬆"]},"2":{name:"七喜",image:"https://images.unsplash.com/photo-1516244793086-242d48334b07?q=80&w=1887&auto=format&fit=crop",description:["活力四射的陽光女孩","專精運動按摩","互動活潑，充滿能量","幫您消除疲勞"]},"3":{name:"小凡",image:"https://images.unsplash.com/photo-1614283233556-f35b7c-80a299?q=80&w=1887&auto=format&fit=crop",description:["無經驗素人 <span class='text-red-500 font-bold'>禁</span> 不視訊","<span class='bg-red-500 text-white px-1 py-0.5 rounded-sm text-xs'>禁</span> 禁職業粗魯","初入森林的小白兔 短","髮活力互動超甜蜜"]},"4":{name:"小雪",image:"https://images.unsplash.com/photo-1542314831-068cd1dbb5ed?q=80&w=2070&auto=format&fit=crop",description:["溫柔婉約的氣質美女","擅長精油芳療","手法輕柔，療癒身心","帶給您寧靜的體驗"]},"5":{name:"奶糖",image:"https://images.unsplash.com/photo-1596701062944-59a435805319?q=80&w=1887&auto=format&fit=crop",description:["甜美可愛的鄰家女孩","專注於舒緩按摩","笑容甜美，親和力強","讓您忘卻煩惱"]},"6":{name:"小愛",image:"https://images.unsplash.com/photo-1504703395950-b8914mat&fit=crop",description:["熱情奔放的性感女郎","精通深層組織按摩","互動大膽，魅力無法擋","給您不一樣的刺激體驗"]},"7":{name:"花花",image:"https://images.unsplash.com/photo-1517841905240-472988babdf9?q=80&w=1887&auto=format&fit=crop",description:["清新脫俗的文青女孩","擅長中式指壓","氣質典雅，談吐不凡","讓您體驗文化的薰陶"]},"8":{name:"琳琳",image:"https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=1964&auto=format&fit=crop",description:["成熟嫵媚的都會女性","專精淋巴排毒","風情萬種，充滿魅力","為您帶來極致的享受"]},"9":{name:"娜娜",image:"https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=1887&auto=format&fit=crop",description:["異國風情的神秘女郎","擅長夏威夷Lomi Lomi","熱情奔放，舞姿動人","帶您體驗海島的熱情"]},"10":{name:"妮妮",image:"https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=1961&auto=format&fit=crop",description:["空靈系少女","手法輕柔如羽毛","專注於臉部撥筋","讓您容光煥發"]},"11":{name:"樂樂",image:"https://images.unsplash.com/photo-1611042553365-9b10e481ba2a?q=80&w=1887&auto=format&fit=crop",description:["犬系陽光女孩","笑容是她的招牌","擅長活力指壓","帶走您所有煩憂"]},"12":{name:"糖糖",image:"https://images.unsplash.com/photo-1609505884375-d533897b264a?q=80&w=1887&auto=format&fit=crop",description:["日系甜美風格","服務貼心周到","專精日式香氛按摩","給您公主般的呵護"]},"13":{name:"可可",image:"https://images.unsplash.com/photo-1628890920690-9e29d0019b9b?q=80&w=1887&auto=format&fit=crop",description:["歐美混血感","身材高挑，健談開朗","專長運動後肌肉放鬆","是您健身後的好夥伴"]},"14":{name:"貝貝",image:"https://images.unsplash.com/photo-1618641986557-1ecd230959aa?q=80&w=1887&auto=format&fit=crop",description:["可愛小隻馬","活潑好動，鬼靈精怪","獨創節奏感按摩","讓您體驗全新的感受"]},"15":{name:"琪琪",image:"https://images.unsplash.com/photo-1552695845-4a0237de1a84?q=80&w=1887&auto=format&fit=crop",description:["知性御姐范","氣質出眾，溫文儒雅","擅長經絡疏通","調理您的身體平衡"]},"16":{name:"姍姍",image:"https://images.unsplash.com/photo-1619325493236-16f38a84-7158?q=80&w=1887&auto=format&fit=crop",description:["鄰家大姐姐","親切溫和，有耐心","專注於頭部舒壓","幫您釋放壓力，改善睡眠"]},"17":{name:"菲菲",image:"https://images.unsplash.com/photo-1604004555029-41a892982398?q=80&w=1887&auto=format&fit=crop",description:["性感貓系女友","眼神嫵媚，姿態撩人","精通巴里島式按摩","帶您進入感官的盛宴"]},"18":{name:"柚柚",image:"https://images.unsplash.com/photo-1621294793532-66b6ddd19853?q=80&w=1887&auto=format&fit=crop",description:["文靜小清新","話不多，但很細心","擅長瑞典式按摩","給您最純粹的放鬆"]},"19":{name:"咪咪",image:"https://images.unsplash.com/photo-1599942033333-e53b4a243b7e?q=80&w=1887&auto=format&fit=crop",description:["派對女王","熱情如火，互動滿分","專長熱石療法","溫暖您的每一寸肌膚"]},"20":{name:"悅悅",image:"https://images.unsplash.com/photo-1620021313936-232a5893c206?q=80&w=1887&auto=format&fit=crop",description:["古典美人","舉手投足充滿韻味","精通中式穴位指壓","傳承古老的養生智慧"]}};
 
-            // ▼▼▼▼▼【修改後的 JavaScript】▼▼▼▼▼
+            // ▼▼▼▼▼【優化後的 JavaScript】▼▼▼▼▼
             const profileImage = document.getElementById('profile-image');
             const noPhotoText = document.getElementById('no-photo-text');
             const profileDetails = document.getElementById('profile-details');
             const scheduleItems = document.querySelectorAll('.schedule-item');
             const scrollContainer = document.querySelector('.scrollable-content');
-            
-            // 新增：獲取高亮框元素
             const selectionHighlighter = document.getElementById('selection-highlighter');
             
             let currentActiveItem = null;
@@ -380,27 +206,7 @@
             }
 
             /**
-             * 新增：移動高亮框到指定元素的位置和大小
-             * @param {HTMLElement} targetItem - 目標元素
-             */
-            function moveHighlighter(targetItem) {
-                if (!targetItem) return;
-
-                const targetRect = {
-                    width: targetItem.offsetWidth,
-                    height: targetItem.offsetHeight,
-                    top: targetItem.offsetTop,
-                    left: targetItem.offsetLeft
-                };
-
-                selectionHighlighter.style.width = `${targetRect.width}px`;
-                selectionHighlighter.style.height = `${targetRect.height}px`;
-                // 使用 transform 來移動，性能更好
-                selectionHighlighter.style.transform = `translate(${targetRect.left}px, ${targetRect.top}px)`;
-            }
-
-            /**
-             * 重構：更新當前選中的項目
+             * 更新當前選中的項目 (僅更新數據，不動 DOM)
              * @param {HTMLElement} targetItem - 目標元素
              */
             function updateActiveItem(targetItem) {
@@ -409,32 +215,48 @@
                 currentActiveItem = targetItem;
                 updateProfile(targetItem.dataset.id);
 
-                // 核心改變：不再操作項目本身，而是移動高亮框
-                moveHighlighter(targetItem);
+                // 【修改點 3】: 移除這裡的高亮框移動邏輯，將其統一到 selectAndCenterItem 函數中。
             }
             
             /**
-             * 核心滾動與選擇邏輯 (微調)
+             * 核心滾動與選擇邏輯 (重構為同步動畫)
              * @param {HTMLElement} targetItem - 要選擇並居中的目標元素
              */
             function selectAndCenterItem(targetItem) {
                 if (isAnimating || !targetItem || targetItem === currentActiveItem) return;
 
-                // 1. 更新選擇狀態 (移動高亮框、更新 Profile)
+                // 1. 更新 Profile 資訊並設置新的 active item
                 updateActiveItem(targetItem);
                 
+                // 2. 計算高亮框的目標 Y 座標
+                const targetY = targetItem.offsetTop;
+
                 isAnimating = true;
+                
+                // 【修改點 4 - 核心】: 使用單一的 GSAP 調用來同步控制兩個獨立的動畫
+                
+                // 動畫 A: 滾動容器
                 gsap.to(scrollContainer, {
-                    duration: 0.1,
+                    duration: 0.3, // 統一的動畫時間
                     scrollTo: { 
                         y: targetItem, 
                         offsetY: scrollContainer.clientHeight / 2 - targetItem.clientHeight / 2 
                     },
-                    ease: "power2.Out",
+                    ease: "power2.inOut", // 使用平滑的缓動效果
                     overwrite: true,
                     onComplete: () => { 
                         isAnimating = false; 
                     }
+                });
+                
+                // 動畫 B: 移動高亮框
+                gsap.to(selectionHighlighter, {
+                    duration: 0.35, // 與滾動動畫完全相同的時間
+                    y: targetY,     // 使用 transform 的 y 屬性進行移動，性能更好
+                    width: targetItem.offsetWidth,
+                    height: targetItem.offsetHeight,
+                    ease: "power2.inOut", // 與滾動動畫完全相同的缓動效果
+                    overwrite: true,
                 });
             }
 
@@ -480,16 +302,25 @@
 
             // --- 頁面初始化 ---
             if (scheduleItems.length > 0) {
-                // 頁面加載後，默認選擇第一個項目
-                // 為了讓高亮框有出現的動畫，延遲一小段時間執行
-                setTimeout(() => {
-                    updateActiveItem(scheduleItems[0]); 
-                }, 100);
+                const firstItem = scheduleItems[0];
+                
+                // 【修改點 5】: 頁面加載後，立即更新資訊並使用 gsap.set() 無動畫地設置高亮框初始位置。
+                updateActiveItem(firstItem);
+                
+                gsap.set(selectionHighlighter, {
+                    y: firstItem.offsetTop,
+                    width: firstItem.offsetWidth,
+                    height: firstItem.offsetHeight,
+                    // 使用 transform 來移動，所以 left 設為 0
+                    left: firstItem.offsetLeft, 
+                    // 由於 GSAP 會自動處理 transform，我們用 y 屬性代替 transform: translate()
+                    // 但為了保險起見，我們這裡直接用 y 屬性
+                });
+
                 scrollContainer.scrollTop = 0; 
             }
-            // ▲▲▲▲▲【修改後的 JavaScript】▲▲▲▲▲
+            // ▲▲▲▲▲【優化後的 JavaScript】▲▲▲▲▲
         });
     </script>
 </body>
 </html>
-<!-- 手機上測試暫時稍微順暢版本，只有Firefox較順暢，其他瀏覽器都稍微卡卡的 -->

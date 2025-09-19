@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>每日班表 (動畫加速版)</title>
+    <title>每日班表 (無照片性能版)</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
     
@@ -171,10 +171,33 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // 美容師資料 (保持不變)
-            const staffData = { "1":{name:"ROSE",image:"https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?q=80&w=1887&auto=format&fit=crop",description:["經驗豐富的按摩師","擅長泰式古法按摩","溫柔細心，服務周到","讓您身心靈完全放鬆"]},"2":{name:"七喜",image:"https://images.unsplash.com/photo-1516244793086-242d48334b07?q=80&w=1887&auto=format&fit=crop",description:["活力四射的陽光女孩","專精運動按摩","互動活潑，充滿能量","幫您消除疲勞"]},"3":{name:"小凡",image:"https://images.unsplash.com/photo-1614283233556-f35b7c-80a299?q=80&w=1887&auto=format&fit=crop",description:["無經驗素人 <span class='text-red-500 font-bold'>禁</span> 不視訊","<span class='bg-red-500 text-white px-1 py-0.5 rounded-sm text-xs'>禁</span> 禁職業粗魯","初入森林的小白兔 短","髮活力互動超甜蜜"]},"4":{name:"小雪",image:"https://images.unsplash.com/photo-1542314831-068cd1dbb5ed?q=80&w=2070&auto=format&fit=crop",description:["溫柔婉約的氣質美女","擅長精油芳療","手法輕柔，療癒身心","帶給您寧靜的體驗"]},"5":{name:"奶糖",image:"https://images.unsplash.com/photo-1596701062944-59a435805319?q=80&w=1887&auto=format&fit=crop",description:["甜美可愛的鄰家女孩","專注於舒緩按摩","笑容甜美，親和力強","讓您忘卻煩惱"]},"6":{name:"小愛",image:"https://images.unsplash.com/photo-1504703395950-b8914mat&fit=crop",description:["熱情奔放的性感女郎","精通深層組織按摩","互動大膽，魅力無法擋","給您不一樣的刺激體驗"]},"7":{name:"花花",image:"https://images.unsplash.com/photo-1517841905240-472988babdf9?q=80&w=1887&auto=format&fit=crop",description:["清新脫俗的文青女孩","擅長中式指壓","氣質典雅，談吐不凡","讓您體驗文化的薰陶"]},"8":{name:"琳琳",image:"https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=1964&auto=format&fit=crop",description:["成熟嫵媚的都會女性","專精淋巴排毒","風情萬種，充滿魅力","為您帶來極致的享受"]},"9":{name:"娜娜",image:"https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=1887&auto=format&fit=crop",description:["異國風情的神秘女郎","擅長夏威夷Lomi Lomi","熱情奔放，舞姿動人","帶您體驗海島的熱情"]},"10":{name:"妮妮",image:"https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=1961&auto=format&fit=crop",description:["空靈系少女","手法輕柔如羽毛","專注於臉部撥筋","讓您容光煥發"]},"11":{name:"樂樂",image:"https://images.unsplash.com/photo-1611042553365-9b10e481ba2a?q=80&w=1887&auto=format&fit=crop",description:["犬系陽光女孩","笑容是她的招牌","擅長活力指壓","帶走您所有煩憂"]},"12":{name:"糖糖",image:"https://images.unsplash.com/photo-1609505884375-d533897b264a?q=80&w=1887&auto=format&fit=crop",description:["日系甜美風格","服務貼心周到","專精日式香氛按摩","給您公主般的呵護"]},"13":{name:"可可",image:"https://images.unsplash.com/photo-1628890920690-9e29d0019b9b?q=80&w=1887&auto=format&fit=crop",description:["歐美混血感","身材高挑，健談開朗","專長運動後肌肉放鬆","是您健身後的好夥伴"]},"14":{name:"貝貝",image:"https://images.unsplash.com/photo-1618641986557-1ecd230959aa?q=80&w=1887&auto=format&fit=crop",description:["可愛小隻馬","活潑好動，鬼靈精怪","獨創節奏感按摩","讓您體驗全新的感受"]},"15":{name:"琪琪",image:"https://images.unsplash.com/photo-1552695845-4a0237de1a84?q=80&w=1887&auto=format&fit=crop",description:["知性御姐范","氣質出眾，溫文儒雅","擅長經絡疏通","調理您的身體平衡"]},"16":{name:"姍姍",image:"https://images.unsplash.com/photo-1619325493236-16f38a84-7158?q=80&w=1887&auto=format&fit=crop",description:["鄰家大姐姐","親切溫和，有耐心","專注於頭部舒壓","幫您釋放壓力，改善睡眠"]},"17":{name:"菲菲",image:"https://images.unsplash.com/photo-1604004555029-41a892982398?q=80&w=1887&auto=format&fit=crop",description:["性感貓系女友","眼神嫵媚，姿態撩人","精通巴里島式按摩","帶您進入感官的盛宴"]},"18":{name:"柚柚",image:"https://images.unsplash.com/photo-1621294793532-66b6ddd19853?q=80&w=1887&auto=format&fit=crop",description:["文靜小清新","話不多，但很細心","擅長瑞典式按摩","給您最純粹的放鬆"]},"19":{name:"咪咪",image:"https://images.unsplash.com/photo-1599942033333-e53b4a243b7e?q=80&w=1887&auto=format&fit=crop",description:["派對女王","熱情如火，互動滿分","專長熱石療法","溫暖您的每一寸肌膚"]},"20":{name:"悅悅",image:"https://images.unsplash.com/photo-1620021313936-232a5893c206?q=80&w=1887&auto=format&fit=crop",description:["古典美人","舉手投足充滿韻味","精通中式穴位指壓","傳承古老的養生智慧"]}};
+            // ▼▼▼▼▼【主要修改處】▼▼▼▼▼
+            // 將所有 image 的 URL 改為空字串 ""，避免載入圖片影響性能
+            const staffData = {
+                "1": { name: "ROSE", image: "", description: ["經驗豐富的按摩師", "擅長泰式古法按摩", "溫柔細心，服務周到", "讓您身心靈完全放鬆"] },
+                "2": { name: "七喜", image: "", description: ["活力四射的陽光女孩", "專精運動按摩", "互動活潑，充滿能量", "幫您消除疲勞"] },
+                "3": { name: "小凡", image: "", description: ["無經驗素人 <span class='text-red-500 font-bold'>禁</span> 不視訊", "<span class='bg-red-500 text-white px-1 py-0.5 rounded-sm text-xs'>禁</span> 禁職業粗魯", "初入森林的小白兔 短", "髮活力互動超甜蜜"] },
+                "4": { name: "小雪", image: "", description: ["溫柔婉約的氣質美女", "擅長精油芳療", "手法輕柔，療癒身心", "帶給您寧靜的體驗"] },
+                "5": { name: "奶糖", image: "", description: ["甜美可愛的鄰家女孩", "專注於舒緩按摩", "笑容甜美，親和力強", "讓您忘卻煩惱"] },
+                "6": { name: "小愛", image: "", description: ["熱情奔放的性感女郎", "精通深層組織按摩", "互動大膽，魅力無法擋", "給您不一樣的刺激體驗"] },
+                "7": { name: "花花", image: "", description: ["清新脫俗的文青女孩", "擅長中式指壓", "氣質典雅，談吐不凡", "讓您體驗文化的薰陶"] },
+                "8": { name: "琳琳", image: "", description: ["成熟嫵媚的都會女性", "專精淋巴排毒", "風情萬種，充滿魅力", "為您帶來極致的享受"] },
+                "9": { name: "娜娜", image: "", description: ["異國風情的神秘女郎", "擅長夏威夷Lomi Lomi", "熱情奔放，舞姿動人", "帶您體驗海島的熱情"] },
+                "10": { name: "妮妮", image: "", description: ["空靈系少女", "手法輕柔如羽毛", "專注於臉部撥筋", "讓您容光煥發"] },
+                "11": { name: "樂樂", image: "", description: ["犬系陽光女孩", "笑容是她的招牌", "擅長活力指壓", "帶走您所有煩憂"] },
+                "12": { name: "糖糖", image: "", description: ["日系甜美風格", "服務貼心周到", "專精日式香氛按摩", "給您公主般的呵護"] },
+                "13": { name: "可可", image: "", description: ["歐美混血感", "身材高挑，健談開朗", "專長運動後肌肉放鬆", "是您健身後的好夥伴"] },
+                "14": { name: "貝貝", image: "", description: ["可愛小隻馬", "活潑好動，鬼靈精怪", "獨創節奏感按摩", "讓您體驗全新的感受"] },
+                "15": { name: "琪琪", image: "", description: ["知性御姐范", "氣質出眾，溫文儒雅", "擅長經絡疏通", "調理您的身體平衡"] },
+                "16": { name: "姍姍", image: "", description: ["鄰家大姐姐", "親切溫和，有耐心", "專注於頭部舒壓", "幫您釋放壓力，改善睡眠"] },
+                "17": { name: "菲菲", image: "", description: ["性感貓系女友", "眼神嫵媚，姿態撩人", "精通巴里島式按摩", "帶您進入感官的盛宴"] },
+                "18": { name: "柚柚", image: "", description: ["文靜小清新", "話不多，但很細心", "擅長瑞典式按摩", "給您最純粹的放鬆"] },
+                "19": { name: "咪咪", image: "", description: ["派對女王", "熱情如火，互動滿分", "專長熱石療法", "溫暖您的每一寸肌膚"] },
+                "20": { name: "悅悅", image: "", description: ["古典美人", "舉手投足充滿韻味", "精通中式穴位指壓", "傳承古老的養生智慧"] }
+            };
+            // ▲▲▲▲▲【主要修改處】▲▲▲▲▲
 
-            // ▼▼▼▼▼【JavaScript 修改處】▼▼▼▼▼
+
             const profileImage = document.getElementById('profile-image');
             const noPhotoText = document.getElementById('no-photo-text');
             const profileDetails = document.getElementById('profile-details');
@@ -191,7 +214,8 @@
             function updateProfile(id) {
                 const data = staffData[id];
                 if (!data) return;
-                profileImage.src = data.image || '';
+                // 這段程式碼會自動處理 image 為空的情況
+                profileImage.src = data.image || ''; 
                 profileImage.classList.toggle('hidden', !data.image);
                 noPhotoText.classList.toggle('hidden', !!data.image);
                 profileImage.parentElement.classList.toggle('items-center', !data.image);
@@ -216,26 +240,26 @@
                 updateActiveItem(targetItem);
                 isAnimating = true;
                 
-                // 動畫 A: 滾動容器
+                // 動畫 A: 滾動容器 (保持 0.2 秒的快速動畫)
                 gsap.to(scrollContainer, {
-                    duration: 0.25, // 【修改點】: 將動畫時間從 0.35 秒縮短為 0.2 秒
+                    duration: 0.2,
                     scrollTo: { 
                         y: targetItem, 
                         offsetY: scrollContainer.clientHeight / 2 - targetItem.clientHeight / 2 
                     },
-                    ease: "power2.Out",
+                    ease: "power2.inOut",
                     overwrite: true,
                     onComplete: () => { 
                         isAnimating = false; 
                     }
                 });
                 
-                // 動畫 B: 移動高亮豎條
+                // 動畫 B: 移動高亮豎條 (保持 0.2 秒的快速動畫)
                 gsap.to(selectionHighlighter, {
-                    duration: 0.25, // 【修改點】: 同樣縮短為 0.2 秒以保持同步
+                    duration: 0.2,
                     y: targetItem.offsetTop,
                     height: targetItem.offsetHeight,
-                    ease: "power2.Out",
+                    ease: "power2.inOut",
                     overwrite: true,
                 });
             }

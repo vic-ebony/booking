@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>每日班表 (無照片性能版)</title>
+    <title>每日班表</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
     
@@ -79,17 +79,9 @@
 
 <body class="bg-gray-100">
     <div class="max-w-md mx-auto bg-white main-container" id="app">
-        <!-- Header, Profile, etc. (HTML 結構不變) -->
-        <header class="bg-white p-4 flex justify-between items-center shadow-sm flex-shrink-0">
-            <span class="material-icons text-gray-700">home</span>
-            <div class="text-sm text-gray-500">192.168.137.1:8000</div>
-            <div class="flex items-center space-x-4">
-                <span class="material-icons text-gray-700">crop_square</span>
-                <span class="material-icons text-gray-700">more_vert</span>
-            </div>
-        </header>
+        <!-- ▼▼▼▼▼ 【主要修改處】已移除頂部的 header 區塊 ▼▼▼▼▼ -->
         
-        <div class="flex-shrink-0 bg-white">
+        <div class="flex-shrink-0 bg-white pt-4"> <!-- 加上 pt-4 補回一點頂部空間 -->
             <div class="p-4 pb-0">
                 <div class="flex justify-between items-center mb-4">
                     <h1 class="text-lg font-bold">每日班表</h1>
@@ -181,8 +173,6 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // ▼▼▼▼▼【主要修改處】▼▼▼▼▼
-            // 原本的 staffData 物件保持不變，但裡面的 image: "" 會被下面的程式碼覆蓋
             const staffData = {
                 "1": { name: "ROSE", image: "", description: ["經驗豐富的按摩師", "擅長泰式古法按摩", "溫柔細心，服務周到", "讓您身心靈完全放鬆"] },
                 "2": { name: "七喜", image: "", description: ["活力四射的陽光女孩", "專精運動按摩", "互動活潑，充滿能量", "幫您消除疲勞"] },
@@ -216,8 +206,6 @@
                 "30": { name: "YUKI", image: "", description: ["日系模特感", "高冷外表下的溫柔", "專精淋巴引流", "為您打造完美線條"] }
             };
 
-            // ▼▼▼▼▼ 【新增】隨機照片分配程式碼 ▼▼▼▼▼
-            // 1. 定義可用的照片列表
             const availableImages = [
                 'image/a.jpg',
                 'image/b.jpg',
@@ -229,18 +217,12 @@
                 'image/h.jpg'
             ];
 
-            // 2. 遍歷 staffData 物件，為每一位美容師隨機分配一張照片
             for (const id in staffData) {
                 if (Object.hasOwnProperty.call(staffData, id)) {
-                    // 產生一個 0 到 (照片數量-1) 之間的隨機數字
                     const randomIndex = Math.floor(Math.random() * availableImages.length);
-                    // 將隨機選中的照片路徑賦值給該美容師的 image 屬性
                     staffData[id].image = availableImages[randomIndex];
                 }
             }
-            // ▲▲▲▲▲ 【新增】隨機照片分配程式碼 ▲▲▲▲▲
-            // ▲▲▲▲▲【主要修改處】▲▲▲▲▲
-
 
             const profileImage = document.getElementById('profile-image');
             const noPhotoText = document.getElementById('no-photo-text');
@@ -258,7 +240,6 @@
             function updateProfile(id) {
                 const data = staffData[id];
                 if (!data) return;
-                // 這段程式碼會自動處理 image 是否有值的情況
                 profileImage.src = data.image || ''; 
                 profileImage.classList.toggle('hidden', !data.image);
                 noPhotoText.classList.toggle('hidden', !!data.image);
@@ -284,7 +265,6 @@
                 updateActiveItem(targetItem);
                 isAnimating = true;
                 
-                // 動畫 A: 滾動容器 (保持 0.2 秒的快速動畫)
                 gsap.to(scrollContainer, {
                     duration: 0.15,
                     scrollTo: { 
@@ -298,7 +278,6 @@
                     }
                 });
                 
-                // 動畫 B: 移動高亮豎條 (保持 0.2 秒的快速動畫)
                 gsap.to(selectionHighlighter, {
                     duration: 0.15,
                     y: targetItem.offsetTop,
@@ -318,14 +297,12 @@
                 }
             }
             
-            // --- 事件監聽設置 (保持不變) ---
             scrollContainer.addEventListener('wheel', (event) => { event.preventDefault(); const direction = event.deltaY > 0 ? 'down' : 'up'; handleScroll(direction); }, { passive: false });
             scrollContainer.addEventListener('touchstart', (event) => { touchStartY = event.touches[0].clientY; }, { passive: true });
             scrollContainer.addEventListener('touchend', (event) => { const touchEndY = event.changedTouches[0].clientY; const swipeDistance = touchStartY - touchEndY; if (Math.abs(swipeDistance) > 30) { const direction = swipeDistance > 0 ? 'down' : 'up'; handleScroll(direction); } }, { passive: true });
             scrollContainer.addEventListener('touchmove', (event) => { event.preventDefault(); }, { passive: false });
             scheduleItems.forEach(item => { item.addEventListener('click', () => { selectAndCenterItem(item); }); });
 
-            // --- 頁面初始化 (保持不變) ---
             if (scheduleItems.length > 0) {
                 const firstItem = scheduleItems[0];
                 updateActiveItem(firstItem);
